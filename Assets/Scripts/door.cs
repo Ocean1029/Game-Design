@@ -14,37 +14,47 @@ public class door : MonoBehaviour
 
     }
 
-    // private void OnCollisionEnter2D(Collision2D other)
-    // {
-    //     if (other.gameObject.tag == "key1")
-    //     {
-    //         Debug.Log("Door is opened!");
-    //     }
-
-    // }
+    // 在 Inspector 面板中拖曳進來的「門打開」圖片
+    public Sprite doorOpenedSprite;
     
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        // 1. 嘗試從碰撞物件上取得 player 腳本
+        // 嘗試從碰撞物件上取得 player 腳本
         player playerScript = other.gameObject.GetComponent<player>();
 
-        // 2. 檢查是否是 Player 撞到了門
+        // 檢查是否是 Player 撞到了門
         if (playerScript != null)
         {
-            // 3. 詢問 Player 是否攜帶鑰匙
+            // 檢查 Player 是否攜帶鑰匙
             GameObject key = playerScript.GetCarriedKey();
             
-            // 4. 檢查 Player 攜帶的鑰匙是否是我們要的 "key1"
+            // 只有在 key 不為 null 且 Tag 正確時才執行開門邏輯
             if (key != null && key.CompareTag("key1"))
             {
                 Debug.Log("Door is opened!");
 
-                // 【執行開門動作】
-                // 銷毀鑰匙並讓門消失或移動
-                playerScript.UseCarriedKey(); // 讓玩家銷毀鑰匙
-                Destroy(gameObject); // 銷毀門，達到「開門」效果
+                // 獲取 Door 物件的 Sprite Renderer 組件
+                SpriteRenderer sr = GetComponent<SpriteRenderer>();
+
+                if (sr != null && doorOpenedSprite != null)
+                {
+                    // 換成「門打開」的圖片
+                    sr.sprite = doorOpenedSprite;
+                }
+                else
+                {
+                    Debug.LogError("Door 缺少 SpriteRenderer 組件或 doorOpenedSprite 尚未設定！");
+                }
+
+                // 讓鑰匙消失 
+                playerScript.UseCarriedKey(); 
                 
-                // 或者: gameObject.SetActive(false);
+                // 禁用碰撞器，會連偵測都停止
+                Collider2D col = GetComponent<Collider2D>();
+                if (col != null)
+                {
+                    col.enabled = false;
+                }
             }
         }
     }
