@@ -4,15 +4,19 @@ using System.Collections;
 public class player : MonoBehaviour
 {
     [SerializeField] float moveSpeed = 5f;
-    // 是否拿起鑰匙
-    private GameObject carriedKey = null;
-    // 拿鑰匙的位置的位置
-    public Transform holdpoint;
-    // 使否使用cable垂降中
-    private bool isRappelling = false;
-    // 垂降動畫持續時間 (根據動畫長度調整)
-    private float rappellingDuration = 1.0f;
     private SpriteRenderer spriteRenderer;
+
+    // === 拿鑰匙 ===
+    private GameObject carriedKey = null;
+    public Transform holdpoint;
+
+    // === 垂降 ===
+    private bool isRappelling = false;
+    private float rappellingDuration = 1.0f;
+
+    // === 坐椅子 ===
+    private chair nearbyChair = null;
+    private bool isSitting = false;
 
     void Start()
     {
@@ -27,19 +31,34 @@ public class player : MonoBehaviour
     {
         if (isRappelling == false)
         {
-            if (Input.GetKey(KeyCode.RightArrow))
+            if (!isSitting)
             {
-                transform.Translate(moveSpeed * Time.deltaTime, 0, 0);
+                // 左右移動
+                if (Input.GetKey(KeyCode.RightArrow))
+                {
+                    transform.Translate(moveSpeed * Time.deltaTime, 0, 0);
+                }
+                else if (Input.GetKey(KeyCode.LeftArrow))
+                {
+                    transform.Translate(-moveSpeed * Time.deltaTime, 0, 0);
+                }
             }
-            else if (Input.GetKey(KeyCode.LeftArrow))
+
+            // 坐椅子互動
+            if (nearbyChair != null && Input.GetKeyDown(KeyCode.U))
             {
-                transform.Translate(-moveSpeed * Time.deltaTime, 0, 0);
+                SitOnChair();
+            }
+            if (isSitting && Input.GetKeyDown(KeyCode.D))
+            {
+                LeaveChair();
             }
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // 撿鑰匙
         if (collision.CompareTag("key1") && carriedKey == null)
         {
             carriedKey = collision.gameObject;
@@ -54,7 +73,72 @@ public class player : MonoBehaviour
                 Debug.LogError("HoldPoint is not assigned in the Inspector!");
             }
         }
+
+        // 椅子互動
+        chair chair = collision.GetComponent<chair>();
+        if (chair != null)
+        {
+            nearbyChair = chair;
+            chair.ShowPromptA(true);
+        }
     }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        chair chair = collision.GetComponent<chair>();
+        if (chair != null && chair == nearbyChair)
+        {
+            if (!isSitting)
+            {
+                chair.ShowPromptA(false);
+                chair.ShowPromptD(false);
+                nearbyChair = null;
+            }
+        }
+    }
+
+    // === 坐下功能 ===
+    void SitOnChair()
+    {
+        if (nearbyChair == null) return;
+
+        transform.position = nearbyChair.sitpoint.position;
+        isSitting = true;
+        Debug.Log("Player 坐下了！");
+
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.gravityScale = 0;
+            rb.linearVelocity = Vector2.zero;
+        }
+        
+        nearbyChair.ShowPromptA(false);
+        nearbyChair.ShowPromptD(true);
+    }
+
+    // === 站起來功能 ===
+    void LeaveChair()
+    {
+        if (!isSitting) return;
+
+        transform.position += new Vector3(0f, 0.5f, 0f);
+        isSitting = false;
+        Debug.Log("Player 站起來了！");
+
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.gravityScale = 1;
+        }
+
+        if (nearbyChair != null)
+        {
+            nearbyChair.ShowPromptD(false);
+            nearbyChair.ShowPromptA(true);
+        }
+    }
+
     // 用於讓門檢查
     public GameObject GetCarriedKey()
     {
@@ -71,6 +155,7 @@ public class player : MonoBehaviour
         }
     }
 
+    // === 垂降功能 ===
     public void StartRappelling(Transform target)
     {
         if (isRappelling) return; // 避免重複啟動
@@ -80,7 +165,7 @@ public class player : MonoBehaviour
         // 隱藏 Player
         if (spriteRenderer != null)
         {
-            spriteRenderer.enabled = false; 
+            spriteRenderer.enabled = false;
         }
 
         // 啟動協程來處理時間延遲和位置傳送
@@ -95,7 +180,7 @@ public class player : MonoBehaviour
 
         // 位置傳送
         transform.position = target.position;
-        
+
         if (spriteRenderer != null)
         {
             spriteRenderer.enabled = true; // <--- 確保這行程式碼有寫
