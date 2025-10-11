@@ -1,58 +1,75 @@
 using UnityEngine;
 
+/// <summary>
+/// Represents a rappelling cable that allows the player to descend to a lower area
+/// Automatically triggers when player enters the zone
+/// </summary>
 public class cable : MonoBehaviour
 {
-    // 在 Inspector 設定，這是玩家垂降動畫結束後，應該出現的位置
+    [Header("Rappelling Configuration")]
+    [Tooltip("Target position where player will land after rappelling")]
     public Transform targetFloorPoint;
-    private Animator cableAnim;
+    
+    [Tooltip("Animator trigger name for cable animation")]
+    public string animationTriggerName = "player_enter";
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private Animator cableAnimator;
+    private bool hasBeenUsed = false;
+
     void Start()
     {
-        // 確保 Cable 物件上有 Animator 組件
-        cableAnim = GetComponent<Animator>();
-        if (cableAnim == null)
+        // Get animator component if exists
+        cableAnimator = GetComponent<Animator>();
+        
+        if (cableAnimator == null)
         {
-            Debug.LogError("Cable 物件上找不到 Animator 組件！");
+            Debug.LogWarning("Cable object does not have an Animator component. Rappelling will work but without cable animation.");
         }
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        if (targetFloorPoint == null)
+        {
+            Debug.LogError("Cable: targetFloorPoint is not assigned! Player will not be able to rappel.");
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Cable 被觸發了！");
-        
-        // 檢查是否是玩家進入了觸發區域
-        player playerScript = other.GetComponent<player>();
+        // Prevent multiple uses
+        if (hasBeenUsed) return;
 
-        // 檢查 playerScript 是否成功取得， 如果不是 Player 碰到的，則立即退出，不執行後續邏輯
-        if (playerScript == null) 
+        // Check if the player entered the trigger zone
+        PlayerController playerController = other.GetComponent<PlayerController>();
+
+        if (playerController == null)
         {
+            // Not the player, ignore
             return;
         }
 
-        if (targetFloorPoint != null && cableAnim != null)
+        if (targetFloorPoint == null)
         {
-            cableAnim.SetTrigger("player_enter");
-
-            playerScript.StartRappelling(targetFloorPoint);
-
-            //禁用此觸發器，避免玩家在垂降過程中再次觸發
-            Collider2D col = GetComponent<Collider2D>();
-            if (col != null)
-            {
-                col.enabled = false;
-            }
+            Debug.LogError("Cable: Cannot start rappelling - targetFloorPoint is missing!");
+            return;
         }
-        else
+
+        Debug.Log("Player triggered cable rappelling");
+
+        // Play cable animation if available
+        if (cableAnimator != null)
         {
-            Debug.LogError("Cable 設定錯誤：TargetFloorPoint 或 Animator 缺失！");
+            cableAnimator.SetTrigger(animationTriggerName);
         }
+
+        // Start player rappelling sequence
+        playerController.StartRappelling(targetFloorPoint);
+
+        // Disable the trigger to prevent repeated activation
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+        {
+            col.enabled = false;
+        }
+
+        hasBeenUsed = true;
     }
 }
