@@ -4,12 +4,13 @@ using System.Collections;
 /// <summary>
 /// Main player controller that coordinates all player subsystems
 /// Manages input, state, movement, animation, and interactions
+/// Implements IInteractor to allow interaction with game objects
 /// </summary>
 [RequireComponent(typeof(PlayerMovement))]
 [RequireComponent(typeof(PlayerStateMachine))]
 [RequireComponent(typeof(PlayerAnimationController))]
 [RequireComponent(typeof(InteractionHandler))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IInteractor
 {
     [Header("Component References")]
     private PlayerMovement movement;
@@ -338,7 +339,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Found interactable: " + collision.gameObject.name);
             interactionHandler.RegisterInteractable(interactable);
-            interactable.OnPlayerEnterZone(this);
+            interactable.OnInteractorEnterZone(this);
         }
         else
         {
@@ -353,7 +354,7 @@ public class PlayerController : MonoBehaviour
         if (interactable != null)
         {
             interactionHandler.UnregisterInteractable(interactable);
-            interactable.OnPlayerExitZone(this);
+            interactable.OnInteractorExitZone(this);
         }
     }
 
@@ -405,6 +406,24 @@ public class PlayerController : MonoBehaviour
     public PlayerEnergy GetEnergySystem()
     {
         return energySystem;
+    }
+
+    // ==================== IInteractor IMPLEMENTATION ====================
+
+    /// <summary>
+    /// Get the transform of this interactor
+    /// </summary>
+    Transform IInteractor.GetTransform()
+    {
+        return transform;
+    }
+
+    /// <summary>
+    /// Get the GameObject of this interactor
+    /// </summary>
+    GameObject IInteractor.GetGameObject()
+    {
+        return gameObject;
     }
 }
 

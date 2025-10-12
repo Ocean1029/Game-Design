@@ -1,23 +1,23 @@
 using UnityEngine;
 
 /// <summary>
-/// Represents a chair that the player can sit on
-/// Implements IInteractable to work with the new player interaction system
+/// Represents a chair that any interactor can sit on
+/// Implements IInteractable to work with the interaction system
 /// </summary>
 public class chair : MonoBehaviour, IInteractable
 {
     [Header("Sitting Configuration")]
-    [Tooltip("Position where the player will be placed when sitting")]
+    [Tooltip("Position where the interactor will be placed when sitting")]
     public Transform sitpoint;
 
     [Header("UI Prompts")]
-    [Tooltip("UI element shown when player can sit down")]
+    [Tooltip("UI element shown when interactor can sit down")]
     public GameObject pressAPrompt;
     
-    [Tooltip("UI element shown when player is sitting and can stand up")]
+    [Tooltip("UI element shown when interactor is sitting and can stand up")]
     public GameObject pressDPrompt;
 
-    private PlayerController currentPlayer = null;
+    private IInteractor currentInteractor = null;
 
     void Start()
     {
@@ -29,15 +29,16 @@ public class chair : MonoBehaviour, IInteractable
     // ==================== IInteractable Implementation ====================
 
     /// <summary>
-    /// Called when player enters the chair's interaction zone
+    /// Called when an interactor enters the chair's interaction zone
     /// </summary>
-    public void OnPlayerEnterZone(PlayerController player)
+    public void OnInteractorEnterZone(IInteractor interactor)
     {
-        Debug.Log("Player entered chair zone");
-        currentPlayer = player;
+        Debug.Log("Interactor entered chair zone");
+        currentInteractor = interactor;
         
-        // Show sit prompt only if not already sitting
-        if (!player.IsSitting())
+        // Check if this is a player and if they're already sitting
+        PlayerController player = interactor.GetGameObject().GetComponent<PlayerController>();
+        if (player != null && !player.IsSitting())
         {
             ShowPromptA(true);
             Debug.Log("Showing sit prompt");
@@ -45,26 +46,38 @@ public class chair : MonoBehaviour, IInteractable
     }
 
     /// <summary>
-    /// Called when player exits the chair's interaction zone
+    /// Called when an interactor exits the chair's interaction zone
     /// </summary>
-    public void OnPlayerExitZone(PlayerController player)
+    public void OnInteractorExitZone(IInteractor interactor)
     {
+        // Check if this is a player and if they're sitting
+        PlayerController player = interactor.GetGameObject().GetComponent<PlayerController>();
+        
         // Only clear prompts if player is not sitting
         // (when sitting, player should not leave the zone)
-        if (!player.IsSitting())
+        if (player == null || !player.IsSitting())
         {
             ShowPromptA(false);
             ShowPromptD(false);
-            currentPlayer = null;
+            currentInteractor = null;
         }
     }
 
     /// <summary>
-    /// Called when player presses the interact button while near the chair
+    /// Called when an interactor presses the interact button while near the chair
     /// </summary>
-    public bool Interact(PlayerController player)
+    public bool Interact(IInteractor interactor)
     {
         Debug.Log("Chair Interact() called");
+        
+        // Try to get PlayerController component from the interactor
+        PlayerController player = interactor.GetGameObject().GetComponent<PlayerController>();
+        
+        if (player == null)
+        {
+            Debug.LogWarning("Chair: Only players can sit on chairs");
+            return false;
+        }
         
         if (player.IsSitting())
         {

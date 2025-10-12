@@ -133,13 +133,13 @@ public class InteractionHandler : MonoBehaviour
     /// <summary>
     /// Interact with the current nearby interactable object
     /// </summary>
-    /// <param name="player">Reference to the PlayerController</param>
+    /// <param name="interactor">Reference to the IInteractor (player, NPC, etc.)</param>
     /// <returns>True if interaction was successful</returns>
-    public bool TryInteract(PlayerController player)
+    public bool TryInteract(IInteractor interactor)
     {
         if (currentInteractable != null)
         {
-            return currentInteractable.Interact(player);
+            return currentInteractable.Interact(interactor);
         }
         return false;
     }
