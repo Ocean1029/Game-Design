@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     private PlayerStateMachine stateMachine;
     private PlayerAnimationController animationController;
     private InteractionHandler interactionHandler;
+    private PlayerEnergy energySystem;
 
     [Header("Input Keys")]
     [SerializeField] private KeyCode moveLeftKey = KeyCode.LeftArrow;
@@ -37,6 +38,12 @@ public class PlayerController : MonoBehaviour
         stateMachine = GetComponent<PlayerStateMachine>();
         animationController = GetComponent<PlayerAnimationController>();
         interactionHandler = GetComponent<InteractionHandler>();
+        energySystem = GetComponent<PlayerEnergy>();
+        
+        if (energySystem == null)
+        {
+            Debug.LogWarning("PlayerController: PlayerEnergy component not found! Jump energy system will be disabled.");
+        }
     }
 
     void Start()
@@ -87,13 +94,29 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Handle jump input - supports variable height jumping
+    /// Handle jump input - supports variable height jumping with energy cost
     /// </summary>
     private void HandleJumpInput()
     {
         // Start jump when button is first pressed
         if (stateMachine.CanJump() && Input.GetKeyDown(jumpKey))
         {
+            // Check if player has enough energy to jump
+            if (energySystem != null)
+            {
+                if (!energySystem.HasEnergyToJump())
+                {
+                    Debug.Log("Cannot jump - not enough energy!");
+                    return;
+                }
+                
+                // Consume energy for the jump
+                if (!energySystem.ConsumeJumpEnergy())
+                {
+                    return;
+                }
+            }
+            
             movement.StartJump();
             animationController.TriggerJump();
             stateMachine.ChangeState(PlayerState.Jumping);
@@ -218,7 +241,13 @@ public class PlayerController : MonoBehaviour
         
         stateMachine.ChangeState(PlayerState.Sitting);
         
-        Debug.Log("Player sat down on chair");
+        // Start restoring energy while sitting
+        if (energySystem != null)
+        {
+            energySystem.StartEnergyRestore();
+        }
+        
+        Debug.Log("Player sat down on chair - energy restoring");
     }
 
     /// <summary>
@@ -229,6 +258,12 @@ public class PlayerController : MonoBehaviour
         if (stateMachine.CurrentState != PlayerState.Sitting)
         {
             return;
+        }
+
+        // Stop restoring energy when leaving chair
+        if (energySystem != null)
+        {
+            energySystem.StopEnergyRestore();
         }
 
         // Move slightly upward to avoid re-triggering the chair
@@ -362,6 +397,14 @@ public class PlayerController : MonoBehaviour
     public InteractionHandler GetInteractionHandler()
     {
         return interactionHandler;
+    }
+
+    /// <summary>
+    /// Get the energy system component
+    /// </summary>
+    public PlayerEnergy GetEnergySystem()
+    {
+        return energySystem;
     }
 }
 
