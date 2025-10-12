@@ -87,15 +87,28 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Handle jump input
+    /// Handle jump input - supports variable height jumping
     /// </summary>
     private void HandleJumpInput()
     {
+        // Start jump when button is first pressed
         if (stateMachine.CanJump() && Input.GetKeyDown(jumpKey))
         {
-            movement.Jump();
+            movement.StartJump();
             animationController.TriggerJump();
             stateMachine.ChangeState(PlayerState.Jumping);
+        }
+        
+        // Continue applying upward force while button is held
+        if (Input.GetKey(jumpKey))
+        {
+            movement.ContinueJump();
+        }
+        
+        // Stop jump early when button is released
+        if (Input.GetKeyUp(jumpKey))
+        {
+            movement.StopJump();
         }
     }
 
