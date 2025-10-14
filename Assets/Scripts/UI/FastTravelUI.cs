@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using TMPro;
 
 /// <summary>
 /// Manages the fast travel menu UI for chair-based spawn points
@@ -19,10 +20,10 @@ public class FastTravelUI : MonoBehaviour
     [SerializeField] private GameObject chairButtonPrefab;
     
     [Tooltip("Text shown when no chairs are discovered")]
-    [SerializeField] private Text noChairsText;
+    [SerializeField] private TextMeshProUGUI noChairsText;
     
     [Tooltip("Title text of the menu")]
-    [SerializeField] private Text titleText;
+    [SerializeField] private TextMeshProUGUI titleText;
     
     [Header("Settings")]
     [Tooltip("Whether to pause game time when menu is open")]
@@ -40,8 +41,8 @@ public class FastTravelUI : MonoBehaviour
             menuPanel.SetActive(false);
         }
         
-        // Set title text
-        if (titleText != null)
+        // Set title text only if it's empty
+        if (titleText != null && string.IsNullOrEmpty(titleText.text))
         {
             titleText.text = "Fast Travel - Discovered Chairs";
         }
@@ -199,7 +200,7 @@ public class FastTravelUI : MonoBehaviour
         }
 
         // Set button text
-        Text buttonText = buttonObj.GetComponentInChildren<Text>();
+        TextMeshProUGUI buttonText = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
         if (buttonText != null)
         {
             string buttonLabel = chair.displayName;
