@@ -25,6 +25,8 @@ public class PlayerController : MonoBehaviour, IInteractor
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
     [SerializeField] private KeyCode interactKey = KeyCode.U;
     [SerializeField] private KeyCode exitInteractionKey = KeyCode.D;
+    [SerializeField] private KeyCode respawnKey = KeyCode.R;
+    [SerializeField] private KeyCode fastTravelMenuKey = KeyCode.M;
 
     [Header("Rappelling Settings")]
     [SerializeField] private float rappellingDuration = 1.0f;
@@ -64,6 +66,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         HandleMovementInput();
         HandleJumpInput();
         HandleInteractionInput();
+        HandleSystemInput();
         UpdateAnimations();
         UpdateMovementState();
     }
@@ -170,6 +173,24 @@ public class PlayerController : MonoBehaviour, IInteractor
             {
                 LeaveChair();
             }
+        }
+    }
+
+    /// <summary>
+    /// Handle system input (R key for respawn, M key for fast travel menu)
+    /// </summary>
+    private void HandleSystemInput()
+    {
+        // Respawn at last chair
+        if (Input.GetKeyDown(respawnKey))
+        {
+            RespawnAtLastChair();
+        }
+
+        // Toggle fast travel menu
+        if (Input.GetKeyDown(fastTravelMenuKey))
+        {
+            ToggleFastTravelMenu();
         }
     }
 
@@ -355,6 +376,46 @@ public class PlayerController : MonoBehaviour, IInteractor
         {
             interactionHandler.UnregisterInteractable(interactable);
             interactable.OnInteractorExitZone(this);
+        }
+    }
+
+    // ==================== SYSTEM METHODS ====================
+
+    /// <summary>
+    /// Respawn player at the last chair they sat on
+    /// </summary>
+    private void RespawnAtLastChair()
+    {
+        Debug.Log("PlayerController: R key pressed - attempting to respawn at last chair");
+
+        GameManager gameManager = GameManager.GetInstance();
+        if (gameManager == null)
+        {
+            Debug.LogError("PlayerController: GameManager not found! Cannot respawn.");
+            return;
+        }
+
+        gameManager.RespawnPlayer();
+    }
+
+    /// <summary>
+    /// Toggle the fast travel menu
+    /// </summary>
+    private void ToggleFastTravelMenu()
+    {
+        Debug.Log("PlayerController: M key pressed - attempting to toggle fast travel menu");
+
+        FastTravelUI fastTravelUI = FindFirstObjectByType<FastTravelUI>();
+        
+        if (fastTravelUI != null)
+        {
+            Debug.Log("PlayerController: FastTravelUI found, toggling menu...");
+            fastTravelUI.ToggleMenu();
+        }
+        else
+        {
+            Debug.LogError("PlayerController: FastTravelUI not found in scene!");
+            Debug.LogError("PlayerController: Please ensure FastTravelSystem GameObject exists with FastTravelUI component.");
         }
     }
 
