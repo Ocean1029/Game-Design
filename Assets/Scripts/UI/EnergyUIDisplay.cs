@@ -90,14 +90,24 @@ public class EnergyUIDisplay : MonoBehaviour
             {
                 // Create a simple UI block
                 block = new GameObject($"EnergyBlock_{i}");
-                block.transform.SetParent(energyBlockContainer);
+                block.transform.SetParent(energyBlockContainer, false);
                 
                 Image image = block.AddComponent<Image>();
                 image.color = fullColor;
                 
-                // Set size from inspector settings
+                // Set size and layout properties from inspector settings
                 RectTransform rectTransform = block.GetComponent<RectTransform>();
                 rectTransform.sizeDelta = blockSize;
+                rectTransform.anchorMin = new Vector2(0, 0.5f);
+                rectTransform.anchorMax = new Vector2(0, 0.5f);
+                rectTransform.pivot = new Vector2(0.5f, 0.5f);
+                
+                // Add LayoutElement to ensure proper sizing control
+                LayoutElement layoutElement = block.AddComponent<LayoutElement>();
+                layoutElement.preferredWidth = blockSize.x;
+                layoutElement.preferredHeight = blockSize.y;
+                layoutElement.flexibleWidth = 0;
+                layoutElement.flexibleHeight = 0;
             }
 
             // Get the Image component
