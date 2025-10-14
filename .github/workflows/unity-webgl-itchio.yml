@@ -2,8 +2,13 @@ name: Unity WebGL CI/CD 🎮
 
 on:
   push:
-    branches: [ main ]  
+    branches:
+      - main
+      - dev
   pull_request:
+    branches:
+      - main
+      - dev
 
 jobs:
   
@@ -141,22 +146,20 @@ jobs:
           path: build/WebGL
 
   deploy:
-    name: Deploy to itch.io 
+    name: Deploy to itch.io
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/main'   
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Download the build from previous job
       - name: Download WebGL build
         uses: actions/download-artifact@v4
         with:
           name: WebGL-Build
           path: build/WebGL
 
-      # Install Butler (itch.io CLI)
       - name: Install Butler CLI
         run: |
           curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
@@ -164,9 +167,21 @@ jobs:
           sudo mv butler/butler /usr/local/bin/butler
           butler -V
 
-      # Deploy to itch.io
-      - name: Upload to itch.io
+      - name: Determine Itch.io channel
+        id: set-channel
         run: |
-          butler push build/WebGL "${{ secrets.ITCHIO_USERNAME }}/${{ secrets.ITCHIO_GAME_NAME }}:webgl"
+          if [ "${GITHUB_REF##*/}" == "main" ]; then
+            echo "channel=webgl" >> $GITHUB_OUTPUT
+          elif [ "${GITHUB_REF##*/}" == "dev" ]; then
+            echo "channel=webgl-dev" >> $GITHUB_OUTPUT
+          else
+            echo "Unknown branch, skipping deploy"
+            exit 1
+          fi
+
+      - name: Upload to Itch.io
+        run: |
+          echo "Deploying to channel: ${{ steps.set-channel.outputs.channel }}"
+          butler push build/WebGL "${{ secrets.ITCHIO_USERNAME }}/${{ secrets.ITCHIO_GAME_NAME }}:${{ steps.set-channel.outputs.channel }}"
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
