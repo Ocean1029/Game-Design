@@ -1,179 +1,139 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
-/// <summary>
-/// Displays player energy as a simple UI with colored blocks
-/// Can be upgraded to use sprites or more complex UI later
-/// </summary>
 public class EnergyUIDisplay : MonoBehaviour
 {
     [Header("References")]
-    [Tooltip("The player's energy system to monitor")]
     [SerializeField] private PlayerEnergy energySystem;
-    
+
     [Header("UI Setup")]
-    [Tooltip("Parent container for energy blocks")]
     [SerializeField] private Transform energyBlockContainer;
-    
-    [Tooltip("Prefab for a single energy block (should have an Image component)")]
     [SerializeField] private GameObject energyBlockPrefab;
 
     [Header("Visual Settings")]
-    [Tooltip("Size of each energy block (width and height)")]
-    [SerializeField] private Vector2 blockSize = new Vector2(10, 10);
-    
-    [Tooltip("Spacing between energy blocks")]
+    [SerializeField] private Vector2 blockSize = new Vector2(30, 30);
     [SerializeField] private float blockSpacing = 3f;
-    
-    [Tooltip("Color when energy block is full")]
-    [SerializeField] private Color fullColor = new Color(0.3f, 0.8f, 1f); // Light blue
-    
-    [Tooltip("Color when energy block is empty")]
-    [SerializeField] private Color emptyColor = new Color(0.2f, 0.2f, 0.2f); // Dark gray
+
+    [Header("Color Settings")]
+    [SerializeField] private Color fullColor = Color.white; // 顯示原圖顏色
+    [SerializeField] private Color emptyColor = new Color(1f, 1f, 1f, 0.2f); // 變暗
+
+    [Header("Animation Settings")]
+    [SerializeField] private float colorLerpDuration = 0.25f;
+    [SerializeField] private float scalePulseDuration = 0.15f;
+    [SerializeField] private float scaleMultiplier = 1.15f;
 
     private Image[] energyBlocks;
+    private Coroutine[] animCoroutines;
 
     void Start()
     {
         if (energySystem == null)
-        {
-            // Try to find the player energy system
             energySystem = FindFirstObjectByType<PlayerEnergy>();
-            
-            if (energySystem == null)
-            {
-                Debug.LogError("EnergyUIDisplay: No PlayerEnergy system found!");
-                enabled = false;
-                return;
-            }
+
+        if (energySystem == null)
+        {
+            Debug.LogError("EnergyUIDisplay: No PlayerEnergy system found!");
+            enabled = false;
+            return;
         }
 
-        // Subscribe to energy change events
         energySystem.OnEnergyChanged += UpdateEnergyDisplay;
-
-        // Create initial UI blocks
         CreateEnergyBlocks();
-        
-        // Initial update
         UpdateEnergyDisplay(energySystem.GetCurrentEnergy(), energySystem.GetMaxEnergy());
     }
 
     void OnDestroy()
     {
-        // Unsubscribe from events
         if (energySystem != null)
-        {
             energySystem.OnEnergyChanged -= UpdateEnergyDisplay;
-        }
     }
 
-    /// <summary>
-    /// Create UI blocks to represent energy
-    /// </summary>
     private void CreateEnergyBlocks()
     {
         int maxEnergy = energySystem.GetMaxEnergy();
         energyBlocks = new Image[maxEnergy];
-
-        // If no prefab provided, create simple blocks
-        bool usePrefab = energyBlockPrefab != null;
+        animCoroutines = new Coroutine[maxEnergy];
 
         for (int i = 0; i < maxEnergy; i++)
         {
-            GameObject block;
-            
-            if (usePrefab)
-            {
-                block = Instantiate(energyBlockPrefab, energyBlockContainer);
-            }
-            else
-            {
-                // Create a simple UI block
-                block = new GameObject($"EnergyBlock_{i}");
-                block.transform.SetParent(energyBlockContainer, false);
-                
-                Image image = block.AddComponent<Image>();
-                image.color = fullColor;
-                
-                // Set size and layout properties from inspector settings
-                RectTransform rectTransform = block.GetComponent<RectTransform>();
-                rectTransform.sizeDelta = blockSize;
-                rectTransform.anchorMin = new Vector2(0, 0.5f);
-                rectTransform.anchorMax = new Vector2(0, 0.5f);
-                rectTransform.pivot = new Vector2(0.5f, 0.5f);
-                
-                // Add LayoutElement to ensure proper sizing control
-                LayoutElement layoutElement = block.AddComponent<LayoutElement>();
-                layoutElement.preferredWidth = blockSize.x;
-                layoutElement.preferredHeight = blockSize.y;
-                layoutElement.flexibleWidth = 0;
-                layoutElement.flexibleHeight = 0;
-            }
-
-            // Get the Image component
+            GameObject block = Instantiate(energyBlockPrefab, energyBlockContainer);
+            RectTransform rt = block.GetComponent<RectTransform>();
+            rt.sizeDelta = blockSize;
             energyBlocks[i] = block.GetComponent<Image>();
-            
-            if (energyBlocks[i] == null)
-            {
-                Debug.LogError($"EnergyUIDisplay: Block {i} doesn't have an Image component!");
-            }
         }
 
-        // Set up horizontal layout if container doesn't have one
         HorizontalLayoutGroup layout = energyBlockContainer.GetComponent<HorizontalLayoutGroup>();
         if (layout == null)
-        {
             layout = energyBlockContainer.gameObject.AddComponent<HorizontalLayoutGroup>();
-        }
-        
-        // Configure layout to use fixed spacing regardless of container width
+
         layout.spacing = blockSpacing;
         layout.childAlignment = TextAnchor.MiddleLeft;
         layout.childControlWidth = false;
         layout.childControlHeight = false;
-        layout.childForceExpandWidth = false;
-        layout.childForceExpandHeight = false;
-        layout.childScaleWidth = false;
-        layout.childScaleHeight = false;
     }
 
-    /// <summary>
-    /// Update the visual display when energy changes
-    /// </summary>
-    private void UpdateEnergyDisplay(int currentEnergy, int maxEnergy)
+    private void UpdateEnergyDisplay(int current, int max)
     {
-        if (energyBlocks == null || energyBlocks.Length != maxEnergy)
-        {
-            // Recreate blocks if max energy changed
-            ClearEnergyBlocks();
-            CreateEnergyBlocks();
-        }
-
-        // Update each block's color based on current energy
         for (int i = 0; i < energyBlocks.Length; i++)
         {
-            if (energyBlocks[i] != null)
-            {
-                energyBlocks[i].color = i < currentEnergy ? fullColor : emptyColor;
-            }
+            bool shouldBeFull = i < current;
+            Image img = energyBlocks[i];
+            if (img == null) continue;
+
+            Color targetColor = shouldBeFull ? fullColor : emptyColor;
+
+            // 停掉前一個動畫（避免重疊）
+            if (animCoroutines[i] != null)
+                StopCoroutine(animCoroutines[i]);
+
+            // 啟動顏色漸變動畫
+            animCoroutines[i] = StartCoroutine(AnimateBlock(img, targetColor, shouldBeFull));
         }
     }
 
-    /// <summary>
-    /// Clear all energy blocks
-    /// </summary>
-    private void ClearEnergyBlocks()
+    private IEnumerator AnimateBlock(Image img, Color targetColor, bool gainedEnergy)
     {
-        if (energyBlocks != null)
+        // 顏色漸變
+        Color startColor = img.color;
+        float t = 0f;
+
+        // 放大縮小動畫
+        RectTransform rt = img.rectTransform;
+        Vector3 startScale = rt.localScale;
+        Vector3 targetScale = gainedEnergy ? Vector3.one * scaleMultiplier : Vector3.one * 0.9f;
+
+        // 第一段縮放（快速）
+        float pulseTime = 0f;
+        while (pulseTime < scalePulseDuration)
         {
-            foreach (Image block in energyBlocks)
-            {
-                if (block != null)
-                {
-                    Destroy(block.gameObject);
-                }
-            }
+            pulseTime += Time.deltaTime;
+            float p = pulseTime / scalePulseDuration;
+            rt.localScale = Vector3.Lerp(Vector3.one, targetScale, p);
+            yield return null;
         }
-        energyBlocks = null;
+
+        // 顏色漸變
+        while (t < colorLerpDuration)
+        {
+            t += Time.deltaTime;
+            float lerp = t / colorLerpDuration;
+            img.color = Color.Lerp(startColor, targetColor, lerp);
+            yield return null;
+        }
+
+        // 回復正常大小
+        pulseTime = 0f;
+        while (pulseTime < scalePulseDuration)
+        {
+            pulseTime += Time.deltaTime;
+            float p = pulseTime / scalePulseDuration;
+            rt.localScale = Vector3.Lerp(targetScale, Vector3.one, p);
+            yield return null;
+        }
+
+        img.color = targetColor;
+        rt.localScale = Vector3.one;
     }
 }
