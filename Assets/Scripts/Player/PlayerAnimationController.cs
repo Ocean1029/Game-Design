@@ -26,6 +26,12 @@ public class PlayerAnimationController : MonoBehaviour
         {
             Debug.LogWarning("PlayerAnimationController: SpriteRenderer not found on player object!");
         }
+
+        // Check if animator has a valid controller
+        if (animator != null && animator.runtimeAnimatorController == null)
+        {
+            Debug.LogWarning("PlayerAnimationController: Animator found but no AnimatorController assigned. Animation features will be disabled.");
+        }
     }
 
     /// <summary>
@@ -113,11 +119,34 @@ public class PlayerAnimationController : MonoBehaviour
     /// </summary>
     private bool HasParameter(string paramName)
     {
-        foreach (AnimatorControllerParameter param in animator.parameters)
+        // Check if animator exists and has a valid controller
+        if (animator == null || animator.runtimeAnimatorController == null)
         {
-            if (param.name == paramName) return true;
+            return false;
         }
+
+        try
+        {
+            foreach (AnimatorControllerParameter param in animator.parameters)
+            {
+                if (param.name == paramName) return true;
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"PlayerAnimationController: Error accessing animator parameters: {e.Message}");
+            return false;
+        }
+        
         return false;
+    }
+
+    /// <summary>
+    /// Check if the animation system is properly configured and ready to use
+    /// </summary>
+    public bool IsAnimationSystemReady()
+    {
+        return animator != null && animator.runtimeAnimatorController != null;
     }
 
     /// <summary>

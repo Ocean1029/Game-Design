@@ -122,7 +122,10 @@ public class PlayerController : MonoBehaviour, IInteractor
             }
             
             movement.StartJump();
-            animationController.TriggerJump();
+            if (animationController.IsAnimationSystemReady())
+            {
+                animationController.TriggerJump();
+            }
             stateMachine.ChangeState(PlayerState.Jumping);
         }
         
@@ -158,7 +161,10 @@ public class PlayerController : MonoBehaviour, IInteractor
             if (interactionHandler.TryInteract(this))
             {
                 Debug.Log("Interaction successful!");
-                animationController.TriggerInteract();
+                if (animationController.IsAnimationSystemReady())
+                {
+                    animationController.TriggerInteract();
+                }
             }
             else
             {
@@ -199,6 +205,12 @@ public class PlayerController : MonoBehaviour, IInteractor
     /// </summary>
     private void UpdateAnimations()
     {
+        // Only update animations if the animation system is properly configured
+        if (!animationController.IsAnimationSystemReady())
+        {
+            return;
+        }
+
         Vector2 velocity = movement.GetVelocity();
         animationController.SetSpeed(Mathf.Abs(velocity.x));
         animationController.SetGrounded(movement.IsGrounded());
