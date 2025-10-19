@@ -206,7 +206,7 @@ public class chair : MonoBehaviour, IInteractable
         GameManager gameManager = GameManager.GetInstance();
         if (gameManager == null) return;
 
-        GameManager.SpawnPointData currentSpawn = gameManager.GetCurrentSpawnPoint();
+        SpawnPointData currentSpawn = gameManager.GetCurrentSpawnPoint();
         bool isCurrentSpawn = currentSpawn != null && currentSpawn.spawnPointId == chairId;
         
         activeSpawnVisual.SetActive(isCurrentSpawn);
@@ -249,7 +249,7 @@ public class chair : MonoBehaviour, IInteractable
         GameManager gameManager = GameManager.GetInstance();
         if (gameManager == null) return false;
 
-        GameManager.SpawnPointData currentSpawn = gameManager.GetCurrentSpawnPoint();
+        SpawnPointData currentSpawn = gameManager.GetCurrentSpawnPoint();
         return currentSpawn != null && currentSpawn.spawnPointId == chairId;
     }
 }

@@ -149,8 +149,8 @@ public class FastTravelUI : MonoBehaviour
         }
 
         // Get all discovered spawn points (chairs)
-        List<GameManager.SpawnPointData> chairs = gameManager.GetDiscoveredSpawnPoints();
-        GameManager.SpawnPointData currentSpawn = gameManager.GetCurrentSpawnPoint();
+        List<SpawnPointData> chairs = gameManager.GetDiscoveredSpawnPoints();
+        SpawnPointData currentSpawn = gameManager.GetCurrentSpawnPoint();
 
         if (chairs.Count == 0)
         {
@@ -170,7 +170,7 @@ public class FastTravelUI : MonoBehaviour
         }
 
         // Create buttons for each discovered chair
-        foreach (GameManager.SpawnPointData chair in chairs)
+        foreach (SpawnPointData chair in chairs)
         {
             CreateChairButton(chair, chair.spawnPointId == currentSpawn?.spawnPointId);
         }
@@ -179,7 +179,7 @@ public class FastTravelUI : MonoBehaviour
     /// <summary>
     /// Create a button for a chair
     /// </summary>
-    private void CreateChairButton(GameManager.SpawnPointData chair, bool isCurrent)
+    private void CreateChairButton(SpawnPointData chair, bool isCurrent)
     {
         if (chairButtonPrefab == null || buttonContainer == null)
         {
