@@ -1,6 +1,25 @@
 # Scripts Folder Structure
 
-This document explains the organization of scripts in this project.
+這份文件說明專案中的腳本組織結構。
+
+> 📖 **完整架構文件**: 請參閱 [`GAME_ARCHITECTURE.md`](./GAME_ARCHITECTURE.md) 了解詳細的系統設計、資料流向和設計模式。
+
+## 📚 完整文件索引
+
+👉 **[查看完整文件索引](./DOCUMENTATION_INDEX.md)** - 所有文件的導覽和查找指南
+
+## 快速導覽
+
+| 文件 | 用途 | 適合對象 |
+|------|------|---------|
+| 📖 [DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md) | 文件導覽索引 | 所有人 ⭐ 從這裡開始 |
+| 🏗️ [GAME_ARCHITECTURE.md](./GAME_ARCHITECTURE.md) | 完整系統架構 | 深入了解設計 |
+| 🗺️ [SYSTEM_DIAGRAMS.md](./SYSTEM_DIAGRAMS.md) | 視覺化架構圖 | 視覺學習者 |
+| ⚡ [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) | API 快速參考 | 日常開發 ⭐ 常用 |
+| 🪑 [SPAWN_POINT_SYSTEM_README.md](./Manager/SPAWN_POINT_SYSTEM_README.md) | Spawn Point 系統 | 重生系統開發 |
+| 🔄 [REFACTORING_GUIDE.md](./Manager/REFACTORING_GUIDE.md) | 重構指南 | 了解歷史變更 |
+
+---
 
 ## Folder Structure
 
