@@ -5,7 +5,7 @@ public class JumpUITester : MonoBehaviour
     private JumpUI ui;
     private int jumpsLeft = 3;
 
-    void Start() => ui = FindObjectOfType<JumpUI>();
+    void Start() => ui = FindFirstObjectByType<JumpUI>();
 
     void Update()
     {

@@ -167,22 +167,41 @@ public class chair : MonoBehaviour, IInteractable
 
     /// <summary>
     /// Save progress by registering this chair as a spawn point
+    /// Uses NewGameManager and SpawnPointSystem
     /// </summary>
     private void SaveProgress()
     {
+        Vector3 spawnPosition = sitpoint != null ? sitpoint.position : transform.position;
+        string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        
+        // Use new system (GameManager + SpawnPointSystem)
         GameManager gameManager = GameManager.GetInstance();
         if (gameManager == null)
         {
             Debug.LogWarning("Chair: GameManager not found! Cannot save progress.");
             return;
         }
-
-        // Register this chair as a spawn point
-        Vector3 spawnPosition = sitpoint != null ? sitpoint.position : transform.position;
-        string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         
-        gameManager.RegisterSpawnPoint(chairId, chairName, locationDescription, spawnPosition, currentScene);
-        gameManager.SetCurrentSpawnPoint(chairId, spawnPosition, currentScene);
+        // Create spawn point data
+        SpawnPointData spawnData = new SpawnPointData(
+            chairId,
+            chairName,
+            locationDescription,
+            spawnPosition,
+            currentScene
+        )
+        {
+            isOneTimeUse = false,
+            isTransportable = true,
+            restoresEnergy = true,
+            energyRestoreAmount = 0,
+            activationSound = sitSound,
+            activeVisual = activeSpawnVisual
+        };
+        
+        // Register and activate spawn point
+        gameManager.GetSpawnPointSystem()?.AddSpawnPoint(spawnData);
+        gameManager.ActivateSpawnPoint(chairId);
         
         // Play sit sound
         if (sitSound != null)
@@ -198,6 +217,7 @@ public class chair : MonoBehaviour, IInteractable
 
     /// <summary>
     /// Update the visual indicator for spawn point status
+    /// Uses NewGameManager
     /// </summary>
     private void UpdateSpawnPointStatus()
     {
@@ -206,7 +226,7 @@ public class chair : MonoBehaviour, IInteractable
         GameManager gameManager = GameManager.GetInstance();
         if (gameManager == null) return;
 
-        SpawnPointData currentSpawn = gameManager.GetCurrentSpawnPoint();
+        SpawnPointData currentSpawn = gameManager.GetCurrentActiveSpawnPoint();
         bool isCurrentSpawn = currentSpawn != null && currentSpawn.spawnPointId == chairId;
         
         activeSpawnVisual.SetActive(isCurrentSpawn);
@@ -243,13 +263,14 @@ public class chair : MonoBehaviour, IInteractable
 
     /// <summary>
     /// Check if this chair is the current spawn point
+    /// Uses NewGameManager
     /// </summary>
     public bool IsCurrentSpawnPoint()
     {
         GameManager gameManager = GameManager.GetInstance();
         if (gameManager == null) return false;
 
-        SpawnPointData currentSpawn = gameManager.GetCurrentSpawnPoint();
+        SpawnPointData currentSpawn = gameManager.GetCurrentActiveSpawnPoint();
         return currentSpawn != null && currentSpawn.spawnPointId == chairId;
     }
 }

@@ -44,9 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90aba80cb0d43415683f8aae5e820cba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FastTravelUI
-  menuPanel: {fileID: 305525281341015648, guid: 0dd4282e327f6417db61c93f7fac9acb, type: 3}
-  buttonContainer: {fileID: 0}
-  chairButtonPrefab: {fileID: 8151131086223192049, guid: d9e63e5cfb99e4a93b0e5f9160529505, type: 3}
-  noChairsText: {fileID: 0}
+  fastTravelPanel: {fileID: 305525281341015648, guid: 0dd4282e327f6417db61c93f7fac9acb, type: 3}
+  spawnPointListContent: {fileID: 0}
+  spawnPointListItemPrefab: {fileID: 8151131086223192049, guid: d9e63e5cfb99e4a93b0e5f9160529505, type: 3}
+  closeButton: {fileID: 0}
   titleText: {fileID: 0}
-  pauseTimeWhenOpen: 1
+  showDebugInfo: 1
+  showOneTimeUseSpawnPoints: 0

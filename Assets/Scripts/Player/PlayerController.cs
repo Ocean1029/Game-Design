@@ -395,10 +395,11 @@ public class PlayerController : MonoBehaviour, IInteractor
 
     /// <summary>
     /// Respawn player at the last chair they sat on
+    /// Uses GameManager
     /// </summary>
     private void RespawnAtLastChair()
     {
-        Debug.Log("PlayerController: R key pressed - attempting to respawn at last chair");
+        Debug.Log("PlayerController: R key pressed - attempting to respawn");
 
         GameManager gameManager = GameManager.GetInstance();
         if (gameManager == null)
@@ -417,18 +418,25 @@ public class PlayerController : MonoBehaviour, IInteractor
     {
         Debug.Log("PlayerController: M key pressed - attempting to toggle fast travel menu");
 
+
+        // Fallback to original FastTravelUI
         FastTravelUI fastTravelUI = FindFirstObjectByType<FastTravelUI>();
         
         if (fastTravelUI != null)
         {
             Debug.Log("PlayerController: FastTravelUI found, toggling menu...");
-            fastTravelUI.ToggleMenu();
+            if (fastTravelUI.IsOpen())
+            {
+                fastTravelUI.CloseFastTravelUI();
+            }
+            else
+            {
+                fastTravelUI.OpenFastTravelUI();
+            }
+            return;
         }
-        else
-        {
-            Debug.LogError("PlayerController: FastTravelUI not found in scene!");
-            Debug.LogError("PlayerController: Please ensure FastTravelSystem GameObject exists with FastTravelUI component.");
-        }
+
+        Debug.LogWarning("PlayerController: No Fast Travel UI found in scene!");
     }
 
     // ==================== PUBLIC ACCESSORS ====================

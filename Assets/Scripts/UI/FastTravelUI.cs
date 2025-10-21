@@ -1,274 +1,604 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 using TMPro;
+using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
-/// Manages the fast travel menu UI for chair-based spawn points
-/// Allows players to teleport between discovered chairs and set current spawn point
+/// Fast Travel UI for teleporting to discovered spawn points
+/// Shows available teleportable spawn points and allows player to select destination
 /// </summary>
 public class FastTravelUI : MonoBehaviour
 {
     [Header("UI References")]
-    [Tooltip("The main menu panel GameObject")]
-    [SerializeField] private GameObject menuPanel;
+    [Tooltip("Main panel for fast travel UI")]
+    [SerializeField] private GameObject fastTravelPanel;
     
-    [Tooltip("Container where chair buttons will be spawned")]
-    [SerializeField] private Transform buttonContainer;
+    [Tooltip("Scroll view content for spawn point list")]
+    [SerializeField] private Transform spawnPointListContent;
     
-    [Tooltip("Prefab for chair buttons")]
-    [SerializeField] private GameObject chairButtonPrefab;
+    [Tooltip("Prefab for spawn point list item")]
+    [SerializeField] private GameObject spawnPointListItemPrefab;
     
-    [Tooltip("Text shown when no chairs are discovered")]
-    [SerializeField] private TextMeshProUGUI noChairsText;
+    [Tooltip("Close button")]
+    [SerializeField] private Button closeButton;
     
-    [Tooltip("Title text of the menu")]
+    [Tooltip("Title text")]
     [SerializeField] private TextMeshProUGUI titleText;
-    
+
     [Header("Settings")]
-    [Tooltip("Whether to pause game time when menu is open")]
-    [SerializeField] private bool pauseTimeWhenOpen = true;
-    
+    [Tooltip("Whether to show debug information")]
+    [SerializeField] private bool showDebugInfo = false;
+
+    [Tooltip("Whether to show one-time use spawn points")]
+    [SerializeField] private bool showOneTimeUseSpawnPoints = false;
+
     // State
-    private bool isMenuOpen = false;
-    private List<GameObject> spawnedButtons = new List<GameObject>();
+    private bool isOpen = false;
+    private List<SpawnPointData> availableSpawnPoints = new List<SpawnPointData>();
+    private List<GameObject> spawnPointListItems = new List<GameObject>();
+
+    // References
+    private GameManager gameManager;
+    private PlayerController playerController;
 
     void Start()
     {
-        // Hide menu at start
-        if (menuPanel != null)
+        // Get references
+        gameManager = GameManager.GetInstance();
+        playerController = FindFirstObjectByType<PlayerController>();
+
+        // Initialize UI
+        InitializeUI();
+
+        // Subscribe to events
+        SubscribeToEvents();
+
+        // Hide UI initially
+        SetUIVisibility(false);
+
+        if (showDebugInfo)
         {
-            menuPanel.SetActive(false);
+            Debug.Log("FastTravelUI: Initialized");
         }
-        
-        // Set title text only if it's empty
-        if (titleText != null && string.IsNullOrEmpty(titleText.text))
-        {
-            titleText.text = "Fast Travel - Discovered Chairs";
-        }
+    }
+
+    void OnDestroy()
+    {
+        // Unsubscribe from events
+        UnsubscribeFromEvents();
     }
 
     void Update()
     {
-        // Close menu with ESC key
-        if (isMenuOpen && Input.GetKeyDown(KeyCode.Escape))
+        // Input is now handled by PlayerController
+        // This prevents double input detection when M key is pressed
+    }
+
+    // ==================== Initialization ====================
+
+    /// <summary>
+    /// Initialize the UI components
+    /// </summary>
+    private void InitializeUI()
+    {
+        // Set up close button
+        if (closeButton != null)
         {
-            CloseMenu();
+            closeButton.onClick.AddListener(CloseFastTravelUI);
+        }
+
+        // Set title text
+        if (titleText != null)
+        {
+            titleText.text = "Fast Travel";
+        }
+
+        // Ensure panel is inactive initially
+        if (fastTravelPanel != null)
+        {
+            fastTravelPanel.SetActive(false);
         }
     }
 
     /// <summary>
-    /// Toggle the fast travel menu open/closed
+    /// Subscribe to relevant events
     /// </summary>
-    public void ToggleMenu()
+    private void SubscribeToEvents()
     {
-        if (isMenuOpen)
+        if (gameManager != null)
         {
-            CloseMenu();
+            SpawnPointSystem spawnSystem = gameManager.GetSpawnPointSystem();
+            if (spawnSystem != null)
+            {
+                spawnSystem.OnSpawnPointActivated += OnSpawnPointActivated;
+                spawnSystem.OnSpawnPointDeactivated += OnSpawnPointDeactivated;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Unsubscribe from events
+    /// </summary>
+    private void UnsubscribeFromEvents()
+    {
+        if (gameManager != null)
+        {
+            SpawnPointSystem spawnSystem = gameManager.GetSpawnPointSystem();
+            if (spawnSystem != null)
+            {
+                spawnSystem.OnSpawnPointActivated -= OnSpawnPointActivated;
+                spawnSystem.OnSpawnPointDeactivated -= OnSpawnPointDeactivated;
+            }
+        }
+    }
+
+    // ==================== Input Handling ====================
+    // Note: M key input is handled by PlayerController to prevent double input detection
+    // ESC key is still handled here for convenience
+
+    void LateUpdate()
+    {
+        // Check for escape key to close (only when open)
+        if (isOpen && Input.GetKeyDown(KeyCode.Escape))
+        {
+            CloseFastTravelUI();
+        }
+    }
+
+    // ==================== UI Management ====================
+
+    /// <summary>
+    /// Open the fast travel UI
+    /// </summary>
+    public void OpenFastTravelUI()
+    {
+        if (isOpen)
+        {
+            if (showDebugInfo)
+            {
+                Debug.Log("FastTravelUI: UI is already open");
+            }
+            return;
+        }
+
+        if (gameManager == null)
+        {
+            Debug.LogError("FastTravelUI: Cannot open - GameManager is null! Make sure GameManager exists in the scene.");
+            return;
+        }
+
+        if (fastTravelPanel == null)
+        {
+            Debug.LogError("FastTravelUI: Cannot open - fastTravelPanel is not assigned! Please assign it in the Inspector.");
+            return;
+        }
+
+        // Pause the game
+        Time.timeScale = 0f;
+
+        // Update available spawn points
+        UpdateAvailableSpawnPoints();
+
+        // Show UI
+        SetUIVisibility(true);
+        isOpen = true;
+
+        // Update spawn point list
+        UpdateSpawnPointList();
+
+        if (showDebugInfo)
+        {
+            Debug.Log($"FastTravelUI: Opened with {availableSpawnPoints.Count} available spawn points");
+        }
+
+        // Show warning if no spawn points available
+        if (availableSpawnPoints.Count == 0)
+        {
+            Debug.LogWarning("FastTravelUI: No teleportable spawn points available. Players need to activate save points first.");
+        }
+    }
+
+    /// <summary>
+    /// Close the fast travel UI
+    /// </summary>
+    public void CloseFastTravelUI()
+    {
+        if (!isOpen)
+        {
+            return;
+        }
+
+        // Resume the game
+        Time.timeScale = 1f;
+
+        // Hide UI
+        SetUIVisibility(false);
+        isOpen = false;
+
+        if (showDebugInfo)
+        {
+            Debug.Log("FastTravelUI: Closed");
+        }
+    }
+
+    /// <summary>
+    /// Set the visibility of the UI
+    /// </summary>
+    private void SetUIVisibility(bool visible)
+    {
+        if (fastTravelPanel != null)
+        {
+            fastTravelPanel.SetActive(visible);
+        }
+    }
+
+    // ==================== Spawn Point Management ====================
+
+    /// <summary>
+    /// Update the list of available spawn points
+    /// </summary>
+    private void UpdateAvailableSpawnPoints()
+    {
+        if (gameManager == null)
+        {
+            Debug.LogWarning("FastTravelUI: GameManager is null, cannot update spawn points");
+            availableSpawnPoints.Clear();
+            return;
+        }
+
+        // Get all teleportable spawn points
+        List<SpawnPointData> spawnPoints = gameManager.GetTransportableSpawnPoints();
+        
+        if (spawnPoints == null)
+        {
+            Debug.LogWarning("FastTravelUI: GetTransportableSpawnPoints returned null");
+            availableSpawnPoints.Clear();
+            return;
+        }
+
+        availableSpawnPoints = spawnPoints;
+
+        // Filter out one-time use spawn points if not showing them
+        if (!showOneTimeUseSpawnPoints)
+        {
+            availableSpawnPoints = availableSpawnPoints.Where(sp => !sp.isOneTimeUse).ToList();
+        }
+
+        // Sort by scene name, then by display name
+        availableSpawnPoints = availableSpawnPoints.OrderBy(sp => sp.sceneName).ThenBy(sp => sp.displayName).ToList();
+
+        if (showDebugInfo)
+        {
+            Debug.Log($"FastTravelUI: Updated available spawn points, found {availableSpawnPoints.Count} teleportable spawn points");
+        }
+    }
+
+    /// <summary>
+    /// Update the spawn point list UI
+    /// </summary>
+    private void UpdateSpawnPointList()
+    {
+        // Clear existing list items
+        ClearSpawnPointList();
+
+        // Create new list items
+        foreach (SpawnPointData spawnPoint in availableSpawnPoints)
+        {
+            CreateSpawnPointListItem(spawnPoint);
+        }
+
+        if (showDebugInfo)
+        {
+            Debug.Log($"FastTravelUI: Updated spawn point list with {availableSpawnPoints.Count} items");
+        }
+    }
+
+    /// <summary>
+    /// Clear the spawn point list
+    /// </summary>
+    private void ClearSpawnPointList()
+    {
+        foreach (GameObject item in spawnPointListItems)
+        {
+            if (item != null)
+            {
+                Destroy(item);
+            }
+        }
+        spawnPointListItems.Clear();
+    }
+
+    /// <summary>
+    /// Create a spawn point list item
+    /// </summary>
+    private void CreateSpawnPointListItem(SpawnPointData spawnPoint)
+    {
+        if (spawnPointListItemPrefab == null)
+        {
+            Debug.LogError("FastTravelUI: spawnPointListItemPrefab is not assigned! Please assign the prefab in the Inspector.");
+            return;
+        }
+
+        if (spawnPointListContent == null)
+        {
+            Debug.LogError("FastTravelUI: spawnPointListContent is not assigned! Please assign the content transform in the Inspector.");
+            return;
+        }
+
+        if (spawnPoint == null)
+        {
+            Debug.LogWarning("FastTravelUI: Attempted to create list item for null spawn point");
+            return;
+        }
+
+        // Create the list item
+        GameObject listItem = Instantiate(spawnPointListItemPrefab, spawnPointListContent);
+        if (listItem == null)
+        {
+            Debug.LogError("FastTravelUI: Failed to instantiate spawn point list item");
+            return;
+        }
+
+        spawnPointListItems.Add(listItem);
+
+        // Set up the list item
+        SetupSpawnPointListItem(listItem, spawnPoint);
+
+        if (showDebugInfo)
+        {
+            Debug.Log($"FastTravelUI: Created list item for spawn point '{spawnPoint.spawnPointId}'");
+        }
+    }
+
+    /// <summary>
+    /// Set up a spawn point list item
+    /// </summary>
+    private void SetupSpawnPointListItem(GameObject listItem, SpawnPointData spawnPoint)
+    {
+        if (showDebugInfo)
+        {
+            Debug.Log($"FastTravelUI: Setting up list item for '{spawnPoint.displayName}' (ID: {spawnPoint.spawnPointId})");
+        }
+
+        // Find UI components - try multiple methods
+        Button teleportButton = listItem.GetComponentInChildren<Button>();
+        
+        // Try to find text components by name (direct children first, then recursive)
+        TextMeshProUGUI nameText = FindTextComponent(listItem.transform, "NameText");
+        TextMeshProUGUI sceneText = FindTextComponent(listItem.transform, "SceneText");
+        TextMeshProUGUI descriptionText = FindTextComponent(listItem.transform, "DescriptionText");
+        
+        // Try to find active indicator
+        Image activeIndicator = FindImageComponent(listItem.transform, "ActiveIndicator");
+
+        // Set text content - prioritize button text for simple prefabs
+        TextMeshProUGUI buttonText = teleportButton?.GetComponentInChildren<TextMeshProUGUI>();
+        
+        if (nameText != null)
+        {
+            nameText.text = spawnPoint.displayName;
+            if (showDebugInfo)
+            {
+                Debug.Log($"FastTravelUI: Set name text to '{spawnPoint.displayName}'");
+            }
+        }
+        else if (buttonText != null)
+        {
+            // Fallback: use button text for simple prefabs
+            buttonText.text = spawnPoint.displayName;
+            if (showDebugInfo)
+            {
+                Debug.Log($"FastTravelUI: Used button text for '{spawnPoint.displayName}' (simple prefab)");
+            }
         }
         else
         {
-            OpenMenu();
+            Debug.LogWarning($"FastTravelUI: No text component found for '{spawnPoint.displayName}'");
+        }
+
+        // Optional text components (only show warnings if debug is enabled)
+        if (sceneText != null)
+        {
+            sceneText.text = spawnPoint.sceneName;
+        }
+        else if (showDebugInfo)
+        {
+            Debug.LogWarning("FastTravelUI: SceneText not found in list item prefab");
+        }
+
+        if (descriptionText != null)
+        {
+            descriptionText.text = spawnPoint.locationDescription;
+        }
+        else if (showDebugInfo)
+        {
+            Debug.LogWarning("FastTravelUI: DescriptionText not found in list item prefab");
+        }
+
+        // Optional active indicator (only show warnings if debug is enabled)
+        if (activeIndicator != null)
+        {
+            activeIndicator.gameObject.SetActive(spawnPoint.isActive);
+        }
+        else if (showDebugInfo)
+        {
+            Debug.LogWarning("FastTravelUI: ActiveIndicator not found in list item prefab");
+        }
+
+        // Set up teleport button
+        if (teleportButton != null)
+        {
+            teleportButton.onClick.RemoveAllListeners();
+            teleportButton.onClick.AddListener(() => TeleportToSpawnPoint(spawnPoint.spawnPointId));
+            
+            // Disable button if spawn point is in current scene and player is already there
+            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            if (spawnPoint.sceneName == currentScene && playerController != null)
+            {
+                float distance = Vector3.Distance(playerController.transform.position, spawnPoint.position);
+                if (distance < 1f)
+                {
+                    teleportButton.interactable = false;
+                }
+            }
+            
+            if (showDebugInfo)
+            {
+                Debug.Log($"FastTravelUI: Button configured for '{spawnPoint.displayName}'");
+            }
+        }
+        else
+        {
+            Debug.LogError($"FastTravelUI: Button not found in list item prefab for '{spawnPoint.displayName}'!");
         }
     }
 
     /// <summary>
-    /// Open the fast travel menu
+    /// Find a TextMeshProUGUI component by GameObject name (recursive search)
     /// </summary>
-    public void OpenMenu()
+    private TextMeshProUGUI FindTextComponent(Transform parent, string name)
     {
-        if (menuPanel == null)
+        // Try direct child first
+        Transform child = parent.Find(name);
+        if (child != null)
         {
-            Debug.LogError("FastTravelUI: Menu panel not assigned! Cannot open menu.");
-            Debug.LogError("FastTravelUI: Please assign the FastTravelMenu GameObject in the Inspector.");
-            // Make sure time is not paused if we can't open the menu
-            Time.timeScale = 1f;
-            return;
+            TextMeshProUGUI text = child.GetComponent<TextMeshProUGUI>();
+            if (text != null) return text;
         }
 
-        Debug.Log("FastTravelUI: Opening fast travel menu...");
-        
-        isMenuOpen = true;
-        menuPanel.SetActive(true);
-        
-        // Pause time if enabled
-        if (pauseTimeWhenOpen)
+        // Try recursive search in all children
+        TextMeshProUGUI[] allTexts = parent.GetComponentsInChildren<TextMeshProUGUI>();
+        foreach (var text in allTexts)
         {
-            Time.timeScale = 0f;
-            Debug.Log("FastTravelUI: Time paused");
+            if (text.gameObject.name == name)
+            {
+                return text;
+            }
         }
 
-        // Refresh the chair list
-        RefreshChairList();
+        return null;
     }
 
     /// <summary>
-    /// Close the fast travel menu
+    /// Find an Image component by GameObject name (recursive search)
     /// </summary>
-    public void CloseMenu()
+    private Image FindImageComponent(Transform parent, string name)
     {
-        Debug.Log("FastTravelUI: Closing fast travel menu...");
-
-        if (menuPanel != null)
+        // Try direct child first
+        Transform child = parent.Find(name);
+        if (child != null)
         {
-            menuPanel.SetActive(false);
+            Image image = child.GetComponent<Image>();
+            if (image != null) return image;
         }
 
-        isMenuOpen = false;
-
-        // Resume time if it was paused
-        if (pauseTimeWhenOpen)
+        // Try recursive search in all children
+        Image[] allImages = parent.GetComponentsInChildren<Image>();
+        foreach (var image in allImages)
         {
-            Time.timeScale = 1f;
-            Debug.Log("FastTravelUI: Time resumed");
+            if (image.gameObject.name == name)
+            {
+                return image;
+            }
         }
+
+        return null;
     }
 
-    /// <summary>
-    /// Check if the menu is currently open
-    /// </summary>
-    public bool IsMenuOpen()
-    {
-        return isMenuOpen;
-    }
+    // ==================== Teleportation ====================
 
     /// <summary>
-    /// Refresh the list of discovered chairs
+    /// Teleport to a specific spawn point
     /// </summary>
-    private void RefreshChairList()
+    private void TeleportToSpawnPoint(string spawnPointId)
     {
-        // Clear existing buttons
-        ClearButtonList();
-
-        GameManager gameManager = GameManager.GetInstance();
-        
         if (gameManager == null)
         {
-            Debug.LogError("FastTravelUI: GameManager not found!");
+            Debug.LogWarning("FastTravelUI: GameManager not found, cannot teleport");
             return;
         }
 
-        // Get all discovered spawn points (chairs)
-        List<SpawnPointData> chairs = gameManager.GetDiscoveredSpawnPoints();
-        SpawnPointData currentSpawn = gameManager.GetCurrentSpawnPoint();
-
-        if (chairs.Count == 0)
-        {
-            // Show "no chairs" message
-            if (noChairsText != null)
-            {
-                noChairsText.gameObject.SetActive(true);
-                noChairsText.text = "No chairs discovered yet.\nSit on a chair to save progress!";
-            }
-            return;
-        }
-
-        // Hide "no chairs" message
-        if (noChairsText != null)
-        {
-            noChairsText.gameObject.SetActive(false);
-        }
-
-        // Create buttons for each discovered chair
-        foreach (SpawnPointData chair in chairs)
-        {
-            CreateChairButton(chair, chair.spawnPointId == currentSpawn?.spawnPointId);
-        }
-    }
-
-    /// <summary>
-    /// Create a button for a chair
-    /// </summary>
-    private void CreateChairButton(SpawnPointData chair, bool isCurrent)
-    {
-        if (chairButtonPrefab == null || buttonContainer == null)
-        {
-            Debug.LogError("FastTravelUI: Button prefab or container not assigned!");
-            return;
-        }
-
-        // Instantiate button
-        GameObject buttonObj = Instantiate(chairButtonPrefab, buttonContainer);
-        spawnedButtons.Add(buttonObj);
-
-        // Get button component
-        Button button = buttonObj.GetComponent<Button>();
-        if (button == null)
-        {
-            Debug.LogError("FastTravelUI: Chair button prefab must have a Button component!");
-            return;
-        }
-
-        // Set button text
-        TextMeshProUGUI buttonText = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
-        if (buttonText != null)
-        {
-            string buttonLabel = chair.displayName;
-            if (isCurrent)
-            {
-                buttonLabel += " (Current)";
-            }
-            buttonText.text = buttonLabel;
-        }
-
-        // Set button interactability
-        button.interactable = !isCurrent; // Disable current chair button
-
-        // Add click listener
-        button.onClick.AddListener(() => OnChairButtonClicked(chair.spawnPointId));
-
-        Debug.Log($"FastTravelUI: Created button for chair '{chair.displayName}' (Current: {isCurrent})");
-    }
-
-    /// <summary>
-    /// Handle chair button click
-    /// </summary>
-    private void OnChairButtonClicked(string chairId)
-    {
-        Debug.Log($"FastTravelUI: Chair button clicked - {chairId}");
-
-        GameManager gameManager = GameManager.GetInstance();
-        if (gameManager == null)
-        {
-            Debug.LogError("FastTravelUI: GameManager not found!");
-            return;
-        }
-
-        // Set this chair as the current spawn point
-        gameManager.SetCurrentSpawnPoint(chairId);
+        // Attempt to teleport
+        bool success = gameManager.TeleportToSpawnPoint(spawnPointId);
         
-        // Teleport to the chair
-        gameManager.TeleportToSpawnPoint(chairId);
-        
-        // Close the menu
-        CloseMenu();
-        
-        Debug.Log($"FastTravelUI: Set '{chairId}' as current spawn point and teleported");
-    }
-
-    /// <summary>
-    /// Clear all spawned buttons
-    /// </summary>
-    private void ClearButtonList()
-    {
-        foreach (GameObject button in spawnedButtons)
+        if (success)
         {
-            if (button != null)
+            // Close the UI
+            CloseFastTravelUI();
+            
+            if (showDebugInfo)
             {
-                Destroy(button);
+                Debug.Log($"FastTravelUI: Teleporting to spawn point '{spawnPointId}'");
             }
         }
-        spawnedButtons.Clear();
+        else
+        {
+            Debug.LogWarning($"FastTravelUI: Failed to teleport to spawn point '{spawnPointId}'");
+        }
+    }
+
+    // ==================== Event Handlers ====================
+
+    /// <summary>
+    /// Called when a spawn point is activated
+    /// </summary>
+    private void OnSpawnPointActivated(SpawnPointData spawnPoint)
+    {
+        if (isOpen)
+        {
+            UpdateSpawnPointList();
+        }
     }
 
     /// <summary>
-    /// Public method to refresh the chair list (useful for external calls)
+    /// Called when a spawn point is deactivated
     /// </summary>
-    public void RefreshMenu()
+    private void OnSpawnPointDeactivated(SpawnPointData spawnPoint)
     {
-        if (isMenuOpen)
+        if (isOpen)
         {
-            RefreshChairList();
+            UpdateSpawnPointList();
         }
+    }
+
+    // ==================== Public Methods ====================
+
+    /// <summary>
+    /// Check if the fast travel UI is open
+    /// </summary>
+    public bool IsOpen()
+    {
+        return isOpen;
+    }
+
+    /// <summary>
+    /// Get the number of available spawn points
+    /// </summary>
+    public int GetAvailableSpawnPointCount()
+    {
+        return availableSpawnPoints.Count;
+    }
+
+    /// <summary>
+    /// Refresh the spawn point list
+    /// </summary>
+    public void RefreshSpawnPointList()
+    {
+        if (isOpen)
+        {
+            UpdateAvailableSpawnPoints();
+            UpdateSpawnPointList();
+        }
+    }
+
+    // ==================== Debug Methods ====================
+
+    /// <summary>
+    /// Get debug information about the fast travel UI
+    /// </summary>
+    public string GetDebugInfo()
+    {
+        return $"FastTravelUI: Open={isOpen}, AvailableSpawnPoints={availableSpawnPoints.Count}, ShowOneTimeUse={showOneTimeUseSpawnPoints}";
     }
 }

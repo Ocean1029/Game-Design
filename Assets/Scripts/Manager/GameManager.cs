@@ -1,32 +1,53 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 /// <summary>
-/// Core game coordinator - manages and coordinates all sub-managers
-/// Provides unified API for game systems
-/// Singleton pattern ensures only one instance exists
+/// Game Manager for Metroidvania-style game
+/// Integrates Spawn Point System and Transition Point System
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-    [Header("Player Reference")]
-    [SerializeField] private GameObject player;
+    [Header("Database References")]
+    [Tooltip("Spawn Point Database ScriptableObject")]
+    [SerializeField] private SpawnPointDatabase spawnPointDatabase;
     
-    [Header("UI Reference")]
-    [SerializeField] private Canvas gameCanvas;
+    [Tooltip("Transition Point Database ScriptableObject")]
+    [SerializeField] private TransitionPointDatabase transitionPointDatabase;
+
+    [Header("Player Reference")]
+    [Tooltip("Player GameObject reference")]
+    [SerializeField] private GameObject player;
+
+    [Header("System References")]
+    [Tooltip("Spawn Point System component")]
+    [SerializeField] private SpawnPointSystem spawnPointSystem;
+    
+    [Tooltip("Transition Point System component")]
+    [SerializeField] private TransitionPointSystem transitionPointSystem;
+
+    [Header("Settings")]
+    [Tooltip("Whether to show debug information")]
+    [SerializeField] private bool showDebugInfo = false;
 
     // Singleton instance
     private static GameManager instance;
 
-    // Sub-managers
-    private SpawnPointManager spawnPointManager;
-    private SceneTransitionManager sceneTransitionManager;
-    private PersistenceManager persistenceManager;
+    // Events
+    public delegate void GameInitializedHandler();
+    public event GameInitializedHandler OnGameInitialized;
+
+    public delegate void SceneTransitionStartedHandler(string fromScene, string toScene);
+    public event SceneTransitionStartedHandler OnSceneTransitionStarted;
+
+    public delegate void SceneTransitionCompletedHandler(string sceneName);
+    public event SceneTransitionCompletedHandler OnSceneTransitionCompleted;
 
     // ==================== Singleton & Initialization ====================
 
     void Awake()
     {
-        // Singleton pattern - ensure only one GameManager exists
+        // Singleton pattern
         if (instance != null && instance != this)
         {
             Destroy(gameObject);
@@ -36,57 +57,140 @@ public class GameManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
 
-        InitializeManagers();
+        // Initialize systems in Awake to ensure they're ready before any Start() calls
+        InitializeSystems();
     }
 
-    /// <summary>
-    /// Initialize all sub-managers
-    /// </summary>
-    private void InitializeManagers()
+    void Start()
     {
-        // Create or get sub-managers
-        spawnPointManager = GetOrCreateManager<SpawnPointManager>();
-        sceneTransitionManager = GetOrCreateManager<SceneTransitionManager>();
-        persistenceManager = GetOrCreateManager<PersistenceManager>();
+        // Subscribe to system events
+        SubscribeToSystemEvents();
 
-        // Set references
-        sceneTransitionManager.SetPlayer(player);
-        persistenceManager.SetPlayer(player);
-        persistenceManager.SetCanvas(gameCanvas);
+        // Notify initialization complete
+        OnGameInitialized?.Invoke();
 
-        // Initialize persistence
-        persistenceManager.Initialize();
-
-        // Subscribe to scene transition events
-        sceneTransitionManager.OnSceneTransitionComplete += OnSceneTransitioned;
-
-        Debug.Log("GameManager: All managers initialized");
-    }
-
-    /// <summary>
-    /// Get or create a manager component
-    /// </summary>
-    private T GetOrCreateManager<T>() where T : MonoBehaviour
-    {
-        T manager = GetComponent<T>();
-        if (manager == null)
+        if (showDebugInfo)
         {
-            manager = gameObject.AddComponent<T>();
-            Debug.Log($"GameManager: Created {typeof(T).Name}");
+            Debug.Log("GameManager: Game initialized successfully");
         }
-        return manager;
+    }
+
+    void OnDestroy()
+    {
+        // Unsubscribe from events
+        UnsubscribeFromSystemEvents();
     }
 
     /// <summary>
-    /// Called when scene transition is complete
+    /// Initialize all game systems
     /// </summary>
-    private void OnSceneTransitioned(string sceneName)
+    private void InitializeSystems()
     {
-        Debug.Log($"GameManager: Scene transition to '{sceneName}' complete");
-        
-        // Move player to appropriate position
-        sceneTransitionManager.MovePlayerToScenePosition(sceneName);
+        // Initialize Spawn Point System
+        if (spawnPointSystem == null)
+        {
+            spawnPointSystem = gameObject.AddComponent<SpawnPointSystem>();
+        }
+
+        if (spawnPointDatabase != null)
+        {
+            spawnPointSystem.SetSpawnPointDatabase(spawnPointDatabase);
+            if (showDebugInfo)
+            {
+                Debug.Log("GameManager: Spawn Point Database assigned");
+            }
+        }
+        else
+        {
+            if (showDebugInfo)
+            {
+                Debug.LogWarning("GameManager: No Spawn Point Database assigned. System will use temporary storage.");
+            }
+        }
+
+        // Initialize Transition Point System
+        if (transitionPointSystem == null)
+        {
+            transitionPointSystem = gameObject.AddComponent<TransitionPointSystem>();
+        }
+
+        if (transitionPointDatabase != null)
+        {
+            transitionPointSystem.SetTransitionPointDatabase(transitionPointDatabase);
+            if (showDebugInfo)
+            {
+                Debug.Log("GameManager: Transition Point Database assigned");
+            }
+        }
+        else
+        {
+            if (showDebugInfo)
+            {
+                Debug.LogWarning("GameManager: No Transition Point Database assigned. System will use temporary storage.");
+            }
+        }
+
+        // Set player reference if not assigned
+        if (player == null)
+        {
+            player = FindFirstObjectByType<PlayerController>()?.gameObject;
+        }
+
+        if (showDebugInfo)
+        {
+            Debug.Log("GameManager: Systems initialized");
+        }
     }
+
+    /// <summary>
+    /// Subscribe to system events
+    /// </summary>
+    private void SubscribeToSystemEvents()
+    {
+        // Subscribe to spawn point system events
+        if (spawnPointSystem != null)
+        {
+            spawnPointSystem.OnSpawnPointActivated += OnSpawnPointActivated;
+            spawnPointSystem.OnSpawnPointDeactivated += OnSpawnPointDeactivated;
+        }
+
+        // Subscribe to transition point system events
+        if (transitionPointSystem != null)
+        {
+            transitionPointSystem.OnTransitionStarted += OnTransitionStarted;
+            transitionPointSystem.OnTransitionCompleted += OnTransitionCompleted;
+            transitionPointSystem.OnTransitionFailed += OnTransitionFailed;
+        }
+
+        // Subscribe to scene loaded event
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    /// <summary>
+    /// Unsubscribe from system events
+    /// </summary>
+    private void UnsubscribeFromSystemEvents()
+    {
+        // Unsubscribe from spawn point system events
+        if (spawnPointSystem != null)
+        {
+            spawnPointSystem.OnSpawnPointActivated -= OnSpawnPointActivated;
+            spawnPointSystem.OnSpawnPointDeactivated -= OnSpawnPointDeactivated;
+        }
+
+        // Unsubscribe from transition point system events
+        if (transitionPointSystem != null)
+        {
+            transitionPointSystem.OnTransitionStarted -= OnTransitionStarted;
+            transitionPointSystem.OnTransitionCompleted -= OnTransitionCompleted;
+            transitionPointSystem.OnTransitionFailed -= OnTransitionFailed;
+        }
+
+        // Unsubscribe from scene loaded event
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // ==================== Singleton Access ====================
 
     /// <summary>
     /// Get the singleton instance
@@ -96,207 +200,324 @@ public class GameManager : MonoBehaviour
         return instance;
     }
 
-    // ==================== Scene Management API ====================
+    // ==================== Spawn Point System API ====================
 
     /// <summary>
-    /// Load a new scene by name
+    /// Activate a spawn point
+    /// </summary>
+    public void ActivateSpawnPoint(string spawnPointId)
+    {
+        if (spawnPointSystem != null)
+        {
+            spawnPointSystem.ActivateSpawnPoint(spawnPointId);
+        }
+    }
+
+    /// <summary>
+    /// Get the currently active spawn point
+    /// </summary>
+    public SpawnPointData GetCurrentActiveSpawnPoint()
+    {
+        return spawnPointSystem?.GetCurrentActiveSpawnPoint();
+    }
+
+    /// <summary>
+    /// Get spawn points that can be used for teleportation
+    /// </summary>
+    public List<SpawnPointData> GetTransportableSpawnPoints()
+    {
+        return spawnPointSystem?.GetTransportableSpawnPoints() ?? new List<SpawnPointData>();
+    }
+
+    /// <summary>
+    /// Teleport player to a specific spawn point
+    /// </summary>
+    public bool TeleportToSpawnPoint(string spawnPointId)
+    {
+        return spawnPointSystem?.TeleportToSpawnPoint(spawnPointId) ?? false;
+    }
+
+    /// <summary>
+    /// Respawn player at the last active spawn point
+    /// </summary>
+    public bool RespawnPlayer()
+    {
+        return spawnPointSystem?.RespawnPlayer() ?? false;
+    }
+
+    // ==================== Transition Point System API ====================
+
+    /// <summary>
+    /// Transition through a transition point
+    /// </summary>
+    public bool TransitionThroughPoint(string transitionPointId)
+    {
+        return transitionPointSystem?.TransitionThroughPoint(transitionPointId) ?? false;
+    }
+
+    /// <summary>
+    /// Get transition points in the current scene
+    /// </summary>
+    public List<TransitionPointData> GetTransitionPointsInCurrentScene()
+    {
+        return transitionPointSystem?.GetTransitionPointsInCurrentScene() ?? new List<TransitionPointData>();
+    }
+
+    /// <summary>
+    /// Get transition points in a specific scene
+    /// </summary>
+    public List<TransitionPointData> GetTransitionPointsInScene(string sceneName)
+    {
+        return transitionPointSystem?.GetTransitionPointsInScene(sceneName) ?? new List<TransitionPointData>();
+    }
+
+    /// <summary>
+    /// Check if a transition is valid
+    /// </summary>
+    public bool IsTransitionValid(string transitionPointId)
+    {
+        return transitionPointSystem?.IsTransitionValid(transitionPointId) ?? false;
+    }
+
+    /// <summary>
+    /// Check if the system is currently transitioning
+    /// </summary>
+    public bool IsTransitioning()
+    {
+        return transitionPointSystem?.IsTransitioning() ?? false;
+    }
+
+    // ==================== Scene Management ====================
+
+    /// <summary>
+    /// Load a scene by name
     /// </summary>
     public void LoadScene(string sceneName)
     {
-        sceneTransitionManager.LoadScene(sceneName);
+        if (IsTransitioning())
+        {
+            Debug.LogWarning("GameManager: Cannot load scene while transitioning");
+            return;
+        }
+
+        OnSceneTransitionStarted?.Invoke(SceneManager.GetActiveScene().name, sceneName);
+        SceneManager.LoadScene(sceneName);
     }
 
     /// <summary>
-    /// Load a new scene by build index
+    /// Load a scene by build index
     /// </summary>
     public void LoadScene(int sceneIndex)
     {
-        sceneTransitionManager.LoadScene(sceneIndex);
-    }
-
-    // ==================== Spawn Point API ====================
-
-    /// <summary>
-    /// Register a new spawn point (chair)
-    /// </summary>
-    public void RegisterSpawnPoint(string spawnPointId, string displayName, string locationDescription, Vector3 position, string sceneName)
-    {
-        spawnPointManager.RegisterSpawnPoint(spawnPointId, displayName, locationDescription, position, sceneName);
-    }
-
-    /// <summary>
-    /// Set the current spawn point by ID
-    /// </summary>
-    public void SetCurrentSpawnPoint(string spawnPointId)
-    {
-        spawnPointManager.SetCurrentSpawnPoint(spawnPointId);
-    }
-
-    /// <summary>
-    /// Set the current spawn point by ID, position, and scene
-    /// </summary>
-    public void SetCurrentSpawnPoint(string spawnPointId, Vector3 position, string sceneName)
-    {
-        spawnPointManager.SetCurrentSpawnPoint(spawnPointId, position, sceneName);
-    }
-
-    /// <summary>
-    /// Teleport player to a specific spawn point (chair)
-    /// This is for fast travel - player actively chooses to teleport to a chair
-    /// </summary>
-    public void TeleportToSpawnPoint(string spawnPointId)
-    {
-        SpawnPointData spawnPoint = spawnPointManager.GetSpawnPointById(spawnPointId);
-        
-        if (spawnPoint == null)
+        if (IsTransitioning())
         {
-            Debug.LogWarning($"GameManager: Cannot teleport to '{spawnPointId}' - spawn point not found!");
+            Debug.LogWarning("GameManager: Cannot load scene while transitioning");
             return;
         }
 
-        // Set as current spawn point
-        spawnPointManager.SetCurrentSpawnPoint(spawnPointId);
+        OnSceneTransitionStarted?.Invoke(SceneManager.GetActiveScene().name, $"Scene_{sceneIndex}");
+        SceneManager.LoadScene(sceneIndex);
+    }
 
-        // Save current position before teleporting
-        sceneTransitionManager.SaveCurrentPlayerPosition();
+    // ==================== Event Handlers ====================
 
-        // If spawn point is in different scene, load that scene
-        string currentScene = SceneManager.GetActiveScene().name;
-        if (spawnPoint.sceneName != currentScene)
+    /// <summary>
+    /// Called when a spawn point is activated
+    /// </summary>
+    private void OnSpawnPointActivated(SpawnPointData spawnPoint)
+    {
+        if (showDebugInfo)
         {
-            Debug.Log($"GameManager: Teleporting to scene {spawnPoint.sceneName}");
-            LoadScene(spawnPoint.sceneName);
-            
-            // After scene loads, move player to spawn point
-            // This will be handled by a callback
-            StartCoroutine(MovePlayerAfterSceneLoad(spawnPoint));
-        }
-        else
-        {
-            // Teleport within same scene
-            sceneTransitionManager.MovePlayerToPosition(spawnPoint.position, $"spawn point '{spawnPointId}'");
+            Debug.Log($"GameManager: Spawn point activated - {spawnPoint.spawnPointId}");
         }
     }
 
     /// <summary>
-    /// Coroutine to move player after scene loads
+    /// Called when a spawn point is deactivated
     /// </summary>
-    private System.Collections.IEnumerator MovePlayerAfterSceneLoad(SpawnPointData spawnPoint)
+    private void OnSpawnPointDeactivated(SpawnPointData spawnPoint)
     {
-        // Wait for scene to load
-        yield return new WaitForSeconds(0.1f);
+        if (showDebugInfo)
+        {
+            Debug.Log($"GameManager: Spawn point deactivated - {spawnPoint.spawnPointId}");
+        }
+    }
+
+    /// <summary>
+    /// Called when a transition starts
+    /// </summary>
+    private void OnTransitionStarted(TransitionPointData sourcePoint, TransitionPointData targetPoint)
+    {
+        if (showDebugInfo)
+        {
+            Debug.Log($"GameManager: Transition started from {sourcePoint.sceneName} to {targetPoint.sceneName}");
+        }
+    }
+
+    /// <summary>
+    /// Called when a transition completes
+    /// </summary>
+    private void OnTransitionCompleted(TransitionPointData sourcePoint, TransitionPointData targetPoint)
+    {
+        if (showDebugInfo)
+        {
+            Debug.Log($"GameManager: Transition completed to {targetPoint.sceneName}");
+        }
+
+        OnSceneTransitionCompleted?.Invoke(targetPoint.sceneName);
+    }
+
+    /// <summary>
+    /// Called when a transition fails
+    /// </summary>
+    private void OnTransitionFailed(TransitionPointData sourcePoint, string reason)
+    {
+        Debug.LogWarning($"GameManager: Transition failed - {reason}");
+    }
+
+    /// <summary>
+    /// Called when a scene is loaded
+    /// </summary>
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (showDebugInfo)
+        {
+            Debug.Log($"GameManager: Scene loaded - {scene.name}");
+        }
+
+        // Update player reference if needed
+        if (player == null)
+        {
+            player = FindFirstObjectByType<PlayerController>()?.gameObject;
+        }
+
+        OnSceneTransitionCompleted?.Invoke(scene.name);
+    }
+
+    // ==================== Database Management ====================
+
+    /// <summary>
+    /// Set the spawn point database
+    /// </summary>
+    public void SetSpawnPointDatabase(SpawnPointDatabase database)
+    {
+        spawnPointDatabase = database;
+        if (spawnPointSystem != null)
+        {
+            spawnPointSystem.SetSpawnPointDatabase(database);
+        }
+    }
+
+    /// <summary>
+    /// Set the transition point database
+    /// </summary>
+    public void SetTransitionPointDatabase(TransitionPointDatabase database)
+    {
+        transitionPointDatabase = database;
+        if (transitionPointSystem != null)
+        {
+            transitionPointSystem.SetTransitionPointDatabase(database);
+        }
+    }
+
+    // ==================== System Access ====================
+
+    /// <summary>
+    /// Get the spawn point system
+    /// </summary>
+    public SpawnPointSystem GetSpawnPointSystem()
+    {
+        return spawnPointSystem;
+    }
+
+    /// <summary>
+    /// Get the transition point system
+    /// </summary>
+    public TransitionPointSystem GetTransitionPointSystem()
+    {
+        return transitionPointSystem;
+    }
+
+    /// <summary>
+    /// Get the player GameObject
+    /// </summary>
+    public GameObject GetPlayer()
+    {
+        return player;
+    }
+
+    // ==================== Save System API ====================
+
+    /// <summary>
+    /// Clear all save data (useful for testing or "New Game")
+    /// </summary>
+    public void ClearSaveData()
+    {
+        SaveSystem.ClearSaveData();
+        Debug.Log("GameManager: Save data cleared");
+    }
+
+    /// <summary>
+    /// Check if save data exists
+    /// </summary>
+    public bool HasSaveData()
+    {
+        return SaveSystem.HasSaveData();
+    }
+
+    /// <summary>
+    /// Get save data information
+    /// </summary>
+    public string GetSaveDataInfo()
+    {
+        return SaveSystem.GetDebugInfo();
+    }
+
+    // ==================== Debug Methods ====================
+
+    /// <summary>
+    /// Get debug information about the game manager
+    /// </summary>
+    public string GetDebugInfo()
+    {
+        string info = "GameManager Debug Info:\n";
         
-        // Move player to spawn point
-        sceneTransitionManager.MovePlayerToPosition(spawnPoint.position, $"spawn point '{spawnPoint.spawnPointId}'");
-    }
-
-    /// <summary>
-    /// Respawn player at current spawn point (R key functionality)
-    /// </summary>
-    public void RespawnPlayer()
-    {
-        SpawnPointData currentSpawnPoint = spawnPointManager.GetCurrentSpawnPoint();
+        if (spawnPointSystem != null)
+        {
+            info += $"Spawn Point System: {spawnPointSystem.GetDebugInfo()}\n";
+        }
         
-        if (currentSpawnPoint == null)
+        if (transitionPointSystem != null)
         {
-            Debug.LogWarning("GameManager: No current spawn point to respawn at!");
-            return;
+            info += $"Transition Point System: {transitionPointSystem.GetDebugInfo()}\n";
+        }
+        
+        info += $"Current Scene: {SceneManager.GetActiveScene().name}\n";
+        info += $"Player: {(player != null ? "Found" : "Not Found")}\n";
+        info += $"Is Transitioning: {IsTransitioning()}\n";
+        info += $"\n{SaveSystem.GetDebugInfo()}\n";
+
+        return info;
+    }
+
+    /// <summary>
+    /// Validate all systems
+    /// </summary>
+    [ContextMenu("Validate All Systems")]
+    public void ValidateAllSystems()
+    {
+        Debug.Log("GameManager: Starting system validation...");
+
+        if (spawnPointSystem != null)
+        {
+            spawnPointSystem.ValidateSpawnPointSystem();
         }
 
-        TeleportToSpawnPoint(currentSpawnPoint.spawnPointId);
-    }
-
-    /// <summary>
-    /// Get the current spawn point
-    /// </summary>
-    public SpawnPointData GetCurrentSpawnPoint()
-    {
-        return spawnPointManager.GetCurrentSpawnPoint();
-    }
-
-    /// <summary>
-    /// Get all discovered spawn points
-    /// </summary>
-    public System.Collections.Generic.List<SpawnPointData> GetDiscoveredSpawnPoints()
-    {
-        return spawnPointManager.GetDiscoveredSpawnPoints();
-    }
-
-    /// <summary>
-    /// Check if a spawn point is discovered
-    /// </summary>
-    public bool IsSpawnPointDiscovered(string spawnPointId)
-    {
-        return spawnPointManager.IsSpawnPointDiscovered(spawnPointId);
-    }
-
-    /// <summary>
-    /// Clear all spawn points (useful for testing)
-    /// </summary>
-    public void ClearSpawnPoints()
-    {
-        spawnPointManager.ClearSpawnPoints();
-    }
-
-    // ==================== Scene Position API ====================
-
-    /// <summary>
-    /// Save player's current position for the specified scene
-    /// </summary>
-    public void SavePlayerPositionForScene(string sceneName, Vector3 position)
-    {
-        sceneTransitionManager.SavePlayerPositionForScene(sceneName, position);
-    }
-
-    /// <summary>
-    /// Get player's saved position for a scene
-    /// </summary>
-    public Vector3? GetPlayerPositionForScene(string sceneName)
-    {
-        return sceneTransitionManager.GetPlayerPositionForScene(sceneName);
-    }
-
-    /// <summary>
-    /// Clear all saved scene positions (useful for testing)
-    /// </summary>
-    public void ClearScenePositions()
-    {
-        sceneTransitionManager.ClearScenePositions();
-    }
-
-    // ==================== Manager Access ====================
-
-    /// <summary>
-    /// Get the spawn point manager
-    /// </summary>
-    public SpawnPointManager GetSpawnPointManager()
-    {
-        return spawnPointManager;
-    }
-
-    /// <summary>
-    /// Get the scene transition manager
-    /// </summary>
-    public SceneTransitionManager GetSceneTransitionManager()
-    {
-        return sceneTransitionManager;
-    }
-
-    /// <summary>
-    /// Get the persistence manager
-    /// </summary>
-    public PersistenceManager GetPersistenceManager()
-    {
-        return persistenceManager;
-    }
-
-    // ==================== Cleanup ====================
-
-    void OnDestroy()
-    {
-        if (sceneTransitionManager != null)
+        if (transitionPointSystem != null)
         {
-            sceneTransitionManager.OnSceneTransitionComplete -= OnSceneTransitioned;
+            transitionPointSystem.ValidateTransitionPointSystem();
         }
+
+        Debug.Log("GameManager: System validation complete");
     }
 }
