@@ -179,7 +179,7 @@ public static class SaveSystem
     /// <summary>
     /// Load list of collected world item IDs
     /// </summary>
-    private static List<string> LoadCollectedWorldItems()
+    public static List<string> LoadCollectedWorldItems()
     {
         string json = PlayerPrefs.GetString(KEY_COLLECTED_WORLD_ITEMS, "");
         
@@ -203,7 +203,7 @@ public static class SaveSystem
     /// <summary>
     /// Save list of collected world item IDs
     /// </summary>
-    private static void SaveCollectedWorldItems(List<string> collectedIds)
+    public static void SaveCollectedWorldItems(List<string> collectedIds)
     {
         CollectedItemsList listData = new CollectedItemsList();
         listData.collectedIds = collectedIds;

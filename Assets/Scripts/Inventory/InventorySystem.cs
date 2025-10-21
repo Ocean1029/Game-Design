@@ -370,7 +370,7 @@ public class InventorySystem : MonoBehaviour
         foreach (var savedItem in savedItems)
         {
             // Find ItemData in allGameItems by ID
-            ItemData itemData = allGameItems.FirstOrDefault(i => i.itemId == savedItem.itemId);
+            ItemData itemData = allGameItems.FirstOrDefault(i => i != null && i.itemId == savedItem.itemId);
             
             if (itemData != null)
             {
