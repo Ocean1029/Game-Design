@@ -360,12 +360,8 @@ public class PlayerController : MonoBehaviour, IInteractor
     {
         Debug.Log("Player triggered: " + collision.gameObject.name);
 
-        // Handle key pickup
-        if (collision.CompareTag("key1") && interactionHandler.GetCarriedItem() == null)
-        {
-            interactionHandler.PickUpItem(collision.gameObject);
-        }
-
+        // Key pickup is now handled by Key component itself (automatic collection)
+        
         // Handle interactable objects
         IInteractable interactable = collision.GetComponent<IInteractable>();
         if (interactable != null)

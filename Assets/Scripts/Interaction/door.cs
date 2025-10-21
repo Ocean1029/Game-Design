@@ -3,8 +3,9 @@ using UnityEngine;
 /// <summary>
 /// Represents a door that can be opened with a key
 /// Opens automatically when an interactor with the correct key enters the trigger zone
+/// Can also be used with manual items from inventory
 /// </summary>
-public class door : MonoBehaviour, IInteractable
+public class door : MonoBehaviour, IInteractable, IItemUsable
 {
     [Header("Door Configuration")]
     [Tooltip("Sprite shown when door is opened")]
@@ -46,17 +47,33 @@ public class door : MonoBehaviour, IInteractable
     {
         if (isOpened) return;
 
-        // Try to get InteractionHandler component to check for carried items
-        InteractionHandler handler = interactor.GetGameObject().GetComponent<InteractionHandler>();
+        // Try to get InventorySystem component to check for keys
+        InventorySystem inventory = interactor.GetGameObject().GetComponent<InventorySystem>();
         
-        if (handler != null)
+        if (inventory != null)
         {
-            GameObject carriedItem = handler.GetCarriedItem();
+            // Check if player has item that can open this door
+            ItemData keyItem = inventory.GetItemForTag(requiredKeyTag);
             
-            if (carriedItem != null && carriedItem.CompareTag(requiredKeyTag))
+            if (keyItem != null)
             {
-                // Interactor has the key - open door automatically
-                OpenDoor(handler);
+                // Check if it's auto-use item
+                if (keyItem.useType == ItemUseType.AutoUse)
+                {
+                    // Open door automatically
+                    OpenDoor(inventory, keyItem);
+                }
+                else if (keyItem.useType == ItemUseType.Manual)
+                {
+                    // Register this door as usable
+                    inventory.RegisterNearbyUsable(requiredKeyTag, gameObject);
+                    
+                    // Show can-use prompt
+                    if (canOpenPrompt != null)
+                    {
+                        canOpenPrompt.SetActive(true);
+                    }
+                }
             }
             else
             {
@@ -69,7 +86,7 @@ public class door : MonoBehaviour, IInteractable
         }
         else
         {
-            // Interactor can't carry items - show prompt
+            // Interactor doesn't have InventorySystem - show prompt
             if (needKeyPrompt != null)
             {
                 needKeyPrompt.SetActive(true);
@@ -82,6 +99,13 @@ public class door : MonoBehaviour, IInteractable
     /// </summary>
     public void OnInteractorExitZone(IInteractor interactor)
     {
+        // Unregister from inventory system
+        InventorySystem inventory = interactor.GetGameObject().GetComponent<InventorySystem>();
+        if (inventory != null)
+        {
+            inventory.UnregisterNearbyUsable(requiredKeyTag);
+        }
+        
         // Hide prompts when interactor leaves
         if (needKeyPrompt != null) needKeyPrompt.SetActive(false);
         if (canOpenPrompt != null) canOpenPrompt.SetActive(false);
@@ -110,11 +134,11 @@ public class door : MonoBehaviour, IInteractable
     /// <summary>
     /// Open the door and consume the key
     /// </summary>
-    private void OpenDoor(InteractionHandler handler)
+    private void OpenDoor(InventorySystem inventory, ItemData keyItem)
     {
         if (isOpened) return;
 
-        Debug.Log($"Door opened with {requiredKeyTag}!");
+        Debug.Log($"Door opened with {keyItem.itemName}!");
 
         // Change sprite to opened state
         if (spriteRenderer != null && doorOpenedSprite != null)
@@ -126,8 +150,11 @@ public class door : MonoBehaviour, IInteractable
             Debug.LogError("Door is missing SpriteRenderer or doorOpenedSprite is not assigned!");
         }
 
-        // Consume the key
-        handler.UseCarriedItem();
+        // Consume the key if it's consumable
+        if (keyItem.isConsumable)
+        {
+            inventory.RemoveItem(keyItem, 1);
+        }
 
         // Disable collider so interactor can pass through
         Collider2D col = GetComponent<Collider2D>();
@@ -141,5 +168,38 @@ public class door : MonoBehaviour, IInteractable
         if (canOpenPrompt != null) canOpenPrompt.SetActive(false);
 
         isOpened = true;
+    }
+
+    // ==================== IItemUsable Implementation ====================
+
+    /// <summary>
+    /// Use an item on this door
+    /// </summary>
+    public bool UseItem(ItemData item, InventorySystem inventory)
+    {
+        if (isOpened)
+        {
+            Debug.Log("Door is already open");
+            return false;
+        }
+
+        // Check if this is the correct item
+        if (item.interactableTag != requiredKeyTag)
+        {
+            Debug.Log($"Cannot use {item.itemName} on this door");
+            return false;
+        }
+
+        // Open the door
+        OpenDoor(inventory, item);
+        return true;
+    }
+
+    /// <summary>
+    /// Get the tag that identifies what items can be used here
+    /// </summary>
+    public string GetUsableTag()
+    {
+        return requiredKeyTag;
     }
 }
