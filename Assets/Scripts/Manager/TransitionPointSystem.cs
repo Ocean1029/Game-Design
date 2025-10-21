@@ -21,7 +21,9 @@ public class TransitionPointSystem : MonoBehaviour
     [SerializeField] private bool pauseGameDuringTransition = true;
 
     [Tooltip("Whether to fade screen during transition")]
-    [SerializeField] private bool fadeScreenDuringTransition = true; // Reserved for future fade system
+#pragma warning disable CS0414 // Field is assigned but its value is never used (Reserved for future fade system)
+    [SerializeField] private bool fadeScreenDuringTransition = true;
+#pragma warning restore CS0414
 
     // Events
     public delegate void TransitionStartedHandler(TransitionPointData sourcePoint, TransitionPointData targetPoint);

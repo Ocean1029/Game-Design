@@ -17,7 +17,9 @@ public class SpawnPointSystem : MonoBehaviour
     [SerializeField] private bool restoreEnergyOnActivation = true;
 
     [Tooltip("Default energy restore amount (0 = restore all)")]
-    [SerializeField] private int defaultEnergyRestoreAmount = 0; // Reserved for future use
+#pragma warning disable CS0414 // Field is assigned but its value is never used (Reserved for future use)
+    [SerializeField] private int defaultEnergyRestoreAmount = 0;
+#pragma warning restore CS0414
 
     // Events
     public delegate void SpawnPointActivatedHandler(SpawnPointData spawnPoint);

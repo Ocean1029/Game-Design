@@ -18,7 +18,9 @@ public class TransitionPointDatabase : ScriptableObject
     [SerializeField] private bool autoSave = true;
 
     [Tooltip("Default transition duration if not specified")]
-    [SerializeField] private float defaultTransitionDuration = 1.0f; // Reserved for future transition system
+#pragma warning disable CS0414 // Field is assigned but its value is never used (Reserved for future transition system)
+    [SerializeField] private float defaultTransitionDuration = 1.0f;
+#pragma warning restore CS0414
 
     /// <summary>
     /// Get transition points for a specific scene
