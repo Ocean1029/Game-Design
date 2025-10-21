@@ -138,10 +138,20 @@ public class DefaultSpawnPoint : MonoBehaviour
         // Register the spawn point
         RegisterSpawnPoint();
 
-        // Set as active if specified
-        if (setAsActiveOnStart)
+        // Set as active ONLY if specified AND there's no save data
+        // This prevents overwriting player's saved spawn point
+        if (setAsActiveOnStart && !SaveSystem.HasSaveData())
         {
             ActivateSpawnPoint();
+            
+            if (showDebugInfo)
+            {
+                Debug.Log($"DefaultSpawnPoint: No save data found, setting '{spawnPointId}' as active spawn point");
+            }
+        }
+        else if (setAsActiveOnStart && showDebugInfo)
+        {
+            Debug.Log($"DefaultSpawnPoint: Save data exists, skipping auto-activation of '{spawnPointId}'");
         }
 
         // Mark as initialized
