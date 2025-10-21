@@ -44,9 +44,38 @@ public class FastTravelUI : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("FastTravelUI: Start() called");
+        
         // Get references
         gameManager = GameManager.GetInstance();
+        if (gameManager == null)
+        {
+            Debug.LogError("FastTravelUI: GameManager not found!");
+        }
+        else
+        {
+            Debug.Log("FastTravelUI: GameManager found");
+        }
+        
         playerController = FindFirstObjectByType<PlayerController>();
+        if (playerController == null)
+        {
+            Debug.LogWarning("FastTravelUI: PlayerController not found");
+        }
+        else
+        {
+            Debug.Log("FastTravelUI: PlayerController found");
+        }
+
+        // Check if fastTravelPanel is assigned
+        if (fastTravelPanel == null)
+        {
+            Debug.LogError("FastTravelUI: fastTravelPanel is not assigned! Please assign it in the Inspector.");
+        }
+        else
+        {
+            Debug.Log($"FastTravelUI: fastTravelPanel assigned: {fastTravelPanel.name}");
+        }
 
         // Initialize UI
         InitializeUI();
@@ -57,10 +86,7 @@ public class FastTravelUI : MonoBehaviour
         // Hide UI initially
         SetUIVisibility(false);
 
-        if (showDebugInfo)
-        {
-            Debug.Log("FastTravelUI: Initialized");
-        }
+        Debug.Log("FastTravelUI: Initialization complete");
     }
 
     void OnDestroy()
