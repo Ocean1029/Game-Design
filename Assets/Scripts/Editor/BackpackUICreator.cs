@@ -194,19 +194,40 @@ public class BackpackUICreator : EditorWindow
         RectTransform rectTransform = slot.AddComponent<RectTransform>();
         rectTransform.sizeDelta = new Vector2(slotSize, slotSize);
         
-        // Add Image component for the item icon
-        Image iconImage = slot.AddComponent<Image>();
+        // Add background Image component
+        GameObject background = new GameObject("Background");
+        background.transform.SetParent(slot.transform, false);
+        RectTransform bgRect = background.AddComponent<RectTransform>();
+        bgRect.anchorMin = Vector2.zero;
+        bgRect.anchorMax = Vector2.one;
+        bgRect.sizeDelta = Vector2.zero;
+        bgRect.anchoredPosition = Vector2.zero;
+        
+        Image backgroundImage = background.AddComponent<Image>();
+        backgroundImage.color = new Color(0.2f, 0.2f, 0.2f, 0.8f);
+        
+        // Add icon Image component
+        GameObject icon = new GameObject("Icon");
+        icon.transform.SetParent(slot.transform, false);
+        RectTransform iconRect = icon.AddComponent<RectTransform>();
+        iconRect.anchorMin = Vector2.zero;
+        iconRect.anchorMax = Vector2.one;
+        iconRect.sizeDelta = Vector2.zero;
+        iconRect.anchoredPosition = Vector2.zero;
+        
+        Image iconImage = icon.AddComponent<Image>();
         iconImage.preserveAspect = true;
         
         // Add BackpackSlotUI component
         BackpackSlotUI slotUI = slot.AddComponent<BackpackSlotUI>();
         slotUI.iconImage = iconImage;
+        slotUI.backgroundImage = backgroundImage;
         slotUI.emptyColor = emptySlotColor;
         slotUI.collectedColor = collectedSlotColor;
         
         // Add Button component for interaction
         Button button = slot.AddComponent<Button>();
-        button.targetGraphic = iconImage;
+        button.targetGraphic = backgroundImage;
         
         return slot;
     }

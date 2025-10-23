@@ -9,10 +9,16 @@ public class BackpackSlotUI : MonoBehaviour
 {
     [Header("UI References")]
     public Image iconImage;
+    public Image backgroundImage;
     
     [Header("Visual Settings")]
     public Color emptyColor = new Color(0.5f, 0.5f, 0.5f, 0.3f);
     public Color collectedColor = Color.white;
+    
+    [Header("Background Settings")]
+    public Color emptyBackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
+    public Color collectedBackgroundColor = new Color(0.3f, 0.3f, 0.3f, 0.8f);
+    public Color highlightBackgroundColor = new Color(0.4f, 0.4f, 0.6f, 0.9f);
     
     [Header("Debug")]
     public bool showDebugInfo = false;
@@ -27,6 +33,21 @@ public class BackpackSlotUI : MonoBehaviour
         if (iconImage == null)
         {
             iconImage = GetComponent<Image>();
+        }
+        
+        // Auto-find background image if not assigned
+        if (backgroundImage == null)
+        {
+            // Look for background image in children
+            Image[] images = GetComponentsInChildren<Image>();
+            foreach (Image img in images)
+            {
+                if (img != iconImage)
+                {
+                    backgroundImage = img;
+                    break;
+                }
+            }
         }
     }
     
@@ -71,12 +92,26 @@ public class BackpackSlotUI : MonoBehaviour
         {
             // Has item - show full color (complete image)
             iconImage.color = collectedColor;
+            
+            // Update background color
+            if (backgroundImage != null)
+            {
+                backgroundImage.color = collectedBackgroundColor;
+            }
+            
             if (showDebugInfo) Debug.Log($"BackpackSlotUI: Showing collected state for '{itemData.itemName}'");
         }
         else
         {
             // No item - show dimmed color (outline only)
             iconImage.color = emptyColor;
+            
+            // Update background color
+            if (backgroundImage != null)
+            {
+                backgroundImage.color = emptyBackgroundColor;
+            }
+            
             if (showDebugInfo) Debug.Log($"BackpackSlotUI: Showing empty state for '{itemData.itemName}'");
         }
     }
@@ -100,6 +135,29 @@ public class BackpackSlotUI : MonoBehaviour
     public ItemData GetItemData()
     {
         return itemData;
+    }
+    
+    /// <summary>
+    /// Set highlight state for this slot
+    /// </summary>
+    public void SetHighlight(bool highlight)
+    {
+        if (backgroundImage == null) return;
+        
+        if (highlight)
+        {
+            backgroundImage.color = highlightBackgroundColor;
+        }
+        else
+        {
+            // Restore normal background color based on item state
+            if (itemData != null && inventorySystem != null)
+            {
+                int quantity = inventorySystem.GetItemQuantity(itemData);
+                bool hasItem = quantity > 0;
+                backgroundImage.color = hasItem ? collectedBackgroundColor : emptyBackgroundColor;
+            }
+        }
     }
     
     /// <summary>
