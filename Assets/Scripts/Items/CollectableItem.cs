@@ -35,11 +35,14 @@ public class CollectableItem : MonoBehaviour
         }
         
         // Check if this item was already collected
+        // 註解掉自動銷毀邏輯，讓鑰匙在每次遊戲開始時都重新出現
+        /*
         if (!string.IsNullOrEmpty(collectableId) && SaveSystem.IsItemCollected(collectableId))
         {
             Debug.Log($"CollectableItem: '{collectableId}' was already collected, destroying");
             Destroy(gameObject);
         }
+        */
     }
 
     void OnTriggerEnter2D(Collider2D collision)

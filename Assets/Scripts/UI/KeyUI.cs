@@ -28,6 +28,7 @@ public class KeyUI : MonoBehaviour
     [SerializeField] private float fadeInDuration = 0.5f;
 
     private KeyInventory keyInventory;
+    private InventorySystem inventorySystem;
     private bool isCollected = false;
 
     void Start()
@@ -36,18 +37,36 @@ public class KeyUI : MonoBehaviour
         PlayerController player = FindFirstObjectByType<PlayerController>();
         if (player != null)
         {
+            // 訂閱 KeyInventory 事件（如果有）
             keyInventory = player.GetComponent<KeyInventory>();
-            if (keyInventory == null)
+            if (keyInventory != null)
             {
-                Debug.LogWarning("KeyUI: KeyInventory not found on player!");
-            }
-            else
-            {
-                // Subscribe to key collection event
                 keyInventory.OnKeyCollected += OnKeyCollected;
+                keyInventory.OnKeyConsumed += OnKeyConsumed;
                 
                 // Check if key is already collected
                 UpdateKeyDisplay(keyInventory.HasKey(keyTag));
+            }
+            
+            // 訂閱 InventorySystem 事件（如果有）
+            inventorySystem = player.GetComponent<InventorySystem>();
+            if (inventorySystem != null)
+            {
+                inventorySystem.OnItemCollected += OnItemCollectedFromInventory;
+                inventorySystem.OnItemRemoved += OnItemRemovedFromInventory;
+                
+                // Check if key is already in inventory
+                ItemData keyItem = inventorySystem.GetItemForTag(keyTag);
+                if (keyItem != null)
+                {
+                    UpdateKeyDisplay(true);
+                }
+            }
+            
+            // 警告：如果兩個系統都沒有
+            if (keyInventory == null && inventorySystem == null)
+            {
+                Debug.LogWarning("KeyUI: Neither KeyInventory nor InventorySystem found on player!");
             }
         }
         else
@@ -73,6 +92,13 @@ public class KeyUI : MonoBehaviour
         if (keyInventory != null)
         {
             keyInventory.OnKeyCollected -= OnKeyCollected;
+            keyInventory.OnKeyConsumed -= OnKeyConsumed;
+        }
+        
+        if (inventorySystem != null)
+        {
+            inventorySystem.OnItemCollected -= OnItemCollectedFromInventory;
+            inventorySystem.OnItemRemoved -= OnItemRemovedFromInventory;
         }
     }
 
@@ -86,6 +112,48 @@ public class KeyUI : MonoBehaviour
             UpdateKeyDisplay(true);
         }
     }
+    
+    /// <summary>
+    /// Called when any key is consumed (from KeyInventory)
+    /// </summary>
+    private void OnKeyConsumed(string consumedKeyTag)
+    {
+        if (consumedKeyTag == keyTag)
+        {
+            UpdateKeyDisplay(false);
+        }
+    }
+    
+    /// <summary>
+    /// Called when an item is collected (from InventorySystem)
+    /// </summary>
+    private void OnItemCollectedFromInventory(ItemData item, int quantity)
+    {
+        // 檢查這個物品的 interactableTag 是否與這個 KeyUI 的 keyTag 一致
+        if (item.interactableTag == keyTag)
+        {
+            UpdateKeyDisplay(true);
+        }
+    }
+    
+    /// <summary>
+    /// Called when an item is removed (from InventorySystem)
+    /// </summary>
+    private void OnItemRemovedFromInventory(ItemData item)
+    {
+        Debug.Log($"KeyUI: Item removed - {item.itemName}, interactableTag: '{item.interactableTag}', keyTag: '{keyTag}'");
+        
+        // 檢查這個物品的 interactableTag 是否與這個 KeyUI 的 keyTag 一致
+        if (item.interactableTag == keyTag)
+        {
+            Debug.Log($"KeyUI: Tag matched! Updating display to dark");
+            UpdateKeyDisplay(false);
+        }
+        else
+        {
+            Debug.Log($"KeyUI: Tag not matched. '{item.interactableTag}' != '{keyTag}'");
+        }
+    }
 
     /// <summary>
     /// Update the visual display of the key
@@ -96,12 +164,16 @@ public class KeyUI : MonoBehaviour
 
         if (keyFilledImage != null)
         {
-            keyFilledImage.gameObject.SetActive(collected);
-            
             if (collected)
             {
+                keyFilledImage.gameObject.SetActive(true);
                 // Fade in effect
                 StartCoroutine(FadeInKey());
+            }
+            else
+            {
+                // Fade out effect
+                StartCoroutine(FadeOutKey());
             }
         }
 
@@ -135,6 +207,30 @@ public class KeyUI : MonoBehaviour
         }
 
         keyFilledImage.color = targetColor;
+    }
+    
+    /// <summary>
+    /// Fade out animation for consumed key
+    /// </summary>
+    private System.Collections.IEnumerator FadeOutKey()
+    {
+        if (keyFilledImage == null) yield break;
+
+        float elapsed = 0f;
+        Color startColor = keyFilledImage.color;
+        Color targetColor = startColor;
+        targetColor.a = 0f;
+
+        while (elapsed < fadeInDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = elapsed / fadeInDuration;
+            keyFilledImage.color = Color.Lerp(startColor, targetColor, t);
+            yield return null;
+        }
+
+        keyFilledImage.color = targetColor;
+        keyFilledImage.gameObject.SetActive(false);
     }
 
     /// <summary>

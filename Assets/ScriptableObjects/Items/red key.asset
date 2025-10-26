@@ -20,7 +20,7 @@ MonoBehaviour:
   useType: 0
   isConsumable: 1
   maxStackSize: 1
-  interactableTag: door_red
+  interactableTag: key1
   useMessage: Use red key
   canUseHintMessage: Press E to use red Key
   collectSound: {fileID: 0}
