@@ -131,5 +131,11 @@ public class FloatingTextManager : MonoBehaviour
         Color keyColor = new Color(1f, 0.84f, 0f); // Gold color
         ShowFloatingText(message, worldPosition, keyColor, defaultFontSize * 1.2f);
     }
+    public void ShowBombCollected(string bombName, Vector3 worldPosition)
+    {
+        string message = $"+ {bombName}";
+        Color bombColor = new Color(1f, 0.3f, 0.1f); // 紅橙色（Bomb感覺）
+        ShowFloatingText(message, worldPosition, bombColor, defaultFontSize * 1.2f);
+    }
 }
 

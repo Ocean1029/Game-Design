@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a09bc8fd7de347b99595901d346300f, type: 3}
+  m_Name: bomb
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  itemId: bomb_for_rock
+  itemName: bomb
+  description: can destroy the floor
+  icon: {fileID: 7410356118781927702, guid: 0870e3a9e28b5f74abdb5ce7bd0d17f0, type: 3}
+  itemCategory: 1
+  useType: 0
+  isConsumable: 1
+  maxStackSize: 1
+  interactableTag: bomb
+  useMessage: Used bomb
+  canUseHintMessage: Press E to use bomb
+  collectSound: {fileID: 0}
+  useSound: {fileID: 0}
