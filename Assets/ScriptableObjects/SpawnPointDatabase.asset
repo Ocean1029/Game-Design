@@ -16,7 +16,7 @@ MonoBehaviour:
   - spawnPointId: default_spawn
     displayName: Starting Point
     locationDescription: Default starting location
-    position: {x: 1, y: 0, z: 0}
+    position: {x: 2, y: 2, z: 0}
     sceneName: MainScene
     isOneTimeUse: 0
     isTransportable: 0
