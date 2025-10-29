@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -121,10 +122,12 @@ public class InventorySystem : MonoBehaviour
             inventory.Remove(item);
         }
 
-        Debug.Log($"InventorySystem: Removed {quantity}x {itemData.itemName}");
+        Debug.Log($"InventorySystem: Removed {quantity}x {itemData.itemName} - Current quantity: {GetItemQuantity(itemData)}");
+        
+        // Notify UI immediately while inventory is already updated
         OnItemRemoved?.Invoke(itemData);
-
-        // Save inventory
+        
+        // Save inventory after UI notification
         SaveInventoryToSave();
 
         return true;
@@ -160,7 +163,9 @@ public class InventorySystem : MonoBehaviour
     /// </summary>
     public int GetItemQuantity(ItemData itemData)
     {
-        return inventory.Where(i => i.itemData == itemData).Sum(i => i.quantity);
+        int quantity = inventory.Where(i => i.itemData == itemData).Sum(i => i.quantity);
+        Debug.Log($"[InventorySystem] GetItemQuantity for '{itemData.itemName}': {quantity} (inventory count: {inventory.Count})");
+        return quantity;
     }
 
     /// <summary>

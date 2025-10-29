@@ -14,6 +14,9 @@ public class KeyInventory : MonoBehaviour
     // Events
     public delegate void KeyCollectedHandler(string keyTag, string keyName);
     public event KeyCollectedHandler OnKeyCollected;
+    
+    public delegate void KeyConsumedHandler(string keyTag);
+    public event KeyConsumedHandler OnKeyConsumed;
 
     /// <summary>
     /// Add a key to the inventory
@@ -65,6 +68,9 @@ public class KeyInventory : MonoBehaviour
         {
             collectedKeys.Remove(keyTag);
             Debug.Log($"KeyInventory: Removed key '{keyTag}'");
+            
+            // Notify listeners that key was consumed
+            OnKeyConsumed?.Invoke(keyTag);
         }
     }
 

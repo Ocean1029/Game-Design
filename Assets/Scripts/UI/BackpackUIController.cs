@@ -250,8 +250,13 @@ public class BackpackUIController : MonoBehaviour
     {
         if (slotMap.ContainsKey(itemData.itemId))
         {
+            if (showDebugInfo) Debug.Log($"BackpackUIController: Removing item '{itemData.itemName}' (ID: {itemData.itemId})");
             slotMap[itemData.itemId].UpdateDisplay();
             if (showDebugInfo) Debug.Log($"BackpackUIController: Updated slot for removed item '{itemData.itemName}'");
+        }
+        else
+        {
+            if (showDebugInfo) Debug.LogWarning($"BackpackUIController: Slot not found for item '{itemData.itemName}' (ID: {itemData.itemId})");
         }
     }
     

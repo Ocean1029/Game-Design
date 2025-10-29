@@ -80,12 +80,21 @@ public class BackpackSlotUI : MonoBehaviour
     /// </summary>
     public void UpdateDisplay()
     {
+        // Always log for debugging (temporarily)
+        string itemName = itemData != null ? itemData.itemName : "NULL";
+        Debug.Log($"[BackpackSlotUI] UpdateDisplay called for: {itemName}");
+        
         if (itemData == null || inventorySystem == null || iconImage == null)
+        {
+            Debug.LogWarning($"[BackpackSlotUI] UpdateDisplay FAILED for '{itemName}' - itemData: {itemData != null}, inventorySystem: {inventorySystem != null}, iconImage: {iconImage != null}");
             return;
+        }
         
         // Check if player has this item
         int quantity = inventorySystem.GetItemQuantity(itemData);
         bool hasItem = quantity > 0;
+        
+        Debug.Log($"[BackpackSlotUI] '{itemName}' - quantity: {quantity}, hasItem: {hasItem}");
         
         // Update visual state
         if (hasItem)
@@ -99,20 +108,31 @@ public class BackpackSlotUI : MonoBehaviour
                 backgroundImage.color = collectedBackgroundColor;
             }
             
-            if (showDebugInfo) Debug.Log($"BackpackSlotUI: Showing collected state for '{itemData.itemName}'");
+            if (showDebugInfo) Debug.Log($"BackpackSlotUI: Showing collected state for '{itemData.itemName}' - color: {collectedColor}");
         }
         else
         {
             // No item - show dimmed color (outline only)
+            Color previousColor = iconImage.color;
             iconImage.color = emptyColor;
+            
+            Debug.Log($"[BackpackSlotUI] Setting icon color from {previousColor} to {emptyColor} (alpha: {emptyColor.a}) for '{itemName}'");
+            
+            // Force refresh the image
+            if (iconImage.sprite != null)
+            {
+                iconImage.enabled = false;
+                iconImage.enabled = true;
+            }
             
             // Update background color
             if (backgroundImage != null)
             {
                 backgroundImage.color = emptyBackgroundColor;
+                Debug.Log($"[BackpackSlotUI] Background color set to {emptyBackgroundColor}");
             }
             
-            if (showDebugInfo) Debug.Log($"BackpackSlotUI: Showing empty state for '{itemData.itemName}'");
+            Debug.Log($"[BackpackSlotUI] Showing empty state for '{itemName}' - color set to empty");
         }
     }
     
