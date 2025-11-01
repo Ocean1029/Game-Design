@@ -9,14 +9,14 @@ public class Bomb : MonoBehaviour
     [Header("Bomb Configuration")]
     [Tooltip("Unique tag for this bomb (e.g., 'bomb1', 'bomb2')")]
     [SerializeField] private string bombTag = "bomb1";
-    
+
     [Tooltip("Display name shown when collected (e.g., 'Small Bomb', 'Mega Bomb')")]
     [SerializeField] private string bombName = "Bomb";
-    
+
     [Header("Visual & Audio")]
     [Tooltip("Sound played when bomb is collected")]
     [SerializeField] private AudioClip collectSound;
-    
+
     [Tooltip("Particle effect when bomb is collected")]
     [SerializeField] private GameObject collectEffect;
 

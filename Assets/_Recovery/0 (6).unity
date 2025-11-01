@@ -5582,6 +5582,33 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2277676754856186160, guid: 6e2e472f2f9a3de4ea7c54ce52bbb278, type: 3}
   m_PrefabInstance: {fileID: 1561523275}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1563877077 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8557279393519003148, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
+  m_PrefabInstance: {fileID: 2130470574}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1563877085
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1563877077}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 17f9145c0b1e6d64d81a1a3296d05181, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &1606170915
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6744,10 +6771,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae52519faf6db004dae36bf502eb5553, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUseBomb
-  inventorySystem: {fileID: 0}
-  bombItemId: bomb_for_rock
-  bombPrefab: {fileID: 2915061035342170213, guid: eb2275e00b739df4e89ca1dda9e807f3, type: 3}
-  spawnOffset: {x: 0, y: -0.5}
+  bombAnimator: {fileID: 0}
+  explosionTrigger: Explode
+  destroyDelay: 1
 --- !u!1001 &2093228796
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6964,11 +6990,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8757125629993804523, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 17.43
+      value: 10.98
       objectReference: {fileID: 0}
     - target: {fileID: 8757125629993804523, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -12.85
+      value: -14.64
       objectReference: {fileID: 0}
     - target: {fileID: 8757125629993804523, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
       propertyPath: m_LocalPosition.z
@@ -7007,7 +7033,10 @@ PrefabInstance:
     - {fileID: -6008397653601427198, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8557279393519003148, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1563877085}
   m_SourcePrefab: {fileID: 100100000, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
 --- !u!4 &2134119118 stripped
 Transform:
@@ -7268,10 +7297,6 @@ PrefabInstance:
     - target: {fileID: 6110517704543245953, guid: e75b47577670f44af9baf508f763a683, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6517990752212371028, guid: e75b47577670f44af9baf508f763a683, type: 3}
-      propertyPath: m_Controller
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7427181067913785054, guid: e75b47577670f44af9baf508f763a683, type: 3}
       propertyPath: m_Sprite
