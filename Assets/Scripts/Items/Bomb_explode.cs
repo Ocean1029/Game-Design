@@ -18,17 +18,17 @@ public class Bomb_explode : MonoBehaviour
     public void OnExplosionEnd()
     {
         // 尋找場景中名為 floor(10) 的物件
-        GameObject targetFloor = GameObject.Find("Floor (10)");
+        GameObject targetFloor = GameObject.Find("Floor_destroy_by_bomb");
 
         if (targetFloor != null)
         {
             // 讓該物件消失
             targetFloor.SetActive(false);
-            Debug.Log("💥 Floor (10) 已消失！");
+            Debug.Log("💥 Floor_destroy_by_bomb 已消失！");
         }
         else
         {
-            Debug.LogWarning("⚠️ 找不到名為 Floor (10) 的物件！");
+            Debug.LogWarning("⚠️ 找不到名為 Floor_destroy_by_bomb 的物件！");
         }
 
         // （可選）摧毀炸彈物件本身

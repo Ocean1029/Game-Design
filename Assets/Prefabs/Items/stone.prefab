@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 772257893823099752}
   - component: {fileID: 3435531380876958914}
   - component: {fileID: 361047616495881055}
-  m_Layer: 0
+  - component: {fileID: 4820235591877567481}
+  m_Layer: 6
   m_Name: stone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,3 +156,15 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0.21947214, y: 0}
   m_Radius: 3.9118009
+--- !u!114 &4820235591877567481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2647517838476283510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c80511b119e323843b79da71fbd1c2d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stone

@@ -18,6 +18,8 @@ public class PlayerUseBomb : MonoBehaviour
     [Tooltip("Offset from player position when spawning bomb")]
     [SerializeField] private Vector2 spawnOffset = new Vector2(0f, -0.5f);
 
+    private Stone nearbyStone = null;
+
     private void Start()
     {
         if (inventorySystem == null)
@@ -42,9 +44,14 @@ public class PlayerUseBomb : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            Debug.Log("💥 Z pressed – TryUseBomb called");  // <— 新增這行
-            TryUseBomb();
+            if (nearbyStone != null)
+                TryUseBomb();
         }
+    }
+
+    public void SetNearStone(bool isNear, Stone stone)
+    {
+        nearbyStone = isNear ? stone : null;
     }
 
     private void TryUseBomb()
