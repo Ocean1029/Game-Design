@@ -1,0 +1,1706 @@
+fileFormatVersion: 2
+guid: 48333485c9f3344eda1fda04ea37ba60
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -480087584887885545
+    second: Enchantress_spritelist_0
+  - first:
+      213: -5201870089280714313
+    second: Enchantress_spritelist_1
+  - first:
+      213: -4643488209512412957
+    second: Enchantress_spritelist_2
+  - first:
+      213: -1905610748776440775
+    second: Enchantress_spritelist_3
+  - first:
+      213: 8626510524274898472
+    second: Enchantress_spritelist_4
+  - first:
+      213: 8257460045319468689
+    second: Enchantress_spritelist_5
+  - first:
+      213: 4668340797556716827
+    second: Enchantress_spritelist_6
+  - first:
+      213: 2843500684109530546
+    second: Enchantress_spritelist_7
+  - first:
+      213: 7260704929702451149
+    second: Enchantress_spritelist_8
+  - first:
+      213: -2852471586268481913
+    second: Enchantress_spritelist_9
+  - first:
+      213: 1194499855976974177
+    second: Enchantress_spritelist_10
+  - first:
+      213: 2463835700670123743
+    second: Enchantress_spritelist_11
+  - first:
+      213: -2693498867424895714
+    second: Enchantress_spritelist_12
+  - first:
+      213: -6021321826464743764
+    second: Enchantress_spritelist_13
+  - first:
+      213: 5056233931100387034
+    second: Enchantress_spritelist_14
+  - first:
+      213: 6286797119785992520
+    second: Enchantress_spritelist_15
+  - first:
+      213: -75353192340473707
+    second: Enchantress_spritelist_16
+  - first:
+      213: -4556143379493458871
+    second: Enchantress_spritelist_17
+  - first:
+      213: -6715333401626871140
+    second: Enchantress_spritelist_18
+  - first:
+      213: -199364206930306835
+    second: Enchantress_spritelist_19
+  - first:
+      213: 5406512565694048648
+    second: Enchantress_spritelist_20
+  - first:
+      213: -2177400323735451625
+    second: Enchantress_spritelist_21
+  - first:
+      213: -5126630762454321348
+    second: Enchantress_spritelist_22
+  - first:
+      213: 6668179960844025673
+    second: Enchantress_spritelist_23
+  - first:
+      213: -7749186636671266067
+    second: Enchantress_spritelist_24
+  - first:
+      213: 5619671453766534108
+    second: Enchantress_spritelist_25
+  - first:
+      213: -6314780247532801912
+    second: Enchantress_spritelist_26
+  - first:
+      213: -6578452313300489043
+    second: Enchantress_spritelist_27
+  - first:
+      213: 6371029881707655635
+    second: Enchantress_spritelist_28
+  - first:
+      213: -4473693910390726061
+    second: Enchantress_spritelist_29
+  - first:
+      213: -308729510176787227
+    second: Enchantress_spritelist_30
+  - first:
+      213: -1922199708025427112
+    second: Enchantress_spritelist_31
+  - first:
+      213: 3295218318026466930
+    second: Enchantress_spritelist_32
+  - first:
+      213: -830323822265974116
+    second: Enchantress_spritelist_33
+  - first:
+      213: 3587428669590267455
+    second: Enchantress_spritelist_34
+  - first:
+      213: 4614717943157317518
+    second: Enchantress_spritelist_35
+  - first:
+      213: 2267202495656623721
+    second: Enchantress_spritelist_36
+  - first:
+      213: -7522538486837586669
+    second: Enchantress_spritelist_37
+  - first:
+      213: -732459892782261893
+    second: Enchantress_spritelist_38
+  - first:
+      213: -579099039872759142
+    second: Enchantress_spritelist_39
+  - first:
+      213: 222087489444817663
+    second: Enchantress_spritelist_40
+  - first:
+      213: 3186259966253507018
+    second: Enchantress_spritelist_41
+  - first:
+      213: 277452793213203655
+    second: Enchantress_spritelist_42
+  - first:
+      213: -7082082329544688412
+    second: Enchantress_spritelist_43
+  - first:
+      213: -3531542466535091834
+    second: Enchantress_spritelist_44
+  - first:
+      213: -4875965631967622882
+    second: Enchantress_spritelist_45
+  - first:
+      213: -6207568673033130049
+    second: Enchantress_spritelist_46
+  - first:
+      213: -7849425358711993064
+    second: Enchantress_spritelist_47
+  - first:
+      213: 3432010551475234114
+    second: Enchantress_spritelist_48
+  - first:
+      213: -4121843827716838352
+    second: Enchantress_spritelist_49
+  - first:
+      213: 6195347334875973936
+    second: Enchantress_spritelist_50
+  - first:
+      213: -8358815105431437744
+    second: Enchantress_spritelist_51
+  - first:
+      213: -4188176944075251541
+    second: Enchantress_spritelist_52
+  - first:
+      213: 7132281011094240952
+    second: Enchantress_spritelist_53
+  - first:
+      213: -4998811264978209439
+    second: Enchantress_spritelist_54
+  - first:
+      213: 1185070588937908452
+    second: Enchantress_spritelist_55
+  - first:
+      213: -4807697852525855511
+    second: Enchantress_spritelist_56
+  - first:
+      213: 1300308816124157185
+    second: Enchantress_spritelist_57
+  - first:
+      213: -4830591214566982565
+    second: Enchantress_spritelist_58
+  - first:
+      213: 7336838470592037564
+    second: Enchantress_spritelist_59
+  - first:
+      213: 3404034883851230510
+    second: Enchantress_spritelist_60
+  - first:
+      213: 4797564114438076647
+    second: Enchantress_spritelist_61
+  - first:
+      213: 4502932601336287854
+    second: Enchantress_spritelist_62
+  - first:
+      213: 5967872741192086254
+    second: Enchantress_spritelist_63
+  - first:
+      213: 4919595127720340840
+    second: Enchantress_spritelist_64
+  - first:
+      213: -2638100085341288075
+    second: Enchantress_spritelist_65
+  - first:
+      213: 7171410618182118412
+    second: Enchantress_spritelist_66
+  - first:
+      213: -3442109020113361492
+    second: Enchantress_spritelist_67
+  - first:
+      213: -3022394607337592424
+    second: Enchantress_spritelist_68
+  - first:
+      213: 2415614202597833991
+    second: Enchantress_spritelist_69
+  - first:
+      213: 6799499978860783342
+    second: Enchantress_spritelist_70
+  - first:
+      213: -6211828859695636930
+    second: Enchantress_spritelist_71
+  - first:
+      213: 2183386322605101653
+    second: Enchantress_spritelist_72
+  - first:
+      213: -8705147517512847079
+    second: Enchantress_spritelist_73
+  - first:
+      213: 8285424300466493274
+    second: Enchantress_spritelist_74
+  - first:
+      213: -5577181070601528872
+    second: Enchantress_spritelist_75
+  - first:
+      213: -4326961630166973386
+    second: Enchantress_spritelist_76
+  - first:
+      213: -4890898085648798801
+    second: Enchantress_spritelist_77
+  - first:
+      213: -1647375435982136694
+    second: Enchantress_spritelist_78
+  - first:
+      213: 6133768859843120973
+    second: Enchantress_spritelist_79
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Enchantress_spritelist_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1152
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 711bea992e26659f0800000000000000
+      internalID: -480087584887885545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_1
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 1152
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b981b8e6be3fc7b0800000000000000
+      internalID: -5201870089280714313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_2
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1152
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e84c4163140f8fb0800000000000000
+      internalID: -4643488209512412957
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_3
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 1152
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93c930fce19ed85e0800000000000000
+      internalID: -1905610748776440775
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_4
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1152
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 826f29add9587b770800000000000000
+      internalID: 8626510524274898472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1024
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1967f3c4924689270800000000000000
+      internalID: 8257460045319468689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_6
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 1024
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b15f4d0b83749c040800000000000000
+      internalID: 4668340797556716827
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_7
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1024
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b5cde28ec4267720800000000000000
+      internalID: 2843500684109530546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_8
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 1024
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc797d92aa433c460800000000000000
+      internalID: 7260704929702451149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_9
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1024
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7867290943cf968d0800000000000000
+      internalID: -2852471586268481913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_10
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 1024
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16743cf4a47b39010800000000000000
+      internalID: 1194499855976974177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_11
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1024
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fde4e5b048d413220800000000000000
+      internalID: 2463835700670123743
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_12
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 1024
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1dd8340d05ce9ad0800000000000000
+      internalID: -2693498867424895714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_13
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 896
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cae334f73b7ff6ca0800000000000000
+      internalID: -6021321826464743764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_14
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 896
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad6f384a8f95b2640800000000000000
+      internalID: 5056233931100387034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_15
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 896
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8410bcbeba03f3750800000000000000
+      internalID: 6286797119785992520
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_16
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 896
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 598bad9bbaa44fef0800000000000000
+      internalID: -75353192340473707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_17
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 896
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94c6b8f5cb355c0c0800000000000000
+      internalID: -4556143379493458871
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_18
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 896
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9af6bfb9d75ec2a0800000000000000
+      internalID: -6715333401626871140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_19
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 896
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de8ddf06f47bb3df0800000000000000
+      internalID: -199364206930306835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_20
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 896
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88921e7988ac70b40800000000000000
+      internalID: 5406512565694048648
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_21
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 768
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7188de121f158c1e0800000000000000
+      internalID: -2177400323735451625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_22
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 768
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c37f15dcb7c8ad8b0800000000000000
+      internalID: -5126630762454321348
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_23
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 768
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94f7c7848522a8c50800000000000000
+      internalID: 6668179960844025673
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_24
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 768
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de251079fcb557490800000000000000
+      internalID: -7749186636671266067
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_25
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 768
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd34824b9651dfd40800000000000000
+      internalID: 5619671453766534108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_26
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 768
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 880772f62d46d58a0800000000000000
+      internalID: -6314780247532801912
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_27
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 640
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: daca0e5a974a4b4a0800000000000000
+      internalID: -6578452313300489043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_28
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 640
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d175981ce17a6850800000000000000
+      internalID: 6371029881707655635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_29
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 640
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3522555571f3ae1c0800000000000000
+      internalID: -4473693910390726061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_30
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e47b3e652c27bbf0800000000000000
+      internalID: -308729510176787227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_31
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 512
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85be8cfbc89f255e0800000000000000
+      internalID: -1922199708025427112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_32
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 512
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 276e357f997fabd20800000000000000
+      internalID: 3295218318026466930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_33
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 384
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c92ca4502e81a74f0800000000000000
+      internalID: -830323822265974116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_34
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 384
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f36eaf33e5b19c130800000000000000
+      internalID: 3587428669590267455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_35
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 384
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8f538cf485ca0040800000000000000
+      internalID: 4614717943157317518
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_36
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 384
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96efd7b58a8b67f10800000000000000
+      internalID: 2267202495656623721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_37
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 384
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31557d23a139a9790800000000000000
+      internalID: -7522538486837586669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_38
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 384
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b791e76bb97c5d5f0800000000000000
+      internalID: -732459892782261893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_39
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 384
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9a4d9ecd70a6f7f0800000000000000
+      internalID: -579099039872759142
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_40
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 384
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ffaaa6d1563051300800000000000000
+      internalID: 222087489444817663
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_41
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 384
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac1a69ace8ed73c20800000000000000
+      internalID: 3186259966253507018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_42
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 384
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c4b96d68d5b9d300800000000000000
+      internalID: 277452793213203655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_43
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 256
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ecfa6dc4a367bd90800000000000000
+      internalID: -7082082329544688412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_44
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 256
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68118fc66d07dfec0800000000000000
+      internalID: -3531542466535091834
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_45
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 256
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e198e897717155cb0800000000000000
+      internalID: -4875965631967622882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_46
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 256
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fbf64055e294ad9a0800000000000000
+      internalID: -6207568673033130049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_47
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 256
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81d470b693d311390800000000000000
+      internalID: -7849425358711993064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_48
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 256
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 245e21ab963f0af20800000000000000
+      internalID: 3432010551475234114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_49
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 256
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03c2d4d80e44cc6c0800000000000000
+      internalID: -4121843827716838352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_50
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 256
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0390273a39b4af550800000000000000
+      internalID: 6195347334875973936
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_51
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05ef691d2f58ffb80800000000000000
+      internalID: -8358815105431437744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_52
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba0e9ef524b90e5c0800000000000000
+      internalID: -4188176944075251541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_53
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8be39888ac3faf260800000000000000
+      internalID: 7132281011094240952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_54
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 165b0cba3a7a0aab0800000000000000
+      internalID: -4998811264978209439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_55
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e0386ffb67327010800000000000000
+      internalID: 1185070588937908452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_56
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ecb9c08640a74db0800000000000000
+      internalID: -4807697852525855511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enchantress_spritelist_57
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10d936b9aff9b0210800000000000000
+      internalID: 1300308816124157185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 993f850dedc804f64bc9f432de920df9
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":10.0,"y":10.0},"gridSpriteSize":{"x":128.0,"y":128.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Enchantress_spritelist_0: -480087584887885545
+      Enchantress_spritelist_1: -5201870089280714313
+      Enchantress_spritelist_10: 1194499855976974177
+      Enchantress_spritelist_11: 2463835700670123743
+      Enchantress_spritelist_12: -2693498867424895714
+      Enchantress_spritelist_13: -6021321826464743764
+      Enchantress_spritelist_14: 5056233931100387034
+      Enchantress_spritelist_15: 6286797119785992520
+      Enchantress_spritelist_16: -75353192340473707
+      Enchantress_spritelist_17: -4556143379493458871
+      Enchantress_spritelist_18: -6715333401626871140
+      Enchantress_spritelist_19: -199364206930306835
+      Enchantress_spritelist_2: -4643488209512412957
+      Enchantress_spritelist_20: 5406512565694048648
+      Enchantress_spritelist_21: -2177400323735451625
+      Enchantress_spritelist_22: -5126630762454321348
+      Enchantress_spritelist_23: 6668179960844025673
+      Enchantress_spritelist_24: -7749186636671266067
+      Enchantress_spritelist_25: 5619671453766534108
+      Enchantress_spritelist_26: -6314780247532801912
+      Enchantress_spritelist_27: -6578452313300489043
+      Enchantress_spritelist_28: 6371029881707655635
+      Enchantress_spritelist_29: -4473693910390726061
+      Enchantress_spritelist_3: -1905610748776440775
+      Enchantress_spritelist_30: -308729510176787227
+      Enchantress_spritelist_31: -1922199708025427112
+      Enchantress_spritelist_32: 3295218318026466930
+      Enchantress_spritelist_33: -830323822265974116
+      Enchantress_spritelist_34: 3587428669590267455
+      Enchantress_spritelist_35: 4614717943157317518
+      Enchantress_spritelist_36: 2267202495656623721
+      Enchantress_spritelist_37: -7522538486837586669
+      Enchantress_spritelist_38: -732459892782261893
+      Enchantress_spritelist_39: -579099039872759142
+      Enchantress_spritelist_4: 8626510524274898472
+      Enchantress_spritelist_40: 222087489444817663
+      Enchantress_spritelist_41: 3186259966253507018
+      Enchantress_spritelist_42: 277452793213203655
+      Enchantress_spritelist_43: -7082082329544688412
+      Enchantress_spritelist_44: -3531542466535091834
+      Enchantress_spritelist_45: -4875965631967622882
+      Enchantress_spritelist_46: -6207568673033130049
+      Enchantress_spritelist_47: -7849425358711993064
+      Enchantress_spritelist_48: 3432010551475234114
+      Enchantress_spritelist_49: -4121843827716838352
+      Enchantress_spritelist_5: 8257460045319468689
+      Enchantress_spritelist_50: 6195347334875973936
+      Enchantress_spritelist_51: -8358815105431437744
+      Enchantress_spritelist_52: -4188176944075251541
+      Enchantress_spritelist_53: 7132281011094240952
+      Enchantress_spritelist_54: -4998811264978209439
+      Enchantress_spritelist_55: 1185070588937908452
+      Enchantress_spritelist_56: -4807697852525855511
+      Enchantress_spritelist_57: 1300308816124157185
+      Enchantress_spritelist_6: 4668340797556716827
+      Enchantress_spritelist_7: 2843500684109530546
+      Enchantress_spritelist_8: 7260704929702451149
+      Enchantress_spritelist_9: -2852471586268481913
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

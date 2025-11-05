@@ -7,7 +7,10 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class PlayerAnimationController : MonoBehaviour
 {
-    private Animator animator;
+    [Header("Animation Settings")]
+    [SerializeField] private float animationSpeed = 0.6f;
+
+    public Animator animator;
     private SpriteRenderer spriteRenderer;
 
     // Animation parameter names (configure these to match your Animator Controller)
@@ -31,6 +34,12 @@ public class PlayerAnimationController : MonoBehaviour
         if (animator != null && animator.runtimeAnimatorController == null)
         {
             Debug.LogWarning("PlayerAnimationController: Animator found but no AnimatorController assigned. Animation features will be disabled.");
+        }
+        
+        // Set animation speed
+        if (animator != null)
+        {
+            animator.speed = animationSpeed;
         }
     }
 
@@ -155,6 +164,27 @@ public class PlayerAnimationController : MonoBehaviour
     public Animator GetAnimator()
     {
         return animator;
+    }
+
+    /// <summary>
+    /// Set the global animation speed multiplier
+    /// </summary>
+    /// <param name="speed">Animation speed multiplier (1.0 = normal speed, 0.5 = half speed, etc.)</param>
+    public void SetAnimationSpeed(float speed)
+    {
+        if (animator != null)
+        {
+            animator.speed = speed;
+            animationSpeed = speed;
+        }
+    }
+
+    /// <summary>
+    /// Get the current animation speed multiplier
+    /// </summary>
+    public float GetAnimationSpeed()
+    {
+        return animationSpeed;
     }
 }
 
