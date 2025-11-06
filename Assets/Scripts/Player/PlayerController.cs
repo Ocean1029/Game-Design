@@ -33,6 +33,9 @@ public class PlayerController : MonoBehaviour, IInteractor
 
     // Chair interaction state
     private chair currentChair = null;
+    
+    // Movement state tracking for animation triggers
+    private bool wasMoving = false;
 
     void Awake()
     {
@@ -82,17 +85,29 @@ public class PlayerController : MonoBehaviour, IInteractor
         }
 
         float horizontal = 0f;
+        bool isMoving = false;
 
         if (Input.GetKey(moveRightKey))
         {
             horizontal = 1f;
             animationController.SetFacingDirection(true);
+            isMoving = true;
         }
         else if (Input.GetKey(moveLeftKey))
         {
             horizontal = -1f;
             animationController.SetFacingDirection(false);
+            isMoving = true;
         }
+
+        // Trigger walk animation when movement starts (transition from idle to moving)
+        if (isMoving && !wasMoving && movement.IsGrounded() && animationController.IsAnimationSystemReady())
+        {
+            animationController.TriggerWalk();
+        }
+        
+        // Update movement state tracking
+        wasMoving = isMoving;
 
         movement.Move(horizontal);
     }
@@ -212,9 +227,24 @@ public class PlayerController : MonoBehaviour, IInteractor
         }
 
         Vector2 velocity = movement.GetVelocity();
+        bool isGrounded = movement.IsGrounded();
+        
         animationController.SetSpeed(Mathf.Abs(velocity.x));
-        animationController.SetGrounded(movement.IsGrounded());
+        animationController.SetGrounded(isGrounded);
         animationController.SetSitting(stateMachine.CurrentState == PlayerState.Sitting);
+        
+        // Update jump animation dynamically based on vertical velocity
+        if (!isGrounded)
+        {
+            // Get height above ground for better animation timing
+            float heightAboveGround = CalculateHeightAboveGround();
+            
+            // Get gravity scale from rigidbody
+            Rigidbody2D rb = movement.GetComponent<Rigidbody2D>();
+            float gravityScale = rb != null ? rb.gravityScale : 1f;
+            
+            animationController.UpdateJumpAnimation(velocity.y, isGrounded, heightAboveGround, gravityScale);
+        }
     }
 
     /// <summary>
@@ -252,6 +282,25 @@ public class PlayerController : MonoBehaviour, IInteractor
         {
             stateMachine.ChangeState(PlayerState.Idle);
         }
+    }
+
+    // ==================== HELPER METHODS ====================
+
+    /// <summary>
+    /// Calculate height above ground using raycast
+    /// </summary>
+    private float CalculateHeightAboveGround()
+    {
+        // Cast ray downward to detect ground
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 50f, LayerMask.GetMask("Ground"));
+        
+        if (hit.collider != null)
+        {
+            return transform.position.y - hit.point.y;
+        }
+        
+        // Fallback: assume reasonable height if no ground detected
+        return 2f;
     }
 
     // ==================== PUBLIC API FOR INTERACTIONS ====================

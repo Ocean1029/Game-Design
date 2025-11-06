@@ -74,7 +74,6 @@ GameObject:
   - component: {fileID: 8370403009770967669}
   - component: {fileID: 1532837132538334113}
   - component: {fileID: 9027734300911509487}
-  - component: {fileID: 6517990752212371028}
   - component: {fileID: 1166567923796349270}
   - component: {fileID: 7982060386449475275}
   - component: {fileID: 7309511423605707184}
@@ -206,28 +205,6 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
---- !u!95 &6517990752212371028
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5328470061019652296}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: bff668b03a1bb41219d38d2532c12b04, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1166567923796349270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -445,4 +422,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationController
   animationSpeed: 0.6
-  animator: {fileID: 6517990752212371028}
+  animator: {fileID: 8257635496743360230}
