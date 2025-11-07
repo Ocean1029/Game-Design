@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2277676754856186160}
   - component: {fileID: 446858812844366964}
   - component: {fileID: 4934782324547158094}
+<<<<<<< HEAD
 <<<<<<< Updated upstream
   - component: {fileID: 8130849868380684914}
   m_Layer: 0
@@ -18,6 +19,9 @@ GameObject:
   - component: {fileID: 3132439247968424803}
   m_Layer: 6
 >>>>>>> Stashed changes
+=======
+  m_Layer: 0
+>>>>>>> dev
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +91,11 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+<<<<<<< HEAD
   m_Color: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 0}
+=======
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+>>>>>>> dev
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -143,6 +151,7 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 --- !u!114 &8130849868380684914
 MonoBehaviour:
@@ -213,3 +222,5 @@ SpriteMask:
   m_SpriteSortPoint: 0
   m_MaskSource: 1
 >>>>>>> Stashed changes
+=======
+>>>>>>> dev

@@ -98,11 +98,15 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.collab-proxy": {
+<<<<<<< HEAD
 <<<<<<< Updated upstream
       "version": "2.10.0",
 =======
       "version": "2.9.3",
 >>>>>>> Stashed changes
+=======
+      "version": "2.9.2",
+>>>>>>> dev
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -128,7 +132,11 @@
       "dependencies": {}
     },
     "com.unity.ide.rider": {
+<<<<<<< HEAD
       "version": "3.0.37",
+=======
+      "version": "3.0.36",
+>>>>>>> dev
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -236,7 +244,11 @@
       }
     },
     "com.unity.test-framework": {
+<<<<<<< HEAD
       "version": "1.6.0",
+=======
+      "version": "1.5.1",
+>>>>>>> dev
       "depth": 0,
       "source": "builtin",
       "dependencies": {
