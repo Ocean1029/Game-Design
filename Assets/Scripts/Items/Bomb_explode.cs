@@ -24,6 +24,11 @@ public class Bomb_explode : MonoBehaviour
         {
             // 讓該物件消失
             targetFloor.SetActive(false);
+            var hint = FindObjectOfType<HintTrigger>();
+            if (hint != null)
+            {
+                hint.OnLinkedFloorDestroyed();
+            }
             Debug.Log("💥 Floor_destroy_by_bomb 已消失！");
         }
         else
