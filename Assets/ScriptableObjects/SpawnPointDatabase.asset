@@ -20,7 +20,7 @@ MonoBehaviour:
     sceneName: MainScene
     isOneTimeUse: 0
     isTransportable: 0
-    isActive: 0
+    isActive: 1
     activeVisual: {fileID: 0}
     activationSound: {fileID: 0}
     restoresEnergy: 1
@@ -44,19 +44,19 @@ MonoBehaviour:
     sceneName: MainScene
     isOneTimeUse: 0
     isTransportable: 1
-    isActive: 0
+    isActive: 1
     activeVisual: {fileID: 0}
     activationSound: {fileID: 0}
     restoresEnergy: 1
     energyRestoreAmount: 0
   currentActiveSpawnPoint:
-    spawnPointId: village_square_chair
-    displayName: Village Square
-    locationDescription: 
-    position: {x: 32.433704, y: -9.387438, z: 0}
+    spawnPointId: default_spawn
+    displayName: Starting Point
+    locationDescription: Default starting location
+    position: {x: 2.33, y: 0.17, z: 0}
     sceneName: MainScene
     isOneTimeUse: 0
-    isTransportable: 1
+    isTransportable: 0
     isActive: 1
     activeVisual: {fileID: 0}
     activationSound: {fileID: 0}

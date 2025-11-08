@@ -8700,6 +8700,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3215390485357126413, guid: 73f5a7717b7393140bb116162b364c39, type: 3}
+      propertyPath: linkedDoor
+      value: 
+      objectReference: {fileID: 1212857598}
+    - target: {fileID: 3215390485357126413, guid: 73f5a7717b7393140bb116162b364c39, type: 3}
       propertyPath: hintMessage
       value: need a key to open the door
       objectReference: {fileID: 0}
