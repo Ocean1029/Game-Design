@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,17 +27,27 @@ public class FastTravelUI : MonoBehaviour
     [Tooltip("Title text")]
     [SerializeField] private TextMeshProUGUI titleText;
 
+    [Header("Map Preview")]
+    [Tooltip("RawImage component to display map preview")]
+    [SerializeField] private RawImage mapPreviewImage;
+    
+    private MapPreviewCamera mapPreviewCamera;
+
     [Header("Settings")]
     [Tooltip("Whether to show debug information")]
     [SerializeField] private bool showDebugInfo = false;
 
     [Tooltip("Whether to show one-time use spawn points")]
     [SerializeField] private bool showOneTimeUseSpawnPoints = false;
+    
+    [Tooltip("Whether to show map preview on hover (true) or only on click (false)")]
+    [SerializeField] private bool previewOnHover = true;
 
     // State
     private bool isOpen = false;
     private List<SpawnPointData> availableSpawnPoints = new List<SpawnPointData>();
     private List<GameObject> spawnPointListItems = new List<GameObject>();
+    private SpawnPointData currentlyPreviewedSpawnPoint = null;
 
     // References
     private GameManager gameManager;
@@ -79,6 +90,9 @@ public class FastTravelUI : MonoBehaviour
 
         // Initialize UI
         InitializeUI();
+
+        // Initialize map preview system
+        InitializeMapPreview();
 
         // Subscribe to events
         SubscribeToEvents();
@@ -124,6 +138,42 @@ public class FastTravelUI : MonoBehaviour
         if (fastTravelPanel != null)
         {
             fastTravelPanel.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// Initialize map preview system
+    /// Creates map preview camera if not assigned
+    /// </summary>
+    private void InitializeMapPreview()
+    {
+        // Create map preview camera if not assigned
+        if (mapPreviewCamera == null)
+        {
+            GameObject cameraObject = new GameObject("MapPreviewCamera");
+            cameraObject.transform.SetParent(transform);
+            mapPreviewCamera = cameraObject.AddComponent<MapPreviewCamera>();
+            
+            if (showDebugInfo)
+            {
+                Debug.Log("FastTravelUI: Created MapPreviewCamera");
+            }
+        }
+
+        // Check if map preview image is assigned
+        if (mapPreviewImage == null)
+        {
+            Debug.LogWarning("FastTravelUI: MapPreviewImage is not assigned! Please assign a RawImage component in the Inspector to display map preview.");
+        }
+        else
+        {
+            // Hide map preview initially
+            mapPreviewImage.gameObject.SetActive(false);
+            
+            if (showDebugInfo)
+            {
+                Debug.Log($"FastTravelUI: MapPreviewImage found: {mapPreviewImage.gameObject.name}");
+            }
         }
     }
 
@@ -213,6 +263,13 @@ public class FastTravelUI : MonoBehaviour
         // Update spawn point list
         UpdateSpawnPointList();
 
+        // Show preview for current active spawn point
+        SpawnPointData currentActive = gameManager.GetCurrentActiveSpawnPoint();
+        if (currentActive != null)
+        {
+            UpdateMapPreview(currentActive);
+        }
+
         if (showDebugInfo)
         {
             Debug.Log($"FastTravelUI: Opened with {availableSpawnPoints.Count} available spawn points");
@@ -241,6 +298,9 @@ public class FastTravelUI : MonoBehaviour
         // Hide UI
         SetUIVisibility(false);
         isOpen = false;
+
+        // Clear map preview
+        ClearMapPreview();
 
         if (showDebugInfo)
         {
@@ -371,6 +431,9 @@ public class FastTravelUI : MonoBehaviour
         // Set up the list item
         SetupSpawnPointListItem(listItem, spawnPoint);
 
+        // Add mouse event handlers for map preview
+        AddMapPreviewEventHandlers(listItem, spawnPoint);
+
         if (showDebugInfo)
         {
             Debug.Log($"FastTravelUI: Created list item for spawn point '{spawnPoint.spawnPointId}'");
@@ -423,33 +486,21 @@ public class FastTravelUI : MonoBehaviour
             Debug.LogWarning($"FastTravelUI: No text component found for '{spawnPoint.displayName}'");
         }
 
-        // Optional text components (only show warnings if debug is enabled)
+        // Optional text components (these are optional, silently skip if not found)
         if (sceneText != null)
         {
             sceneText.text = spawnPoint.sceneName;
-        }
-        else if (showDebugInfo)
-        {
-            Debug.LogWarning("FastTravelUI: SceneText not found in list item prefab");
         }
 
         if (descriptionText != null)
         {
             descriptionText.text = spawnPoint.locationDescription;
         }
-        else if (showDebugInfo)
-        {
-            Debug.LogWarning("FastTravelUI: DescriptionText not found in list item prefab");
-        }
 
-        // Optional active indicator (only show warnings if debug is enabled)
+        // Optional active indicator (this is optional, silently skip if not found)
         if (activeIndicator != null)
         {
             activeIndicator.gameObject.SetActive(spawnPoint.isActive);
-        }
-        else if (showDebugInfo)
-        {
-            Debug.LogWarning("FastTravelUI: ActiveIndicator not found in list item prefab");
         }
 
         // Set up teleport button
@@ -478,6 +529,145 @@ public class FastTravelUI : MonoBehaviour
         {
             Debug.LogError($"FastTravelUI: Button not found in list item prefab for '{spawnPoint.displayName}'!");
         }
+    }
+
+    /// <summary>
+    /// Add mouse event handlers to list item for map preview
+    /// </summary>
+    private void AddMapPreviewEventHandlers(GameObject listItem, SpawnPointData spawnPoint)
+    {
+        // Get or add EventTrigger component
+        EventTrigger eventTrigger = listItem.GetComponent<EventTrigger>();
+        if (eventTrigger == null)
+        {
+            eventTrigger = listItem.AddComponent<EventTrigger>();
+        }
+
+        // Clear existing entries
+        eventTrigger.triggers.Clear();
+
+        if (previewOnHover)
+        {
+            // Add pointer enter event (hover)
+            EventTrigger.Entry pointerEnter = new EventTrigger.Entry();
+            pointerEnter.eventID = EventTriggerType.PointerEnter;
+            pointerEnter.callback.AddListener((data) => { OnListItemPointerEnter(spawnPoint); });
+            eventTrigger.triggers.Add(pointerEnter);
+
+            // Add pointer exit event
+            EventTrigger.Entry pointerExit = new EventTrigger.Entry();
+            pointerExit.eventID = EventTriggerType.PointerExit;
+            pointerExit.callback.AddListener((data) => { OnListItemPointerExit(); });
+            eventTrigger.triggers.Add(pointerExit);
+        }
+
+        // Add pointer click event (always show preview on click)
+        EventTrigger.Entry pointerClick = new EventTrigger.Entry();
+        pointerClick.eventID = EventTriggerType.PointerClick;
+        pointerClick.callback.AddListener((data) => { OnListItemPointerClick(spawnPoint); });
+        eventTrigger.triggers.Add(pointerClick);
+    }
+
+    /// <summary>
+    /// Handle pointer enter event (hover)
+    /// </summary>
+    private void OnListItemPointerEnter(SpawnPointData spawnPoint)
+    {
+        if (previewOnHover)
+        {
+            UpdateMapPreview(spawnPoint);
+        }
+    }
+
+    /// <summary>
+    /// Handle pointer exit event
+    /// </summary>
+    private void OnListItemPointerExit()
+    {
+        // Optionally clear preview when mouse leaves
+        // For now, we keep the preview visible
+    }
+
+    /// <summary>
+    /// Handle pointer click event
+    /// </summary>
+    private void OnListItemPointerClick(SpawnPointData spawnPoint)
+    {
+        UpdateMapPreview(spawnPoint);
+    }
+
+    /// <summary>
+    /// Update map preview to show a specific spawn point
+    /// </summary>
+    private void UpdateMapPreview(SpawnPointData spawnPoint)
+    {
+        if (spawnPoint == null)
+        {
+            Debug.LogWarning("FastTravelUI: Cannot update map preview - spawn point is null");
+            return;
+        }
+
+        if (mapPreviewCamera == null)
+        {
+            Debug.LogWarning("FastTravelUI: MapPreviewCamera not initialized");
+            return;
+        }
+
+        if (!mapPreviewCamera.IsReady())
+        {
+            Debug.LogWarning("FastTravelUI: MapPreviewCamera is not ready");
+            return;
+        }
+
+        if (mapPreviewImage == null)
+        {
+            Debug.LogWarning("FastTravelUI: MapPreviewImage is not assigned in Inspector!");
+            return;
+        }
+
+        // Update preview camera
+        RenderTexture previewTexture = mapPreviewCamera.UpdatePreview(spawnPoint);
+        
+        if (previewTexture == null)
+        {
+            Debug.LogWarning($"FastTravelUI: Failed to get preview texture for '{spawnPoint.displayName}'");
+            return;
+        }
+
+        if (mapPreviewImage != null)
+        {
+            mapPreviewImage.texture = previewTexture;
+            mapPreviewImage.gameObject.SetActive(true);
+            
+            if (showDebugInfo)
+            {
+                Debug.Log($"FastTravelUI: Set preview texture for '{spawnPoint.displayName}', RawImage active: {mapPreviewImage.gameObject.activeSelf}");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("FastTravelUI: MapPreviewImage is null, cannot display preview");
+        }
+
+        currentlyPreviewedSpawnPoint = spawnPoint;
+
+        if (showDebugInfo)
+        {
+            Debug.Log($"FastTravelUI: Updated map preview for '{spawnPoint.displayName}' at position {spawnPoint.position} in scene '{spawnPoint.sceneName}'");
+        }
+    }
+
+    /// <summary>
+    /// Clear map preview
+    /// </summary>
+    private void ClearMapPreview()
+    {
+        if (mapPreviewImage != null)
+        {
+            mapPreviewImage.gameObject.SetActive(false);
+            mapPreviewImage.texture = null;
+        }
+        currentlyPreviewedSpawnPoint = null;
     }
 
     /// <summary>
@@ -550,6 +740,16 @@ public class FastTravelUI : MonoBehaviour
         
         if (success)
         {
+            if (playerController == null)
+            {
+                playerController = FindFirstObjectByType<PlayerController>();
+            }
+
+            if (playerController != null && playerController.IsSitting())
+            {
+                playerController.LeaveChair();
+            }
+
             // Close the UI
             CloseFastTravelUI();
             

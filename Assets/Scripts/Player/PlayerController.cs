@@ -357,6 +357,12 @@ public class PlayerController : MonoBehaviour, IInteractor
         
         currentChair = null;
         
+        FastTravelUI fastTravelUI = FindFirstObjectByType<FastTravelUI>();
+        if (fastTravelUI != null && fastTravelUI.IsOpen())
+        {
+            fastTravelUI.CloseFastTravelUI();
+        }
+        
         Debug.Log("Player left the chair");
     }
 
@@ -463,6 +469,11 @@ public class PlayerController : MonoBehaviour, IInteractor
     {
         Debug.Log("PlayerController: M key pressed - attempting to toggle fast travel menu");
 
+        if (!IsSitting())
+        {
+            Debug.Log("PlayerController: Fast travel menu unavailable - player is not sitting");
+            return;
+        }
 
         // Fallback to original FastTravelUI
         FastTravelUI fastTravelUI = FindFirstObjectByType<FastTravelUI>();
