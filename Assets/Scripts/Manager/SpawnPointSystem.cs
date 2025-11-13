@@ -220,9 +220,8 @@ public class SpawnPointSystem : MonoBehaviour
             return;
         }
 
-        // Update spawn point data with current position
+        // Update spawn point data with current scene information
         string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        spawnPoint.position = playerController != null ? playerController.transform.position : Vector3.zero;
         spawnPoint.sceneName = currentScene;
 
         // Add or update the spawn point in database
@@ -400,6 +399,7 @@ public class SpawnPointSystem : MonoBehaviour
         {
             // Respawn in same scene
             TeleportPlayerToPosition(activeSpawnPoint.position);
+            HandlePostRespawnState(activeSpawnPoint);
             return true;
         }
     }
@@ -478,6 +478,92 @@ public class SpawnPointSystem : MonoBehaviour
         }
     }
 
+    private void HandlePostRespawnState(SpawnPointData spawnPoint)
+    {
+        if (spawnPoint == null)
+        {
+            return;
+        }
+
+        if (playerController == null)
+        {
+            playerController = FindFirstObjectByType<PlayerController>();
+        }
+
+        if (playerController != null && playerEnergy == null)
+        {
+            playerEnergy = playerController.GetComponent<PlayerEnergy>();
+        }
+
+        if (playerController == null)
+        {
+            Debug.LogWarning("SpawnPointSystem: PlayerController not found during respawn handling");
+            RestoreEnergyToFull();
+            return;
+        }
+
+        if (spawnPoint.isChairSpawn)
+        {
+            chair targetChair = FindChairById(spawnPoint.spawnPointId);
+            if (targetChair != null)
+            {
+                playerController.SitOnChair(targetChair);
+                Debug.Log($"SpawnPointSystem: Player seated on chair '{spawnPoint.spawnPointId}' after respawn");
+            }
+            else
+            {
+                Debug.LogWarning($"SpawnPointSystem: Chair '{spawnPoint.spawnPointId}' not found after respawn. Restoring energy instead.");
+                RestoreEnergyToFull();
+            }
+        }
+        else
+        {
+            RestoreEnergyToFull();
+        }
+    }
+
+    private void RestoreEnergyToFull()
+    {
+        if (playerController == null)
+        {
+            playerController = FindFirstObjectByType<PlayerController>();
+        }
+
+        if (playerController != null && playerEnergy == null)
+        {
+            playerEnergy = playerController.GetComponent<PlayerEnergy>();
+        }
+
+        if (playerEnergy != null)
+        {
+            playerEnergy.RestoreAllEnergy();
+            Debug.Log("SpawnPointSystem: Restored player energy to full after respawn");
+        }
+        else
+        {
+            Debug.LogWarning("SpawnPointSystem: PlayerEnergy component not found during energy restoration");
+        }
+    }
+
+    private chair FindChairById(string chairId)
+    {
+        if (string.IsNullOrEmpty(chairId))
+        {
+            return null;
+        }
+
+        chair[] chairs = FindObjectsOfType<chair>();
+        foreach (var chairInstance in chairs)
+        {
+            if (chairInstance != null && chairInstance.GetChairId() == chairId)
+            {
+                return chairInstance;
+            }
+        }
+
+        return null;
+    }
+
     /// <summary>
     /// Coroutine to teleport after scene loads
     /// </summary>
@@ -503,18 +589,7 @@ public class SpawnPointSystem : MonoBehaviour
         // Respawn player at spawn point position
         TeleportPlayerToPosition(spawnPoint.position);
         
-        // Restore energy if specified
-        if (restoreEnergyOnActivation && playerEnergy != null && spawnPoint.restoresEnergy)
-        {
-            if (spawnPoint.energyRestoreAmount > 0)
-            {
-                playerEnergy.AddEnergy(spawnPoint.energyRestoreAmount);
-            }
-            else
-            {
-                playerEnergy.RestoreAllEnergy();
-            }
-        }
+        HandlePostRespawnState(spawnPoint);
         
         Debug.Log($"SpawnPointSystem: Respawned at '{spawnPoint.spawnPointId}' after scene load");
     }
