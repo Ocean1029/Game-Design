@@ -34,6 +34,9 @@ public class SpawnPointData
     [Tooltip("If true, this spawn point is currently active (last used)")]
     public bool isActive = false;
     
+    [Tooltip("If true, this spawn point was created by a chair and should seat the player when respawning")]
+    public bool isChairSpawn = false;
+    
     [Header("Visual & Audio")]
     [Tooltip("Visual indicator when this spawn point is active")]
     public GameObject activeVisual;
@@ -61,6 +64,7 @@ public class SpawnPointData
         isOneTimeUse = false;
         isTransportable = true;
         isActive = false;
+        isChairSpawn = false;
         restoresEnergy = true;
         energyRestoreAmount = 0;
     }
@@ -78,6 +82,7 @@ public class SpawnPointData
         isOneTimeUse = false;
         isTransportable = true;
         isActive = false;
+        isChairSpawn = false;
         restoresEnergy = true;
         energyRestoreAmount = 0;
     }
@@ -96,6 +101,7 @@ public class SpawnPointData
         clone.isOneTimeUse = this.isOneTimeUse;
         clone.isTransportable = this.isTransportable;
         clone.isActive = this.isActive;
+        clone.isChairSpawn = this.isChairSpawn;
         clone.activeVisual = this.activeVisual;
         clone.activationSound = this.activationSound;
         clone.restoresEnergy = this.restoresEnergy;

@@ -193,6 +193,7 @@ public class chair : MonoBehaviour, IInteractable
         {
             isOneTimeUse = false,
             isTransportable = true,
+            isChairSpawn = true,
             restoresEnergy = true,
             energyRestoreAmount = 0,
             activationSound = sitSound,
