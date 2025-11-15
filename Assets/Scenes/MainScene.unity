@@ -7896,7 +7896,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerFootstepSound
   footstepSound: {fileID: 8300000, guid: eb05f2421a1844a76951f0c5fc215484, type: 3}
-  footstepVolume: 1
+  footstepVolume: 1.5
   minStepInterval: 0.3
   maxStepInterval: 0.5
   minMovementSpeed: 0.1
@@ -8608,7 +8608,7 @@ PrefabInstance:
     - target: {fileID: 9027734300911509487, guid: e75b47577670f44af9baf508f763a683, type: 3}
       propertyPath: jumpSound
       value: 
-      objectReference: {fileID: 8300000, guid: 2c3e13592bc74467a8a51d1188b19a1f, type: 3}
+      objectReference: {fileID: 8300000, guid: bc196b28bb41046debc9c2192c28b1db, type: 3}
     - target: {fileID: 9027734300911509487, guid: e75b47577670f44af9baf508f763a683, type: 3}
       propertyPath: jumpSoundVolume
       value: 0.41

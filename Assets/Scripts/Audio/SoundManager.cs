@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 /// <summary>
 /// Central sound manager for handling all audio playback in the game
@@ -23,8 +24,20 @@ public class SoundManager : MonoBehaviour
     [Tooltip("SFX volume (0.0 to 1.0) - Reserved for future implementation")]
     [SerializeField, Range(0f, 1f)] private float sfxVolume = 1f;
 
-    // Audio source for 2D sounds
-    private AudioSource audioSource2D;
+    [Header("Music Settings")]
+    [Tooltip("Music volume (0.0 to 1.0)")]
+    [SerializeField, Range(0f, 1f)] private float musicVolume = 0.7f;
+    
+    [Tooltip("Default fade duration for music transitions (in seconds)")]
+    [SerializeField] private float defaultFadeDuration = 1f;
+
+    // Audio sources
+    private AudioSource audioSource2D; // For 2D sound effects
+    private AudioSource musicAudioSource; // For background music
+
+    // Music state
+    private AudioClip currentMusicClip = null;
+    private Coroutine fadeCoroutine = null;
 
     // ==================== Singleton & Initialization ====================
 
@@ -40,8 +53,9 @@ public class SoundManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // Initialize audio source for 2D sounds
+        // Initialize audio sources
         InitializeAudioSource();
+        InitializeMusicAudioSource();
     }
 
     void OnDestroy()
@@ -67,6 +81,32 @@ public class SoundManager : MonoBehaviour
         // Configure audio source for 2D playback
         audioSource2D.spatialBlend = 0f; // 2D sound (no spatialization)
         audioSource2D.playOnAwake = false;
+    }
+
+    /// <summary>
+    /// Initialize the audio source component for background music
+    /// </summary>
+    private void InitializeMusicAudioSource()
+    {
+        // Create a child GameObject for music to keep it separate
+        GameObject musicObject = transform.Find("MusicAudioSource")?.gameObject;
+        if (musicObject == null)
+        {
+            musicObject = new GameObject("MusicAudioSource");
+            musicObject.transform.SetParent(transform);
+        }
+
+        musicAudioSource = musicObject.GetComponent<AudioSource>();
+        if (musicAudioSource == null)
+        {
+            musicAudioSource = musicObject.AddComponent<AudioSource>();
+        }
+
+        // Configure audio source for music playback
+        musicAudioSource.spatialBlend = 0f; // 2D music
+        musicAudioSource.playOnAwake = false;
+        musicAudioSource.loop = true; // Music typically loops
+        musicAudioSource.volume = musicVolume * masterVolume;
     }
 
     // ==================== Singleton Access ====================
@@ -239,6 +279,282 @@ public class SoundManager : MonoBehaviour
         return sfxVolume;
     }
 
+    // ==================== Music Playback API ====================
+
+    /// <summary>
+    /// Play background music
+    /// </summary>
+    /// <param name="musicClip">Audio clip to play as background music</param>
+    /// <param name="fadeIn">Whether to fade in the music (default: true)</param>
+    /// <param name="fadeDuration">Duration of fade in seconds (uses default if not specified)</param>
+    public void PlayMusic(AudioClip musicClip, bool fadeIn = true, float fadeDuration = -1f)
+    {
+        if (musicClip == null)
+        {
+            if (showDebugInfo)
+            {
+                Debug.LogWarning("SoundManager: Attempted to play null music clip");
+            }
+            return;
+        }
+
+        // If same music is already playing, do nothing
+        if (currentMusicClip == musicClip && musicAudioSource != null && musicAudioSource.isPlaying)
+        {
+            if (showDebugInfo)
+            {
+                Debug.Log($"SoundManager: Music '{musicClip.name}' is already playing");
+            }
+            return;
+        }
+
+        // Stop any ongoing fade
+        if (fadeCoroutine != null)
+        {
+            StopCoroutine(fadeCoroutine);
+            fadeCoroutine = null;
+        }
+
+        // Initialize music audio source if needed
+        if (musicAudioSource == null)
+        {
+            InitializeMusicAudioSource();
+        }
+
+        currentMusicClip = musicClip;
+        musicAudioSource.clip = musicClip;
+
+        if (fadeIn)
+        {
+            float duration = fadeDuration > 0f ? fadeDuration : defaultFadeDuration;
+            fadeCoroutine = StartCoroutine(FadeInMusic(duration));
+        }
+        else
+        {
+            musicAudioSource.volume = musicVolume * masterVolume;
+            musicAudioSource.Play();
+        }
+
+        if (showDebugInfo)
+        {
+            Debug.Log($"SoundManager: Playing music '{musicClip.name}' (fadeIn: {fadeIn})");
+        }
+    }
+
+    /// <summary>
+    /// Stop the currently playing music
+    /// </summary>
+    /// <param name="fadeOut">Whether to fade out the music (default: true)</param>
+    /// <param name="fadeDuration">Duration of fade in seconds (uses default if not specified)</param>
+    public void StopMusic(bool fadeOut = true, float fadeDuration = -1f)
+    {
+        if (musicAudioSource == null || !musicAudioSource.isPlaying)
+        {
+            return;
+        }
+
+        // Stop any ongoing fade
+        if (fadeCoroutine != null)
+        {
+            StopCoroutine(fadeCoroutine);
+            fadeCoroutine = null;
+        }
+
+        if (fadeOut)
+        {
+            float duration = fadeDuration > 0f ? fadeDuration : defaultFadeDuration;
+            fadeCoroutine = StartCoroutine(FadeOutMusic(duration));
+        }
+        else
+        {
+            musicAudioSource.Stop();
+            currentMusicClip = null;
+        }
+
+        if (showDebugInfo)
+        {
+            Debug.Log($"SoundManager: Stopping music (fadeOut: {fadeOut})");
+        }
+    }
+
+    /// <summary>
+    /// Change to a different music track with smooth transition
+    /// </summary>
+    /// <param name="newMusicClip">New music clip to play</param>
+    /// <param name="fadeDuration">Duration of crossfade in seconds (uses default if not specified)</param>
+    public void ChangeMusic(AudioClip newMusicClip, float fadeDuration = -1f)
+    {
+        if (newMusicClip == null)
+        {
+            StopMusic();
+            return;
+        }
+
+        // If same music, do nothing
+        if (currentMusicClip == newMusicClip && musicAudioSource != null && musicAudioSource.isPlaying)
+        {
+            return;
+        }
+
+        float duration = fadeDuration > 0f ? fadeDuration : defaultFadeDuration;
+        
+        // Stop any ongoing fade
+        if (fadeCoroutine != null)
+        {
+            StopCoroutine(fadeCoroutine);
+            fadeCoroutine = null;
+        }
+
+        // Start crossfade
+        fadeCoroutine = StartCoroutine(CrossfadeMusic(newMusicClip, duration));
+    }
+
+    /// <summary>
+    /// Check if music is currently playing
+    /// </summary>
+    public bool IsMusicPlaying()
+    {
+        return musicAudioSource != null && musicAudioSource.isPlaying;
+    }
+
+    /// <summary>
+    /// Get the currently playing music clip
+    /// </summary>
+    public AudioClip GetCurrentMusic()
+    {
+        return currentMusicClip;
+    }
+
+    // ==================== Music Volume Control ====================
+
+    /// <summary>
+    /// Set the music volume
+    /// </summary>
+    /// <param name="volume">Volume level (0.0 to 1.0)</param>
+    public void SetMusicVolume(float volume)
+    {
+        musicVolume = Mathf.Clamp01(volume);
+        
+        if (musicAudioSource != null)
+        {
+            musicAudioSource.volume = musicVolume * masterVolume;
+        }
+    }
+
+    /// <summary>
+    /// Get the current music volume
+    /// </summary>
+    public float GetMusicVolume()
+    {
+        return musicVolume;
+    }
+
+    // ==================== Music Fade Coroutines ====================
+
+    /// <summary>
+    /// Fade in music from silence
+    /// </summary>
+    private IEnumerator FadeInMusic(float duration)
+    {
+        if (musicAudioSource == null)
+        {
+            yield break;
+        }
+
+        musicAudioSource.volume = 0f;
+        musicAudioSource.Play();
+
+        float elapsedTime = 0f;
+        float targetVolume = musicVolume * masterVolume;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = elapsedTime / duration;
+            musicAudioSource.volume = Mathf.Lerp(0f, targetVolume, progress);
+            yield return null;
+        }
+
+        musicAudioSource.volume = targetVolume;
+        fadeCoroutine = null;
+    }
+
+    /// <summary>
+    /// Fade out music to silence
+    /// </summary>
+    private IEnumerator FadeOutMusic(float duration)
+    {
+        if (musicAudioSource == null)
+        {
+            yield break;
+        }
+
+        float startVolume = musicAudioSource.volume;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = elapsedTime / duration;
+            musicAudioSource.volume = Mathf.Lerp(startVolume, 0f, progress);
+            yield return null;
+        }
+
+        musicAudioSource.Stop();
+        musicAudioSource.volume = musicVolume * masterVolume;
+        currentMusicClip = null;
+        fadeCoroutine = null;
+    }
+
+    /// <summary>
+    /// Crossfade from current music to new music
+    /// </summary>
+    private IEnumerator CrossfadeMusic(AudioClip newMusicClip, float duration)
+    {
+        if (musicAudioSource == null)
+        {
+            yield break;
+        }
+
+        float startVolume = musicAudioSource.volume;
+        float targetVolume = musicVolume * masterVolume;
+        float halfDuration = duration * 0.5f;
+
+        // Fade out current music
+        float elapsedTime = 0f;
+        while (elapsedTime < halfDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = elapsedTime / halfDuration;
+            musicAudioSource.volume = Mathf.Lerp(startVolume, 0f, progress);
+            yield return null;
+        }
+
+        // Switch to new music
+        currentMusicClip = newMusicClip;
+        musicAudioSource.clip = newMusicClip;
+        musicAudioSource.volume = 0f;
+        musicAudioSource.Play();
+
+        // Fade in new music
+        elapsedTime = 0f;
+        while (elapsedTime < halfDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = elapsedTime / halfDuration;
+            musicAudioSource.volume = Mathf.Lerp(0f, targetVolume, progress);
+            yield return null;
+        }
+
+        musicAudioSource.volume = targetVolume;
+        fadeCoroutine = null;
+
+        if (showDebugInfo)
+        {
+            Debug.Log($"SoundManager: Crossfaded to music '{newMusicClip.name}'");
+        }
+    }
+
     // ==================== Debug Methods ====================
 
     /// <summary>
@@ -249,7 +565,11 @@ public class SoundManager : MonoBehaviour
         string info = "SoundManager Debug Info:\n";
         info += $"Master Volume: {masterVolume}\n";
         info += $"SFX Volume: {sfxVolume}\n";
+        info += $"Music Volume: {musicVolume}\n";
         info += $"2D Audio Source: {(audioSource2D != null ? "Initialized" : "Not Initialized")}\n";
+        info += $"Music Audio Source: {(musicAudioSource != null ? "Initialized" : "Not Initialized")}\n";
+        info += $"Current Music: {(currentMusicClip != null ? currentMusicClip.name : "None")}\n";
+        info += $"Music Playing: {IsMusicPlaying()}\n";
         return info;
     }
 }

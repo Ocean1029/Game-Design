@@ -43,6 +43,13 @@ public class PlayerMovement : MonoBehaviour
     private bool isJumping = false;
     private float jumpTimeCounter = 0f;
 
+    // Movement input caching (set in Update, applied in FixedUpdate)
+    private float horizontalInput = 0f;
+    private bool shouldApplyMovement = false;
+    
+    // Jump input caching (set in Update, applied in FixedUpdate)
+    private bool shouldContinueJump = false;
+
     // Sound manager reference (cached for performance)
     private SoundManager soundManager;
 
@@ -58,15 +65,45 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         CheckGrounded();
+        
+        // Apply movement in FixedUpdate to ensure physics consistency
+        if (shouldApplyMovement)
+        {
+            rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocity.y);
+            shouldApplyMovement = false;
+        }
+        
+        // Apply jump continuation in FixedUpdate for physics consistency
+        if (shouldContinueJump)
+        {
+            if (isJumping)
+            {
+                // Continue only if within max hold time and still moving upward
+                if (jumpTimeCounter < maxJumpHoldTime && rb.linearVelocity.y > 0)
+                {
+                    // Apply continuous upward acceleration using fixedDeltaTime
+                    rb.linearVelocity += Vector2.up * jumpHoldAcceleration * Time.fixedDeltaTime;
+                    jumpTimeCounter += Time.fixedDeltaTime;
+                }
+                else
+                {
+                    // Max time reached or started falling, stop jump boost
+                    isJumping = false;
+                }
+            }
+            shouldContinueJump = false;
+        }
     }
 
     /// <summary>
-    /// Move the player horizontally
+    /// Set horizontal movement input (call from Update)
+    /// The actual velocity will be applied in FixedUpdate for physics consistency
     /// </summary>
     /// <param name="horizontal">Input value (-1 for left, 1 for right, 0 for no movement)</param>
     public void Move(float horizontal)
     {
-        rb.linearVelocity = new Vector2(horizontal * moveSpeed, rb.linearVelocity.y);
+        horizontalInput = horizontal;
+        shouldApplyMovement = true;
     }
 
     /// <summary>
@@ -92,25 +129,12 @@ public class PlayerMovement : MonoBehaviour
 
     /// <summary>
     /// Continue applying upward force while jump button is held
-    /// Call this every frame while the button is held down
+    /// Call this every frame while the button is held down (from Update)
+    /// The actual force will be applied in FixedUpdate for physics consistency
     /// </summary>
     public void ContinueJump()
     {
-        if (isJumping)
-        {
-            // Continue only if within max hold time and still moving upward
-            if (jumpTimeCounter < maxJumpHoldTime && rb.linearVelocity.y > 0)
-            {
-                // Apply continuous upward acceleration
-                rb.linearVelocity += Vector2.up * jumpHoldAcceleration * Time.deltaTime;
-                jumpTimeCounter += Time.deltaTime;
-            }
-            else
-            {
-                // Max time reached or started falling, stop jump boost
-                isJumping = false;
-            }
-        }
+        shouldContinueJump = true;
     }
 
     /// <summary>
