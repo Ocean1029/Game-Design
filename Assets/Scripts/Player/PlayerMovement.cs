@@ -23,6 +23,13 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("Multiplier for downward velocity when jump button is released early")]
     [SerializeField] private float jumpCutMultiplier = 0.5f;
 
+    [Header("Jump Sound")]
+    [Tooltip("Sound played when player jumps (optional)")]
+    [SerializeField] private AudioClip jumpSound;
+    
+    [Tooltip("Volume of jump sound (0.0 to 1.0)")]
+    [SerializeField, Range(0f, 1f)] private float jumpSoundVolume = 0.6f;
+
     [Header("Ground Detection")]
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckRadius = 0.2f;
@@ -36,10 +43,16 @@ public class PlayerMovement : MonoBehaviour
     private bool isJumping = false;
     private float jumpTimeCounter = 0f;
 
+    // Sound manager reference (cached for performance)
+    private SoundManager soundManager;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         currentGravityScale = rb.gravityScale;
+        
+        // Initialize sound manager reference
+        soundManager = SoundManager.GetInstance();
     }
 
     void FixedUpdate()
@@ -69,6 +82,9 @@ public class PlayerMovement : MonoBehaviour
             // Begin tracking jump hold time
             isJumping = true;
             jumpTimeCounter = 0f;
+            
+            // Play jump sound
+            PlayJumpSound();
             
             Debug.Log("Jump started");
         }
@@ -173,6 +189,65 @@ public class PlayerMovement : MonoBehaviour
     public Vector2 GetVelocity()
     {
         return rb.linearVelocity;
+    }
+
+    // ==================== Jump Sound ====================
+
+    /// <summary>
+    /// Play jump sound using SoundManager with backward compatibility fallback
+    /// </summary>
+    private void PlayJumpSound()
+    {
+        if (jumpSound == null)
+        {
+            return;
+        }
+
+        // Get sound position (player's position)
+        Vector3 soundPosition = transform.position;
+
+        // Play sound through SoundManager with fallback
+        if (soundManager != null)
+        {
+            soundManager.PlaySound(jumpSound, soundPosition, jumpSoundVolume);
+        }
+        else
+        {
+            // Fallback to direct playback if SoundManager is not available
+            AudioSource.PlayClipAtPoint(jumpSound, soundPosition, jumpSoundVolume);
+        }
+    }
+
+    /// <summary>
+    /// Set the jump sound clip
+    /// </summary>
+    public void SetJumpSound(AudioClip clip)
+    {
+        jumpSound = clip;
+    }
+
+    /// <summary>
+    /// Get the current jump sound clip
+    /// </summary>
+    public AudioClip GetJumpSound()
+    {
+        return jumpSound;
+    }
+
+    /// <summary>
+    /// Set the jump sound volume
+    /// </summary>
+    public void SetJumpSoundVolume(float volume)
+    {
+        jumpSoundVolume = Mathf.Clamp01(volume);
+    }
+
+    /// <summary>
+    /// Get the current jump sound volume
+    /// </summary>
+    public float GetJumpSoundVolume()
+    {
+        return jumpSoundVolume;
     }
 
     // Draw ground check gizmo in editor

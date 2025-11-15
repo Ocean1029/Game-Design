@@ -301,7 +301,7 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: da64b393b387468da0633484e5395e4f, type: 2}
   quantity: 1
   collectEffect: {fileID: 0}
-  collectSound: {fileID: 0}
+  collectSound: {fileID: 8300000, guid: a1e044a02db8044b7b1d9191f0a2c611, type: 3}
   collectableId: 
 --- !u!61 &18142369
 BoxCollider2D:
@@ -3614,7 +3614,7 @@ MonoBehaviour:
   doorOpenedSprite: {fileID: -4265711937379182498, guid: e3b8a85a303781b409f4ff7e10cc683e, type: 3}
   openTransparency: 0.5
   animationDuration: 1
-  openSound: {fileID: 0}
+  openSound: {fileID: 8300000, guid: 588b6e86443f549bf9b10ba6c56aaadf, type: 3}
   closeSound: {fileID: 0}
   openEffect: {fileID: 0}
 --- !u!1001 &947203745
@@ -4117,7 +4117,7 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: aed326dedbfd244a58096ce8bf9fd10a, type: 2}
   quantity: 1
   collectEffect: {fileID: 0}
-  collectSound: {fileID: 0}
+  collectSound: {fileID: 8300000, guid: c0471b050f04d45e79684d556bc067e2, type: 3}
   collectableId: 
 --- !u!58 &1057800704
 CircleCollider2D:
@@ -4614,6 +4614,53 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2277676754856186160, guid: 6e2e472f2f9a3de4ea7c54ce52bbb278, type: 3}
   m_PrefabInstance: {fileID: 1196655100}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1200339642
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1200339644}
+  - component: {fileID: 1200339643}
+  m_Layer: 0
+  m_Name: SoundSystemTester
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1200339643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1200339642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c815babe2e84440b68c7da70287509, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SoundSystemTester
+  runTestsOnStart: 1
+  showDetailedOutput: 1
+  testAudioClip: {fileID: 0}
+--- !u!4 &1200339644
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1200339642}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 22.30599, y: -10.81483, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1212857593 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2062719947681043692, guid: 6932a9d5779764fca92a727240ea0eb7, type: 3}
@@ -4635,7 +4682,7 @@ MonoBehaviour:
   doorOpenedSprite: {fileID: -4265711937379182498, guid: e3b8a85a303781b409f4ff7e10cc683e, type: 3}
   openTransparency: 0.5
   animationDuration: 1
-  openSound: {fileID: 0}
+  openSound: {fileID: 8300000, guid: 588b6e86443f549bf9b10ba6c56aaadf, type: 3}
   closeSound: {fileID: 0}
   openEffect: {fileID: 0}
 --- !u!4 &1216616644 stripped
@@ -7836,6 +7883,25 @@ MonoBehaviour:
   bombItemId: bomb_for_rock
   bombPrefab: {fileID: 2915061035342170213, guid: eb2275e00b739df4e89ca1dda9e807f3, type: 3}
   spawnOffset: {x: 0, y: -0.5}
+--- !u!114 &2041121396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2041121362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7ced575bdf8b47e5b30082b9e2fe13a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerFootstepSound
+  footstepSound: {fileID: 8300000, guid: eb05f2421a1844a76951f0c5fc215484, type: 3}
+  footstepVolume: 1
+  minStepInterval: 0.3
+  maxStepInterval: 0.5
+  minMovementSpeed: 0.1
+  adjustIntervalBySpeed: 1
+  speedMultiplier: 1
 --- !u!4 &2109947475 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2277676754856186160, guid: 6e2e472f2f9a3de4ea7c54ce52bbb278, type: 3}
@@ -8540,6 +8606,14 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 9027734300911509487, guid: e75b47577670f44af9baf508f763a683, type: 3}
+      propertyPath: jumpSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 2c3e13592bc74467a8a51d1188b19a1f, type: 3}
+    - target: {fileID: 9027734300911509487, guid: e75b47577670f44af9baf508f763a683, type: 3}
+      propertyPath: jumpSoundVolume
+      value: 0.41
+      objectReference: {fileID: 0}
+    - target: {fileID: 9027734300911509487, guid: e75b47577670f44af9baf508f763a683, type: 3}
       propertyPath: jumpHoldAcceleration
       value: 6
       objectReference: {fileID: 0}
@@ -8556,6 +8630,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5328470061019652296, guid: e75b47577670f44af9baf508f763a683, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2041121386}
+    - targetCorrespondingSourceObject: {fileID: 5328470061019652296, guid: e75b47577670f44af9baf508f763a683, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2041121396}
   m_SourcePrefab: {fileID: 100100000, guid: e75b47577670f44af9baf508f763a683, type: 3}
 --- !u!1001 &2594840054581683318
 PrefabInstance:
@@ -9254,11 +9331,11 @@ SceneRoots:
   - {fileID: 2419818130185430321}
   - {fileID: 5296786727560539899}
   - {fileID: 5791627620509265172}
+  - {fileID: 558030705}
   - {fileID: 726226766}
   - {fileID: 5180070550163569638}
   - {fileID: 1029239978}
   - {fileID: 1343572219}
-  - {fileID: 558030705}
   - {fileID: 3817030531540524442}
   - {fileID: 83419321}
   - {fileID: 18142371}
@@ -9277,3 +9354,4 @@ SceneRoots:
   - {fileID: 617362445}
   - {fileID: 1461394710}
   - {fileID: 490640081}
+  - {fileID: 1200339644}

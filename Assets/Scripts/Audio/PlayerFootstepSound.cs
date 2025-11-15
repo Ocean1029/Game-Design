@@ -1,0 +1,227 @@
+using UnityEngine;
+
+/// <summary>
+/// Manages footstep sound effects for the player
+/// Plays footstep sounds when the player is walking on the ground
+/// Integrates with SoundManager for unified audio management
+/// </summary>
+[RequireComponent(typeof(PlayerController))]
+public class PlayerFootstepSound : MonoBehaviour
+{
+    [Header("Footstep Sound Configuration")]
+    [Tooltip("Audio clip played when player takes a step")]
+    [SerializeField] private AudioClip footstepSound;
+    
+    [Tooltip("Volume of footstep sounds (0.0 to 2.0, can exceed 1.0 for louder sounds)")]
+    [SerializeField, Range(0f, 2f)] private float footstepVolume = 0.5f;
+
+    [Header("Timing Settings")]
+    [Tooltip("Minimum time between footstep sounds (in seconds)")]
+    [SerializeField] private float minStepInterval = 0.3f;
+    
+    [Tooltip("Maximum time between footstep sounds (in seconds)")]
+    [SerializeField] private float maxStepInterval = 0.5f;
+    
+    [Tooltip("Minimum movement speed to trigger footstep sounds")]
+    [SerializeField] private float minMovementSpeed = 0.1f;
+
+    [Header("Advanced Settings")]
+    [Tooltip("Whether to adjust step interval based on movement speed")]
+    [SerializeField] private bool adjustIntervalBySpeed = true;
+    
+    [Tooltip("Speed multiplier for step interval adjustment")]
+    [SerializeField] private float speedMultiplier = 1f;
+
+    // Component references
+    private PlayerController playerController;
+    private PlayerMovement playerMovement;
+    private PlayerStateMachine stateMachine;
+    private SoundManager soundManager;
+
+    // Footstep timing
+    private float timeSinceLastStep = 0f;
+    private float currentStepInterval = 0.5f;
+    private bool wasMoving = false;
+
+    void Awake()
+    {
+        // Get component references
+        playerController = GetComponent<PlayerController>();
+        if (playerController == null)
+        {
+            Debug.LogError("PlayerFootstepSound: PlayerController component not found!");
+            return;
+        }
+
+        playerMovement = GetComponent<PlayerMovement>();
+        if (playerMovement == null)
+        {
+            Debug.LogError("PlayerFootstepSound: PlayerMovement component not found!");
+            return;
+        }
+
+        stateMachine = GetComponent<PlayerStateMachine>();
+        if (stateMachine == null)
+        {
+            Debug.LogError("PlayerFootstepSound: PlayerStateMachine component not found!");
+            return;
+        }
+
+        // Initialize SoundManager reference
+        soundManager = SoundManager.GetInstance();
+    }
+
+    void Update()
+    {
+        // Check if player is moving and grounded
+        bool isMoving = IsPlayerMoving();
+        bool isGrounded = playerMovement.IsGrounded();
+
+        // Only play footstep sounds when moving and grounded
+        if (isMoving && isGrounded)
+        {
+            // Update step interval based on speed if enabled
+            if (adjustIntervalBySpeed)
+            {
+                UpdateStepInterval();
+            }
+
+            // Accumulate time
+            timeSinceLastStep += Time.deltaTime;
+
+            // Play footstep sound when interval is reached
+            if (timeSinceLastStep >= currentStepInterval)
+            {
+                PlayFootstepSound();
+                timeSinceLastStep = 0f;
+                currentStepInterval = Random.Range(minStepInterval, maxStepInterval);
+            }
+
+            wasMoving = true;
+        }
+        else
+        {
+            // Reset timer when player stops moving
+            if (wasMoving && !isMoving)
+            {
+                timeSinceLastStep = 0f;
+            }
+            wasMoving = false;
+        }
+    }
+
+    /// <summary>
+    /// Check if the player is currently moving
+    /// </summary>
+    private bool IsPlayerMoving()
+    {
+        if (stateMachine == null || playerMovement == null)
+        {
+            return false;
+        }
+
+        // Check if player is in moving state
+        if (stateMachine.CurrentState != PlayerState.Moving)
+        {
+            return false;
+        }
+
+        // Check movement speed
+        Vector2 velocity = playerMovement.GetVelocity();
+        float horizontalSpeed = Mathf.Abs(velocity.x);
+        
+        return horizontalSpeed >= minMovementSpeed;
+    }
+
+    /// <summary>
+    /// Update step interval based on current movement speed
+    /// Faster movement = shorter interval between steps
+    /// </summary>
+    private void UpdateStepInterval()
+    {
+        if (playerMovement == null)
+        {
+            return;
+        }
+
+        Vector2 velocity = playerMovement.GetVelocity();
+        float horizontalSpeed = Mathf.Abs(velocity.x);
+
+        // Calculate adjusted interval based on speed
+        // Faster speed = shorter interval
+        float speedFactor = Mathf.Clamp01(horizontalSpeed / 10f); // Normalize to 0-1 range
+        float adjustedInterval = Mathf.Lerp(maxStepInterval, minStepInterval, speedFactor * speedMultiplier);
+        
+        currentStepInterval = Mathf.Clamp(adjustedInterval, minStepInterval, maxStepInterval);
+    }
+
+    /// <summary>
+    /// Play a footstep sound
+    /// </summary>
+    private void PlayFootstepSound()
+    {
+        if (footstepSound == null)
+        {
+            return;
+        }
+
+        // Get sound position (player's position)
+        Vector3 soundPosition = transform.position;
+
+        // Play sound through SoundManager with fallback
+        if (soundManager != null)
+        {
+            soundManager.PlaySound(footstepSound, soundPosition, footstepVolume);
+        }
+        else
+        {
+            // Fallback to direct playback if SoundManager is not available
+            AudioSource.PlayClipAtPoint(footstepSound, soundPosition, footstepVolume);
+        }
+    }
+
+    /// <summary>
+    /// Set the footstep sound clip
+    /// </summary>
+    public void SetFootstepSound(AudioClip clip)
+    {
+        footstepSound = clip;
+    }
+
+    /// <summary>
+    /// Get the current footstep sound clip
+    /// </summary>
+    public AudioClip GetFootstepSound()
+    {
+        return footstepSound;
+    }
+
+    /// <summary>
+    /// Set the footstep volume (0.0 to 2.0)
+    /// </summary>
+    public void SetFootstepVolume(float volume)
+    {
+        footstepVolume = Mathf.Clamp(volume, 0f, 2f);
+    }
+
+    /// <summary>
+    /// Get the current footstep volume
+    /// </summary>
+    public float GetFootstepVolume()
+    {
+        return footstepVolume;
+    }
+
+    /// <summary>
+    /// Enable or disable footstep sounds
+    /// </summary>
+    public void SetFootstepEnabled(bool enabled)
+    {
+        this.enabled = enabled;
+        if (!enabled)
+        {
+            timeSinceLastStep = 0f;
+        }
+    }
+}
+
