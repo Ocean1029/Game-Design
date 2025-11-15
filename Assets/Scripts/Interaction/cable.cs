@@ -327,11 +327,11 @@ public class cable : MonoBehaviour, IInteractable
         
         Debug.Log("Cable: Successfully repaired!");
         
-        // 顯示浮動文字
+        // Show floating text
         FloatingTextManager floatingTextManager = FloatingTextManager.GetInstance();
         if (floatingTextManager != null)
         {
-            floatingTextManager.ShowFloatingText("Cable 已修復！", transform.position, Color.green);
+            floatingTextManager.ShowFloatingText("Cable repaired!", transform.position, Color.green);
         }
     }
     
@@ -363,7 +363,7 @@ public class cable : MonoBehaviour, IInteractable
     }
     
     /// <summary>
-    /// 顯示需要 rope 的訊息
+    /// Show message that rope is required to repair
     /// </summary>
     private void ShowRopeRequiredMessage()
     {
@@ -372,7 +372,7 @@ public class cable : MonoBehaviour, IInteractable
         FloatingTextManager floatingTextManager = FloatingTextManager.GetInstance();
         if (floatingTextManager != null)
         {
-            floatingTextManager.ShowFloatingText("需要繩索修復！", transform.position, Color.red);
+            floatingTextManager.ShowFloatingText("Rope required to repair!", transform.position, Color.red);
         }
     }
     

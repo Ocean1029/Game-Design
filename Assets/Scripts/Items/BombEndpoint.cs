@@ -1,25 +1,25 @@
 using UnityEngine;
 
 /// <summary>
-/// 炸彈終點 - 當玩家觸碰到此物件時，顯示成功破關訊息
+/// Bomb endpoint - Shows success message when player touches this object
 /// </summary>
 public class BombEndpoint : MonoBehaviour
 {
     [Header("Message Settings")]
-    [Tooltip("顯示的成功訊息")]
-    [SerializeField] private string successMessage = "成功破關第一階段 prototype";
+    [Tooltip("Success message to display")]
+    [SerializeField] private string successMessage = "Stage 1 Prototype Complete!";
     
-    [Tooltip("訊息顏色")]
-    [SerializeField] private Color messageColor = new Color(0f, 1f, 0f); // 綠色
+    [Tooltip("Message color")]
+    [SerializeField] private Color messageColor = new Color(0f, 1f, 0f); // Green
     
-    [Tooltip("字體大小")]
+    [Tooltip("Font size")]
     [SerializeField] private float fontSize = 36f;
     
     [Header("Audio & Visual")]
-    [Tooltip("觸發時的音效")]
+    [Tooltip("Sound effect when triggered")]
     [SerializeField] private AudioClip triggerSound;
     
-    [Tooltip("觸發時的視覺效果")]
+    [Tooltip("Visual effect when triggered")]
     [SerializeField] private GameObject triggerEffect;
 
     private bool isTriggered = false;
@@ -28,23 +28,23 @@ public class BombEndpoint : MonoBehaviour
     {
         if (isTriggered) return;
 
-        // 檢查是否為玩家
+        // Check if it's the player
         PlayerController player = collision.GetComponent<PlayerController>();
         if (player == null) return;
 
-        // 觸發成功訊息
+        // Trigger success message
         TriggerSuccess(player.transform.position);
     }
 
     /// <summary>
-    /// 觸發成功破關訊息
+    /// Trigger success completion message
     /// </summary>
     private void TriggerSuccess(Vector3 playerPosition)
     {
         if (isTriggered) return;
         isTriggered = true;
 
-        // 顯示浮現文字
+        // Show floating text
         FloatingTextManager floatingTextManager = FloatingTextManager.GetInstance();
         if (floatingTextManager != null)
         {
@@ -60,13 +60,13 @@ public class BombEndpoint : MonoBehaviour
             Debug.LogWarning($"BombEndpoint: FloatingTextManager not found! Message: {successMessage}");
         }
 
-        // 播放音效
+        // Play sound effect
         if (triggerSound != null)
         {
             AudioSource.PlayClipAtPoint(triggerSound, transform.position);
         }
 
-        // 生成視覺效果
+        // Spawn visual effect
         if (triggerEffect != null)
         {
             Instantiate(triggerEffect, transform.position, Quaternion.identity);
@@ -76,7 +76,7 @@ public class BombEndpoint : MonoBehaviour
     }
 
     /// <summary>
-    /// 設置成功訊息
+    /// Set success message
     /// </summary>
     public void SetSuccessMessage(string message)
     {
@@ -84,7 +84,7 @@ public class BombEndpoint : MonoBehaviour
     }
 
     /// <summary>
-    /// 設置訊息顏色
+    /// Set message color
     /// </summary>
     public void SetMessageColor(Color color)
     {

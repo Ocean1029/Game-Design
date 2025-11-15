@@ -211,18 +211,18 @@ public class PhysicalDoor : MonoBehaviour
     }
     
     /// <summary>
-    /// 顯示需要鑰匙的訊息
+    /// Show message that key is required to open the door
     /// </summary>
     private void ShowKeyRequiredMessage()
     {
-        Debug.Log($"需要鑰匙才能開啟這扇門: {requiredKeyTag}");
+        Debug.Log($"Key required to open this door: {requiredKeyTag}");
         
-        // 可以在這裡添加 UI 提示
-        // 例如顯示浮動文字或 UI 提示
+        // Can add UI prompt here
+        // For example, show floating text or UI prompt
         FloatingTextManager floatingTextManager = FloatingTextManager.GetInstance();
         if (floatingTextManager != null)
         {
-            floatingTextManager.ShowFloatingText("需要鑰匙！", transform.position, Color.red);
+            floatingTextManager.ShowFloatingText("Key required!", transform.position, Color.red);
         }
     }
     
