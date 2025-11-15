@@ -49,6 +49,9 @@ public class PlayerMovement : MonoBehaviour
     
     // Jump input caching (set in Update, applied in FixedUpdate)
     private bool shouldContinueJump = false;
+    
+    // Flag to lock movement (used when sitting, rappelling, etc.)
+    private bool isMovementLocked = false;
 
     // Sound manager reference (cached for performance)
     private SoundManager soundManager;
@@ -65,6 +68,17 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         CheckGrounded();
+        
+        // Don't apply movement if movement is locked (e.g., when sitting)
+        if (isMovementLocked)
+        {
+            // Clear any pending movement input
+            shouldApplyMovement = false;
+            horizontalInput = 0f;
+            // Keep velocity at zero to prevent any movement
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            return;
+        }
         
         // Apply movement in FixedUpdate to ensure physics consistency
         if (shouldApplyMovement)
@@ -167,6 +181,19 @@ public class PlayerMovement : MonoBehaviour
     public void StopMovement()
     {
         rb.linearVelocity = Vector2.zero;
+        // Clear input cache to prevent movement in next FixedUpdate
+        ClearInput();
+    }
+    
+    /// <summary>
+    /// Clear all cached input (movement and jump)
+    /// Useful when transitioning to states that should not accept input
+    /// </summary>
+    public void ClearInput()
+    {
+        horizontalInput = 0f;
+        shouldApplyMovement = false;
+        shouldContinueJump = false;
     }
 
     /// <summary>
@@ -176,6 +203,22 @@ public class PlayerMovement : MonoBehaviour
     public void SetGravityEnabled(bool enabled)
     {
         rb.gravityScale = enabled ? currentGravityScale : 0f;
+    }
+    
+    /// <summary>
+    /// Lock or unlock movement (prevents any movement input from being applied)
+    /// When locked, movement input is ignored and velocity is kept at zero
+    /// </summary>
+    /// <param name="locked">Whether movement should be locked</param>
+    public void SetMovementLocked(bool locked)
+    {
+        isMovementLocked = locked;
+        if (locked)
+        {
+            // Clear input and stop movement when locking
+            ClearInput();
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+        }
     }
 
     /// <summary>

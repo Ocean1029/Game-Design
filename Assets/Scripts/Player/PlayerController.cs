@@ -80,6 +80,12 @@ public class PlayerController : MonoBehaviour, IInteractor
     {
         if (!stateMachine.CanMove())
         {
+            // Clear input when movement is not allowed (e.g., when sitting)
+            // This prevents cached input from being applied in FixedUpdate
+            if (stateMachine.CurrentState == PlayerState.Sitting)
+            {
+                movement.ClearInput();
+            }
             return;
         }
 
@@ -316,7 +322,9 @@ public class PlayerController : MonoBehaviour, IInteractor
         currentChair = chairToSit;
         transform.position = chairToSit.sitpoint.position;
         
+        // Stop movement and lock it to prevent any input from being applied
         movement.StopMovement();
+        movement.SetMovementLocked(true);
         movement.SetGravityEnabled(false);
         
         stateMachine.ChangeState(PlayerState.Sitting);
@@ -346,6 +354,9 @@ public class PlayerController : MonoBehaviour, IInteractor
             energySystem.StopEnergyRestore();
         }
 
+        // Unlock movement before changing position
+        movement.SetMovementLocked(false);
+        
         // Move slightly upward to avoid re-triggering the chair
         transform.position += new Vector3(0f, 0.5f, 0f);
         
@@ -386,6 +397,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         // Hide player sprite during rappelling animation
         animationController.SetVisible(false);
         movement.StopMovement();
+        movement.SetMovementLocked(true);
         movement.SetGravityEnabled(false);
 
         Debug.Log("Rappelling started");
@@ -395,6 +407,7 @@ public class PlayerController : MonoBehaviour, IInteractor
 
         // Teleport to target position
         movement.Teleport(targetPosition.position);
+        movement.SetMovementLocked(false);
         movement.SetGravityEnabled(true);
 
         // Show player sprite again
