@@ -53,10 +53,10 @@ MonoBehaviour:
     restoresEnergy: 1
     energyRestoreAmount: 0
   currentActiveSpawnPoint:
-    spawnPointId: village_square_chair
-    displayName: Village Square
+    spawnPointId: rest_chair
+    displayName: Rest Square
     locationDescription: 
-    position: {x: 30.342022, y: -9.70693, z: 0}
+    position: {x: 41.182022, y: -20.686932, z: 0}
     sceneName: MainScene
     isOneTimeUse: 0
     isTransportable: 1
