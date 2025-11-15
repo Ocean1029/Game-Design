@@ -23,8 +23,7 @@ public class PlayerController : MonoBehaviour, IInteractor
     [SerializeField] private KeyCode moveLeftKey = KeyCode.LeftArrow;
     [SerializeField] private KeyCode moveRightKey = KeyCode.RightArrow;
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
-    [SerializeField] private KeyCode interactKey = KeyCode.U;
-    [SerializeField] private KeyCode exitInteractionKey = KeyCode.D;
+    [SerializeField] private KeyCode interactKey = KeyCode.Z;  // 改用 Z 鍵來互動（坐下、起立、使用鑰匙、使用炸彈等）
     [SerializeField] private KeyCode respawnKey = KeyCode.R;
     [SerializeField] private KeyCode fastTravelMenuKey = KeyCode.M;
 
@@ -171,7 +170,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         // Interact with nearby objects
         if (Input.GetKeyDown(interactKey))
         {
-            Debug.Log("U key pressed - attempting interaction");
+            Debug.Log("Z key pressed - attempting interaction");
             // Try standard interaction first
             if (interactionHandler.TryInteract(this))
             {
@@ -187,18 +186,12 @@ public class PlayerController : MonoBehaviour, IInteractor
             }
         }
 
-        // Exit interaction (e.g., stand up from chair)
-        if (Input.GetKeyDown(exitInteractionKey))
-        {
-            if (stateMachine.CurrentState == PlayerState.Sitting)
-            {
-                LeaveChair();
-            }
-        }
+        // Exit interaction is now handled by the interact key (Z)
+        // No longer need a separate exit key
     }
 
     /// <summary>
-    /// Handle system input (R key for respawn, M key for fast travel menu)
+    /// Handle system input (R key for respawn, M key for fast travel menu, Z for chair interaction)
     /// </summary>
     private void HandleSystemInput()
     {
@@ -213,6 +206,10 @@ public class PlayerController : MonoBehaviour, IInteractor
         {
             ToggleFastTravelMenu();
         }
+        
+        // Handle chair interaction with Z key
+        // Note: This is now handled by the interaction system (InteractionHandler)
+        // The Z key is mapped to the interact key
     }
 
     /// <summary>

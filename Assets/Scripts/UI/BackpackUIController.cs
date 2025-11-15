@@ -161,6 +161,22 @@ public class BackpackUIController : MonoBehaviour
         // Setup slot
         slotUI.Setup(itemData, inventorySystem);
         
+        // === 新增：添加 InventorySlotPrompt 組件 ===
+        InventorySlotPrompt prompt = slotObj.AddComponent<InventorySlotPrompt>();
+        
+        // === 新增：註冊到 InventoryPromptManager ===
+        InventoryPromptManager promptManager = InventoryPromptManager.GetInstance();
+        if (promptManager != null)
+        {
+            promptManager.RegisterSlotPrompt(itemData.itemId, prompt);
+            if (showDebugInfo) Debug.Log($"BackpackUIController: Registered prompt for '{itemData.itemName}' (ID: {itemData.itemId})");
+        }
+        else
+        {
+            Debug.LogWarning("BackpackUIController: InventoryPromptManager not found! Prompts will not work.");
+        }
+        // ==========================================
+        
         // Position slot using grid layout
         PositionSlot(slotObj, index);
         
@@ -251,7 +267,17 @@ public class BackpackUIController : MonoBehaviour
         if (slotMap.ContainsKey(itemData.itemId))
         {
             if (showDebugInfo) Debug.Log($"BackpackUIController: Removing item '{itemData.itemName}' (ID: {itemData.itemId})");
-            slotMap[itemData.itemId].UpdateDisplay();
+            // 播放消耗動畫
+            slotMap[itemData.itemId].UpdateDisplay(true);
+            
+            // 隱藏該物品的提示
+            InventoryPromptManager promptManager = InventoryPromptManager.GetInstance();
+            if (promptManager != null)
+            {
+                promptManager.HidePromptForItem(itemData.itemId);
+                if (showDebugInfo) Debug.Log($"BackpackUIController: Hiding prompt for removed item '{itemData.itemName}'");
+            }
+            
             if (showDebugInfo) Debug.Log($"BackpackUIController: Updated slot for removed item '{itemData.itemName}'");
         }
         else

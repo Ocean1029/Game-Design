@@ -26,6 +26,7 @@ public class BackpackSlotUI : MonoBehaviour
     // References
     private ItemData itemData;
     private InventorySystem inventorySystem;
+    private BackpackSlotConsumeEffect consumeEffect;
     
     void Awake()
     {
@@ -48,6 +49,13 @@ public class BackpackSlotUI : MonoBehaviour
                     break;
                 }
             }
+        }
+        
+        // 添加消耗效果組件
+        consumeEffect = GetComponent<BackpackSlotConsumeEffect>();
+        if (consumeEffect == null && iconImage != null)
+        {
+            consumeEffect = iconImage.gameObject.AddComponent<BackpackSlotConsumeEffect>();
         }
     }
     
@@ -80,9 +88,18 @@ public class BackpackSlotUI : MonoBehaviour
     /// </summary>
     public void UpdateDisplay()
     {
+        UpdateDisplay(false);
+    }
+    
+    /// <summary>
+    /// Update the visual display of this slot
+    /// </summary>
+    /// <param name="playConsumeAnimation">是否播放消耗動畫</param>
+    public void UpdateDisplay(bool playConsumeAnimation)
+    {
         // Always log for debugging (temporarily)
         string itemName = itemData != null ? itemData.itemName : "NULL";
-        Debug.Log($"[BackpackSlotUI] UpdateDisplay called for: {itemName}");
+        Debug.Log($"[BackpackSlotUI] UpdateDisplay called for: {itemName}, playAnimation: {playConsumeAnimation}");
         
         if (itemData == null || inventorySystem == null || iconImage == null)
         {
@@ -95,6 +112,18 @@ public class BackpackSlotUI : MonoBehaviour
         bool hasItem = quantity > 0;
         
         Debug.Log($"[BackpackSlotUI] '{itemName}' - quantity: {quantity}, hasItem: {hasItem}");
+        
+        // 如果物品從有變成沒有，且需要播放動畫
+        bool wasCollected = iconImage.color == collectedColor;
+        if (wasCollected && !hasItem && playConsumeAnimation)
+        {
+            // 播放消耗動畫
+            if (consumeEffect != null)
+            {
+                consumeEffect.PlayConsumeAnimation();
+                Debug.Log($"[BackpackSlotUI] Playing consume animation for '{itemName}'");
+            }
+        }
         
         // Update visual state
         if (hasItem)
@@ -189,5 +218,32 @@ public class BackpackSlotUI : MonoBehaviour
             return false;
             
         return inventorySystem.GetItemQuantity(itemData) > 0;
+    }
+    
+    /// <summary>
+    /// 動畫結束後刷新顯示狀態（確保變成半透明色）
+    /// </summary>
+    public void RefreshDisplayAfterAnimation()
+    {
+        if (itemData == null || inventorySystem == null || iconImage == null)
+            return;
+        
+        int quantity = inventorySystem.GetItemQuantity(itemData);
+        bool hasItem = quantity > 0;
+        
+        Debug.Log($"[BackpackSlotUI] RefreshDisplayAfterAnimation for '{itemData.itemName}' - hasItem: {hasItem}");
+        
+        if (!hasItem)
+        {
+            // 確保設置為半透明的未擁有狀態
+            iconImage.color = emptyColor;
+            
+            if (backgroundImage != null)
+            {
+                backgroundImage.color = emptyBackgroundColor;
+            }
+            
+            Debug.Log($"[BackpackSlotUI] Set to empty state (color: {emptyColor})");
+        }
     }
 }
