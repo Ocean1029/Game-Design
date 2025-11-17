@@ -2,7 +2,7 @@
 
 ## 概述
 
-Cable（繩索下降）系統已更新，現在 cable 預設為壞掉狀態，玩家需要使用 rope（繩索）道具來修復才能使用。
+Cable（繩索下降）系統已更新，現在 cable 預設為壞掉狀態，玩家需要使用 rope（繩索）道具來啟動 cable 並觸發動畫。
 
 ## 系統特性
 
@@ -18,14 +18,14 @@ Cable（繩索下降）系統已更新，現在 cable 預設為壞掉狀態，�
    - 玩家可以按 Z 鍵使用 rappelling 下降
    - 視覺上顯示修復的樣子（如果設置了 repairedVisual）
 
-### 修復流程
+### 啟動流程
 
 1. 玩家撿到 rope（繩索）道具
-2. 靠近壞掉的 cable
+2. 靠近 cable（無論壞掉或修復）
 3. **背包中的 rope 物件上方會顯示閃動的 Z 鍵提示**
-4. 按下 **Z 鍵**消耗 rope 修復 cable
-5. Cable 變成可使用狀態（可穿透）
-6. 再次按 Z 鍵可以使用 rappelling 下降
+4. 按下 **Z 鍵**消耗 rope 啟動 cable
+5. Cable 觸發動畫並修復（如果還沒修復）
+6. 顯示 "Cable activated!" 訊息
 
 ## 設置步驟
 
@@ -99,18 +99,19 @@ void Start()
    - rope 自動加入背包
    - 浮動文字顯示 "+ Rope"
 
-2. **靠近壞掉的 cable**：
+2. **靠近 cable**：
    - 如果身上有 rope：
      - 背包中的 rope 物件上方會出現**閃動的 Z 鍵提示**
    - 如果身上沒有 rope：
      - 顯示紅色浮動文字："需要繩索修復！"
 
-3. **按 Z 鍵修復**：
+3. **按 Z 鍵啟動**：
    - 消耗 1 個 rope
    - rope 圖示播放消耗動畫（放大→閃爍→縮小→變暗）
    - Z 鍵提示消失
-   - 顯示綠色浮動文字："Cable 已修復！"
-   - Cable 變成可穿透狀態
+   - Cable 觸發動畫
+   - 如果 cable 還沒修復，同時修復 cable
+   - 顯示綠色浮動文字："Cable activated!"
 
 4. **使用修復後的 cable**：
    - 靠近修復後的 cable
@@ -164,10 +165,11 @@ void Start()
    - 縮小回原大小
 3. **最終狀態**：Rope 變成半透明（如果用完）
 
-### Cable 修復效果
+### Cable 啟動效果
 
-- 顯示綠色浮動文字："Cable 已修復！"
-- Cable collider 從 solid 變成 trigger
+- 觸發 cable animator
+- 如果 cable 還沒修復，同時修復 cable（collider 從 solid 變成 trigger）
+- 顯示綠色浮動文字："Cable activated!"
 - 切換視覺效果（如果有設置）
 
 ## 測試清單
@@ -175,12 +177,13 @@ void Start()
 - [ ] Cable 預設為壞掉狀態（solid collider）
 - [ ] 玩家無法穿透壞掉的 cable
 - [ ] 撿到 rope 後，背包顯示 rope 圖示
-- [ ] 靠近壞掉的 cable 時，rope 上方顯示 Z 鍵提示
+- [ ] 靠近 cable 時，rope 上方顯示 Z 鍵提示
 - [ ] 離開 cable 時，Z 鍵提示消失
-- [ ] 按 Z 鍵成功修復 cable
+- [ ] 按 Z 鍵成功啟動 cable
 - [ ] Rope 播放消耗動畫
 - [ ] Rope 消耗後變成半透明（如果用完）
-- [ ] 修復後的 cable 變成可穿透（trigger）
+- [ ] Cable 觸發動畫
+- [ ] 如果 cable 壞掉，同時修復 cable（變成 trigger）
 - [ ] 修復後的 cable 可以正常使用 rappelling
 - [ ] 如果沒有 rope，顯示"需要繩索修復！"訊息
 

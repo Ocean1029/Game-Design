@@ -6,6 +6,7 @@ TagManager:
   tags:
   - key1
   - PlayerSpawn
+  - rope
   layers:
   - Default
   - TransparentFX
