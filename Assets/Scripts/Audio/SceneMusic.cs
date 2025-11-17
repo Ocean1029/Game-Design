@@ -62,6 +62,13 @@ public class SceneMusic : MonoBehaviour
 
     void OnDestroy()
     {
+        // Don't perform operations if application is quitting
+        // This prevents creating new GameObjects or starting coroutines during cleanup
+        if (!Application.isPlaying)
+        {
+            return;
+        }
+        
         // Fade out music when scene unloads (if configured)
         if (fadeOutOnUnload && soundManager != null && sceneMusic != null)
         {

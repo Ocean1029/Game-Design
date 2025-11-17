@@ -14,6 +14,10 @@ public class SoundManager : MonoBehaviour
 
     // Singleton instance
     private static SoundManager instance;
+    
+    // Flag to track if application is quitting
+    // This prevents creating new GameObjects during cleanup
+    private static bool isApplicationQuitting = false;
 
     // Volume settings (reserved for future implementation)
     // These fields are reserved but not yet implemented
@@ -60,11 +64,24 @@ public class SoundManager : MonoBehaviour
 
     void OnDestroy()
     {
+        // Stop any running coroutines to prevent lingering operations
+        if (fadeCoroutine != null)
+        {
+            StopCoroutine(fadeCoroutine);
+            fadeCoroutine = null;
+        }
+        
         // Clear instance reference when destroyed
         if (instance == this)
         {
             instance = null;
         }
+    }
+    
+    void OnApplicationQuit()
+    {
+        // Mark that application is quitting to prevent creating new GameObjects
+        isApplicationQuitting = true;
     }
 
     /// <summary>
@@ -113,19 +130,31 @@ public class SoundManager : MonoBehaviour
 
     /// <summary>
     /// Get the singleton instance of SoundManager
+    /// Prevents creating new GameObjects during application quit or scene cleanup
     /// </summary>
     public static SoundManager GetInstance()
     {
+        // Don't create new instances if application is quitting
+        // This prevents the "objects were not cleaned up" warning
+        if (isApplicationQuitting)
+        {
+            return null;
+        }
+        
         if (instance == null)
         {
             // Try to find existing instance in scene
             instance = FindFirstObjectByType<SoundManager>();
             
-            if (instance == null)
+            if (instance == null && !isApplicationQuitting)
             {
-                // Create new instance if none exists
-                GameObject soundManagerObject = new GameObject("SoundManager");
-                instance = soundManagerObject.AddComponent<SoundManager>();
+                // Only create new instance if application is not quitting
+                // Check again to ensure we're not in cleanup phase
+                if (Application.isPlaying)
+                {
+                    GameObject soundManagerObject = new GameObject("SoundManager");
+                    instance = soundManagerObject.AddComponent<SoundManager>();
+                }
             }
         }
         
