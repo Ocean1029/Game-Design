@@ -109,11 +109,11 @@ public class CollectableItem : MonoBehaviour
             Debug.Log($"Collected {itemData.itemName} x{quantity}");
         }
 
-        // Play collect sound
+        // Play collect sound through SoundManager (with fallback for backward compatibility)
         AudioClip sound = collectSound != null ? collectSound : itemData.collectSound;
         if (sound != null)
         {
-            AudioSource.PlayClipAtPoint(sound, transform.position);
+            PlayCollectSound(sound, transform.position);
         }
 
         // Spawn collect effect
@@ -149,6 +149,26 @@ public class CollectableItem : MonoBehaviour
     public ItemData GetItemData()
     {
         return itemData;
+    }
+
+    /// <summary>
+    /// Play collect sound using SoundManager with backward compatibility fallback
+    /// </summary>
+    /// <param name="soundClip">Audio clip to play</param>
+    /// <param name="position">World position where sound should be played</param>
+    private void PlayCollectSound(AudioClip soundClip, Vector3 position)
+    {
+        // Try to use SoundManager first
+        SoundManager soundManager = SoundManager.GetInstance();
+        if (soundManager != null)
+        {
+            soundManager.PlaySound(soundClip, position, 1f);
+        }
+        else
+        {
+            // Fallback to original method if SoundManager is not available
+            AudioSource.PlayClipAtPoint(soundClip, position);
+        }
     }
 }
 

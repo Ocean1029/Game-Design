@@ -11,11 +11,8 @@ public class chair : MonoBehaviour, IInteractable
     public Transform sitpoint;
 
     [Header("UI Prompts")]
-    [Tooltip("UI element shown when interactor can sit down")]
-    public GameObject pressAPrompt;
-    
-    [Tooltip("UI element shown when interactor is sitting and can stand up")]
-    public GameObject pressDPrompt;
+    [Tooltip("UI element shown when interactor can sit down (Press Z)")]
+    public GameObject pressZPrompt;
 
     [Header("Spawn Point Configuration")]
     [Tooltip("Unique identifier for this chair as a spawn point")]
@@ -37,9 +34,8 @@ public class chair : MonoBehaviour, IInteractable
 
     void Start()
     {
-        // Hide both prompts at start
-        ShowPromptA(false);
-        ShowPromptD(false);
+        // Hide prompt at start
+        ShowPromptZ(false);
         
         // Generate chair ID if not set
         if (string.IsNullOrEmpty(chairId))
@@ -71,8 +67,8 @@ public class chair : MonoBehaviour, IInteractable
         PlayerController player = interactor.GetGameObject().GetComponent<PlayerController>();
         if (player != null && !player.IsSitting())
         {
-            ShowPromptA(true);
-            Debug.Log("Showing sit prompt");
+            ShowPromptZ(true);
+            Debug.Log("Showing sit prompt (Press Z)");
         }
     }
 
@@ -88,8 +84,7 @@ public class chair : MonoBehaviour, IInteractable
         // (when sitting, player should not leave the zone)
         if (player == null || !player.IsSitting())
         {
-            ShowPromptA(false);
-            ShowPromptD(false);
+            ShowPromptZ(false);
             currentInteractor = null;
         }
     }
@@ -112,21 +107,22 @@ public class chair : MonoBehaviour, IInteractable
         
         if (player.IsSitting())
         {
-            // Player is already sitting, can't sit again
-            Debug.Log("Player is already sitting");
-            return false;
+            // Player is already sitting - stand up
+            Debug.Log("Player standing up from chair (Press Z)");
+            player.LeaveChair();
+            ShowPromptZ(true); // 重新顯示坐下提示
+            return true;
         }
 
         // Make the player sit down
-        Debug.Log("Making player sit on chair");
+        Debug.Log("Making player sit on chair (Press Z)");
         player.SitOnChair(this);
         
         // Save progress by setting this chair as spawn point
         SaveProgress();
         
-        // Update UI prompts
-        ShowPromptA(false);
-        ShowPromptD(true);
+        // Keep prompt visible (can press Z to stand up)
+        ShowPromptZ(true);
         
         return true;
     }
@@ -142,24 +138,13 @@ public class chair : MonoBehaviour, IInteractable
     // ==================== Public Methods ====================
 
     /// <summary>
-    /// Show or hide the "Press U to sit" prompt
+    /// Show or hide the "Press Z" prompt
     /// </summary>
-    public void ShowPromptA(bool show)
+    public void ShowPromptZ(bool show)
     {
-        if (pressAPrompt != null)
+        if (pressZPrompt != null)
         {
-            pressAPrompt.SetActive(show);
-        }
-    }
-
-    /// <summary>
-    /// Show or hide the "Press D to stand" prompt
-    /// </summary>
-    public void ShowPromptD(bool show)
-    {
-        if (pressDPrompt != null)
-        {
-            pressDPrompt.SetActive(show);
+            pressZPrompt.SetActive(show);
         }
     }
 
@@ -193,6 +178,7 @@ public class chair : MonoBehaviour, IInteractable
         {
             isOneTimeUse = false,
             isTransportable = true,
+            isChairSpawn = true,
             restoresEnergy = true,
             energyRestoreAmount = 0,
             activationSound = sitSound,

@@ -3,7 +3,8 @@ using System.Collections;
 
 /// <summary>
 /// 實體門腳本 - 有碰撞的門，需要鑰匙才能開啟
-/// 當玩家碰撞到門時，如果有正確的鑰匙，會消耗鑰匙並將門變成透明
+/// 當玩家碰撞到門時，如果有正確的鑰匙，會在背包鑰匙物件上方顯示按鍵提示
+/// 玩家按下 Z 鍵可以使用鑰匙開門
 /// </summary>
 public class PhysicalDoor : MonoBehaviour
 {
@@ -34,11 +35,14 @@ public class PhysicalDoor : MonoBehaviour
     
     private bool isOpened = false;
     private bool isAnimating = false;
+    private bool isPlayerNearby = false;
+    private PlayerController nearbyPlayer = null;
     private SpriteRenderer spriteRenderer;
     private Collider2D doorCollider;
     private AudioSource audioSource;
     private Color originalColor;
     private Color targetColor;
+    private InventoryPromptManager promptManager;
     
     void Start()
     {
@@ -46,6 +50,7 @@ public class PhysicalDoor : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         doorCollider = GetComponent<Collider2D>();
         audioSource = GetComponent<AudioSource>();
+        promptManager = InventoryPromptManager.GetInstance();
         
         // 如果沒有 AudioSource，添加一個
         if (audioSource == null)
@@ -76,6 +81,22 @@ public class PhysicalDoor : MonoBehaviour
         }
     }
     
+    void Update()
+    {
+        // 如果玩家在附近且有鑰匙，按 Z 鍵開門
+        if (isPlayerNearby && !isOpened && !isAnimating && nearbyPlayer != null)
+        {
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                if (HasRequiredKey(nearbyPlayer))
+                {
+                    ConsumeKeyAndOpenDoor(nearbyPlayer);
+                    HideKeyPrompt();
+                }
+            }
+        }
+    }
+    
     void OnCollisionEnter2D(Collision2D collision)
     {
         // 如果門已經開啟或正在動畫中，忽略碰撞
@@ -85,17 +106,33 @@ public class PhysicalDoor : MonoBehaviour
         PlayerController player = collision.gameObject.GetComponent<PlayerController>();
         if (player == null) return;
         
+        isPlayerNearby = true;
+        nearbyPlayer = player;
+        
         // 檢查玩家是否有鑰匙
         if (HasRequiredKey(player))
         {
-            // 消耗鑰匙並開啟門
-            ConsumeKeyAndOpenDoor(player);
+            // 顯示背包鑰匙物件上方的按鍵提示
+            ShowKeyPrompt(player);
         }
         else
         {
             // 玩家沒有鑰匙，顯示提示
             ShowKeyRequiredMessage();
         }
+    }
+    
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        // 檢查離開的物件是否是玩家
+        PlayerController player = collision.gameObject.GetComponent<PlayerController>();
+        if (player == null) return;
+        
+        isPlayerNearby = false;
+        nearbyPlayer = null;
+        
+        // 隱藏按鍵提示
+        HideKeyPrompt();
     }
     
     /// <summary>
@@ -132,6 +169,9 @@ public class PhysicalDoor : MonoBehaviour
         if (isOpened || isAnimating) return;
         
         Debug.Log($"門被開啟！消耗鑰匙: {requiredKeyTag}");
+        
+        // 先隱藏提示（在消耗鑰匙之前）
+        HideKeyPrompt();
         
         // 消耗鑰匙
         ConsumeKey(player);
@@ -171,18 +211,56 @@ public class PhysicalDoor : MonoBehaviour
     }
     
     /// <summary>
-    /// 顯示需要鑰匙的訊息
+    /// Show message that key is required to open the door
     /// </summary>
     private void ShowKeyRequiredMessage()
     {
-        Debug.Log($"需要鑰匙才能開啟這扇門: {requiredKeyTag}");
+        Debug.Log($"Key required to open this door: {requiredKeyTag}");
         
-        // 可以在這裡添加 UI 提示
-        // 例如顯示浮動文字或 UI 提示
+        // Can add UI prompt here
+        // For example, show floating text or UI prompt
         FloatingTextManager floatingTextManager = FloatingTextManager.GetInstance();
         if (floatingTextManager != null)
         {
-            floatingTextManager.ShowFloatingText("需要鑰匙！", transform.position, Color.red);
+            floatingTextManager.ShowFloatingText("Key required!", transform.position, Color.red);
+        }
+    }
+    
+    /// <summary>
+    /// 在背包鑰匙物件上方顯示按鍵提示
+    /// </summary>
+    private void ShowKeyPrompt(PlayerController player)
+    {
+        if (promptManager == null)
+        {
+            promptManager = InventoryPromptManager.GetInstance();
+        }
+        
+        if (promptManager != null)
+        {
+            InventorySystem inventory = player.GetComponent<InventorySystem>();
+            if (inventory != null)
+            {
+                // 根據 tag 顯示提示
+                promptManager.ShowPromptForTag(requiredKeyTag, inventory);
+                Debug.Log($"PhysicalDoor: 顯示鑰匙按鍵提示 (tag: {requiredKeyTag})");
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 隱藏背包鑰匙物件上方的按鍵提示
+    /// </summary>
+    private void HideKeyPrompt()
+    {
+        if (promptManager != null && nearbyPlayer != null)
+        {
+            InventorySystem inventory = nearbyPlayer.GetComponent<InventorySystem>();
+            if (inventory != null)
+            {
+                promptManager.HidePromptForTag(requiredKeyTag, inventory);
+                Debug.Log($"PhysicalDoor: 隱藏鑰匙按鍵提示 (tag: {requiredKeyTag})");
+            }
         }
     }
     

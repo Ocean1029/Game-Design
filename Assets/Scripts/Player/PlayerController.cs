@@ -23,8 +23,7 @@ public class PlayerController : MonoBehaviour, IInteractor
     [SerializeField] private KeyCode moveLeftKey = KeyCode.LeftArrow;
     [SerializeField] private KeyCode moveRightKey = KeyCode.RightArrow;
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
-    [SerializeField] private KeyCode interactKey = KeyCode.U;
-    [SerializeField] private KeyCode exitInteractionKey = KeyCode.D;
+    [SerializeField] private KeyCode interactKey = KeyCode.Z;  // 改用 Z 鍵來互動（坐下、起立、使用鑰匙、使用炸彈等）
     [SerializeField] private KeyCode respawnKey = KeyCode.R;
     [SerializeField] private KeyCode fastTravelMenuKey = KeyCode.M;
 
@@ -81,6 +80,12 @@ public class PlayerController : MonoBehaviour, IInteractor
     {
         if (!stateMachine.CanMove())
         {
+            // Clear input when movement is not allowed (e.g., when sitting)
+            // This prevents cached input from being applied in FixedUpdate
+            if (stateMachine.CurrentState == PlayerState.Sitting)
+            {
+                movement.ClearInput();
+            }
             return;
         }
 
@@ -171,7 +176,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         // Interact with nearby objects
         if (Input.GetKeyDown(interactKey))
         {
-            Debug.Log("U key pressed - attempting interaction");
+            Debug.Log("Z key pressed - attempting interaction");
             // Try standard interaction first
             if (interactionHandler.TryInteract(this))
             {
@@ -187,18 +192,12 @@ public class PlayerController : MonoBehaviour, IInteractor
             }
         }
 
-        // Exit interaction (e.g., stand up from chair)
-        if (Input.GetKeyDown(exitInteractionKey))
-        {
-            if (stateMachine.CurrentState == PlayerState.Sitting)
-            {
-                LeaveChair();
-            }
-        }
+        // Exit interaction is now handled by the interact key (Z)
+        // No longer need a separate exit key
     }
 
     /// <summary>
-    /// Handle system input (R key for respawn, M key for fast travel menu)
+    /// Handle system input (R key for respawn, M key for fast travel menu, Z for chair interaction)
     /// </summary>
     private void HandleSystemInput()
     {
@@ -213,6 +212,10 @@ public class PlayerController : MonoBehaviour, IInteractor
         {
             ToggleFastTravelMenu();
         }
+
+        // Handle chair interaction with Z key
+        // Note: This is now handled by the interaction system (InteractionHandler)
+        // The Z key is mapped to the interact key
     }
 
     /// <summary>
@@ -319,7 +322,10 @@ public class PlayerController : MonoBehaviour, IInteractor
         currentChair = chairToSit;
         transform.position = chairToSit.sitpoint.position;
 
+
+        // Stop movement and lock it to prevent any input from being applied
         movement.StopMovement();
+        movement.SetMovementLocked(true);
         movement.SetGravityEnabled(false);
 
         stateMachine.ChangeState(PlayerState.Sitting);
@@ -349,6 +355,9 @@ public class PlayerController : MonoBehaviour, IInteractor
             energySystem.StopEnergyRestore();
         }
 
+        // Unlock movement before changing position
+        movement.SetMovementLocked(false);
+
         // Move slightly upward to avoid re-triggering the chair
         transform.position += new Vector3(0f, 0.5f, 0f);
 
@@ -356,6 +365,12 @@ public class PlayerController : MonoBehaviour, IInteractor
         stateMachine.ChangeState(PlayerState.Idle);
 
         currentChair = null;
+
+        FastTravelUI fastTravelUI = FindFirstObjectByType<FastTravelUI>();
+        if (fastTravelUI != null && fastTravelUI.IsOpen())
+        {
+            fastTravelUI.CloseFastTravelUI();
+        }
 
         Debug.Log("Player left the chair");
     }
@@ -383,6 +398,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         // Hide player sprite during rappelling animation
         animationController.SetVisible(false);
         movement.StopMovement();
+        movement.SetMovementLocked(true);
         movement.SetGravityEnabled(false);
 
         Debug.Log("Rappelling started");
@@ -392,6 +408,7 @@ public class PlayerController : MonoBehaviour, IInteractor
 
         // Teleport to target position
         movement.Teleport(targetPosition.position);
+        movement.SetMovementLocked(false);
         movement.SetGravityEnabled(true);
 
         // Show player sprite again
@@ -463,6 +480,11 @@ public class PlayerController : MonoBehaviour, IInteractor
     {
         Debug.Log("PlayerController: M key pressed - attempting to toggle fast travel menu");
 
+        if (!IsSitting())
+        {
+            Debug.Log("PlayerController: Fast travel menu unavailable - player is not sitting");
+            return;
+        }
 
         // Fallback to original FastTravelUI
         FastTravelUI fastTravelUI = FindFirstObjectByType<FastTravelUI>();

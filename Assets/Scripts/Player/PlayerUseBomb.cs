@@ -2,6 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// Handles bomb usage from inventory — spawns a bomb object and plays its animation
+/// Shows prompt on bomb item in backpack when near stone
 /// </summary>
 public class PlayerUseBomb : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class PlayerUseBomb : MonoBehaviour
     [SerializeField] private Vector2 spawnOffset = new Vector2(0f, -0.5f);
 
     private Stone nearbyStone = null;
+    private InventoryPromptManager promptManager;
 
     private void Start()
     {
@@ -36,6 +38,8 @@ public class PlayerUseBomb : MonoBehaviour
         {
             Debug.LogWarning("PlayerUseBomb: No bomb prefab assigned!");
         }
+        
+        promptManager = InventoryPromptManager.GetInstance();
 
         Debug.Log($"[PlayerUseBomb] inventorySystem found? {inventorySystem != null}");
     }
@@ -51,7 +55,63 @@ public class PlayerUseBomb : MonoBehaviour
 
     public void SetNearStone(bool isNear, Stone stone)
     {
+        // 更新石頭狀態
+        bool wasNear = nearbyStone != null;
         nearbyStone = isNear ? stone : null;
+        
+        // 管理背包炸彈提示的顯示/隱藏
+        if (isNear && !wasNear)
+        {
+            // 玩家進入石頭範圍，檢查是否有炸彈
+            if (HasBomb())
+            {
+                ShowBombPrompt();
+            }
+        }
+        else if (!isNear && wasNear)
+        {
+            // 玩家離開石頭範圍，隱藏提示
+            HideBombPrompt();
+        }
+    }
+    
+    /// <summary>
+    /// 檢查玩家是否有炸彈
+    /// </summary>
+    private bool HasBomb()
+    {
+        if (inventorySystem == null) return false;
+        ItemData bombItem = inventorySystem.GetItemById(bombItemId);
+        return bombItem != null;
+    }
+    
+    /// <summary>
+    /// 在背包炸彈物件上方顯示按鍵提示
+    /// </summary>
+    private void ShowBombPrompt()
+    {
+        if (promptManager == null)
+        {
+            promptManager = InventoryPromptManager.GetInstance();
+        }
+        
+        if (promptManager != null)
+        {
+            promptManager.ShowPromptForItem(bombItemId);
+            Debug.Log($"PlayerUseBomb: 顯示炸彈按鍵提示 (itemId: {bombItemId})");
+        }
+    }
+    
+    /// <summary>
+    /// 隱藏背包炸彈物件上方的按鍵提示
+    /// </summary>
+    private void HideBombPrompt()
+    {
+        if (promptManager != null)
+        {
+            promptManager.HidePromptForItem(bombItemId);
+            Debug.Log($"PlayerUseBomb: 隱藏炸彈按鍵提示 (itemId: {bombItemId})");
+        }
     }
 
     private void TryUseBomb()
@@ -65,6 +125,9 @@ public class PlayerUseBomb : MonoBehaviour
             Debug.Log("💣 PlayerUseBomb: No bomb in inventory!");
             return;
         }
+
+        // 先隱藏提示（在使用炸彈之前）
+        HideBombPrompt();
 
         // 2️⃣ 生成炸彈物件
         if (bombPrefab != null)

@@ -14,8 +14,15 @@ public class CameraFollow : MonoBehaviour
     [Tooltip("Offset from the target position")]
     [SerializeField] private Vector3 offset = new Vector3(0f, 2f, -10f);
 
-    [Tooltip("How quickly the camera follows the target (higher = faster)")]
-    [SerializeField] private float smoothSpeed = 0.125f;
+    [Tooltip("Approximately the time it will take to reach the target (lower = faster)")]
+    [SerializeField] private float smoothTime = 0.15f;
+    
+    [Tooltip("Maximum speed the camera can move (0 = unlimited)")]
+    [SerializeField] private float maxSpeed = Mathf.Infinity;
+    
+    // Legacy field for backward compatibility (will be converted to smoothTime in Awake)
+    [SerializeField, System.Obsolete("Use smoothTime instead")]
+    private float smoothSpeed = 0.125f;
 
     [Header("Follow Axes")]
     [Tooltip("Should the camera follow on X axis?")]
@@ -46,6 +53,20 @@ public class CameraFollow : MonoBehaviour
     [Header("Debug")]
     [Tooltip("Show debug information in console")]
     [SerializeField] private bool showDebugInfo = false;
+
+    // Velocity reference for SmoothDamp (required parameter)
+    private Vector3 currentVelocity = Vector3.zero;
+
+    void Awake()
+    {
+        // Convert legacy smoothSpeed to smoothTime if smoothTime is at default value
+        // This ensures backward compatibility with old prefabs
+        if (smoothSpeed != 0.125f && smoothTime == 0.3f)
+        {
+            // Convert 0-1 range to smooth time (inverse relationship)
+            smoothTime = Mathf.Lerp(1.0f, 0.1f, Mathf.Clamp01(smoothSpeed));
+        }
+    }
 
     void LateUpdate()
     {
@@ -81,8 +102,16 @@ public class CameraFollow : MonoBehaviour
             desiredPosition.y = Mathf.Clamp(desiredPosition.y, minY, maxY);
         }
 
-        // Smoothly interpolate between current position and desired position
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+        // Smoothly damp towards the desired position using SmoothDamp for frame-rate independent smoothness
+        // SmoothDamp provides better smoothness than Lerp, especially with variable frame rates
+        Vector3 smoothedPosition = Vector3.SmoothDamp(
+            transform.position, 
+            desiredPosition, 
+            ref currentVelocity, 
+            smoothTime, 
+            maxSpeed, 
+            Time.deltaTime
+        );
 
         // Apply the new position
         transform.position = smoothedPosition;
@@ -128,6 +157,8 @@ public class CameraFollow : MonoBehaviour
         }
 
         transform.position = targetPosition;
+        // Reset velocity when snapping to avoid unwanted movement
+        currentVelocity = Vector3.zero;
         Debug.Log("CameraFollow: Snapped to target position");
     }
 
@@ -141,12 +172,24 @@ public class CameraFollow : MonoBehaviour
     }
 
     /// <summary>
-    /// Change the smooth speed at runtime
+    /// Change the smooth time at runtime
     /// </summary>
-    /// <param name="newSpeed">New smooth speed (0-1 range recommended)</param>
+    /// <param name="newSmoothTime">New smooth time (lower = faster, typically 0.1-1.0)</param>
+    public void SetSmoothTime(float newSmoothTime)
+    {
+        smoothTime = Mathf.Max(0.01f, newSmoothTime);
+    }
+    
+    /// <summary>
+    /// Change the smooth speed at runtime (backward compatibility)
+    /// Converts the old 0-1 range to smooth time
+    /// </summary>
+    /// <param name="newSpeed">New smooth speed (0-1 range, where 1 = instant, 0 = very slow)</param>
     public void SetSmoothSpeed(float newSpeed)
     {
-        smoothSpeed = Mathf.Clamp01(newSpeed);
+        // Convert 0-1 range to smooth time (inverse relationship)
+        // Higher speed value = lower smooth time = faster following
+        smoothTime = Mathf.Lerp(1.0f, 0.1f, Mathf.Clamp01(newSpeed));
     }
 
     // Draw gizmos in the editor to visualize boundaries

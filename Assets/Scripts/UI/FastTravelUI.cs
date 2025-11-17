@@ -740,6 +740,16 @@ public class FastTravelUI : MonoBehaviour
         
         if (success)
         {
+            if (playerController == null)
+            {
+                playerController = FindFirstObjectByType<PlayerController>();
+            }
+
+            if (playerController != null && playerController.IsSitting())
+            {
+                playerController.LeaveChair();
+            }
+
             // Close the UI
             CloseFastTravelUI();
             

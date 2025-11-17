@@ -4,6 +4,7 @@ using System.Collections.Generic;
 /// <summary>
 /// Manages player interactions with world objects, NPCs, and items
 /// Handles carrying items (like keys) and detecting nearby interactable objects
+/// Integrates with SoundManager to play interaction sounds
 /// </summary>
 public class InteractionHandler : MonoBehaviour
 {
@@ -13,6 +14,15 @@ public class InteractionHandler : MonoBehaviour
     private GameObject carriedItem = null;
     private List<IInteractable> nearbyInteractables = new List<IInteractable>();
     private IInteractable currentInteractable = null;
+
+    // Sound manager reference (cached for performance)
+    private SoundManager soundManager;
+
+    void Start()
+    {
+        // Initialize sound manager reference
+        soundManager = SoundManager.GetInstance();
+    }
 
     /// <summary>
     /// Get the currently carried item (e.g., key)
@@ -113,6 +123,9 @@ public class InteractionHandler : MonoBehaviour
             {
                 currentInteractable = interactable;
             }
+
+            // Play enter zone sound if available
+            PlayInteractionSound(interactable, InteractionSoundType.EnterZone);
         }
     }
 
@@ -121,6 +134,9 @@ public class InteractionHandler : MonoBehaviour
     /// </summary>
     public void UnregisterInteractable(IInteractable interactable)
     {
+        // Play exit zone sound before removing (if available)
+        PlayInteractionSound(interactable, InteractionSoundType.ExitZone);
+
         nearbyInteractables.Remove(interactable);
         
         // If the current interactable left, switch to another one or null
@@ -139,7 +155,19 @@ public class InteractionHandler : MonoBehaviour
     {
         if (currentInteractable != null)
         {
-            return currentInteractable.Interact(interactor);
+            bool interactionResult = currentInteractable.Interact(interactor);
+            
+            // Play appropriate sound based on interaction result
+            if (interactionResult)
+            {
+                PlayInteractionSound(currentInteractable, InteractionSoundType.Success);
+            }
+            else
+            {
+                PlayInteractionSound(currentInteractable, InteractionSoundType.Failure);
+            }
+            
+            return interactionResult;
         }
         return false;
     }
@@ -167,6 +195,72 @@ public class InteractionHandler : MonoBehaviour
     {
         nearbyInteractables.Clear();
         currentInteractable = null;
+    }
+
+    // ==================== Sound Integration ====================
+
+    /// <summary>
+    /// Play an interaction sound for the given interactable object
+    /// This method checks if the interactable has sound configuration and plays the appropriate sound
+    /// If no sound is configured, this method does nothing (gracefully handles missing sounds)
+    /// </summary>
+    /// <param name="interactable">The interactable object to play sound for</param>
+    /// <param name="soundType">Type of interaction sound to play</param>
+    private void PlayInteractionSound(IInteractable interactable, InteractionSoundType soundType)
+    {
+        // Early return if sound manager is not available
+        if (soundManager == null)
+        {
+            soundManager = SoundManager.GetInstance();
+            if (soundManager == null)
+            {
+                return;
+            }
+        }
+
+        // Get the GameObject from the interactable
+        GameObject interactableObject = interactable.GetGameObject();
+        if (interactableObject == null)
+        {
+            return;
+        }
+
+        // Try to get InteractableSoundComponent from the interactable object
+        InteractableSoundComponent soundComponent = interactableObject.GetComponent<InteractableSoundComponent>();
+        if (soundComponent == null || !soundComponent.HasSoundData())
+        {
+            // No sound component or no sound data - this is acceptable, just return silently
+            return;
+        }
+
+        // Get sound data and check if it has the requested sound type
+        InteractionSoundData soundData = soundComponent.GetSoundData();
+        if (soundData == null || !soundData.HasSound(soundType))
+        {
+            // Sound data exists but doesn't have this specific sound type - this is acceptable
+            return;
+        }
+
+        // Get the sound clip for this interaction type
+        AudioClip soundClip = soundData.GetSoundClip(soundType);
+        if (soundClip == null)
+        {
+            return;
+        }
+
+        // Determine playback position and whether to play as 2D
+        Vector3 soundPosition = soundComponent.GetSoundPosition();
+        bool playAs2D = soundComponent.ShouldPlayAs2D();
+
+        // Play the sound through SoundManager
+        if (playAs2D)
+        {
+            soundManager.PlaySound2D(soundClip, soundData.Volume);
+        }
+        else
+        {
+            soundManager.PlaySound(soundClip, soundPosition, soundData.Volume);
+        }
     }
 }
 
