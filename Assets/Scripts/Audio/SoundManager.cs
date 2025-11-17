@@ -30,7 +30,7 @@ public class SoundManager : MonoBehaviour
 
     [Header("Music Settings")]
     [Tooltip("Music volume (0.0 to 1.0)")]
-    [SerializeField, Range(0f, 1f)] private float musicVolume = 0.7f;
+    [SerializeField, Range(0f, 1f)] private float musicVolume = 0.2f;
     
     [Tooltip("Default fade duration for music transitions (in seconds)")]
     [SerializeField] private float defaultFadeDuration = 1f;
@@ -458,12 +458,29 @@ public class SoundManager : MonoBehaviour
 
     /// <summary>
     /// Set the music volume
+    /// If a fade coroutine is currently running, it will be stopped and the volume will be applied immediately
+    /// If the music audio source is not yet initialized, it will be initialized to ensure the volume setting is preserved
+    /// The fade coroutines are designed to dynamically read musicVolume each frame, so volume changes during fade will be smooth
     /// </summary>
     /// <param name="volume">Volume level (0.0 to 1.0)</param>
     public void SetMusicVolume(float volume)
     {
         musicVolume = Mathf.Clamp01(volume);
         
+        // Stop any ongoing fade coroutine to prevent it from overriding the volume change
+        if (fadeCoroutine != null)
+        {
+            StopCoroutine(fadeCoroutine);
+            fadeCoroutine = null;
+        }
+        
+        // Initialize music audio source if needed (in case SetMusicVolume is called before music plays)
+        if (musicAudioSource == null)
+        {
+            InitializeMusicAudioSource();
+        }
+        
+        // Apply volume immediately
         if (musicAudioSource != null)
         {
             musicAudioSource.volume = musicVolume * masterVolume;
@@ -482,6 +499,7 @@ public class SoundManager : MonoBehaviour
 
     /// <summary>
     /// Fade in music from silence
+    /// Dynamically reads musicVolume each frame to respond to volume changes during fade
     /// </summary>
     private IEnumerator FadeInMusic(float duration)
     {
@@ -494,22 +512,26 @@ public class SoundManager : MonoBehaviour
         musicAudioSource.Play();
 
         float elapsedTime = 0f;
-        float targetVolume = musicVolume * masterVolume;
+        float startVolume = 0f;
 
         while (elapsedTime < duration)
         {
             elapsedTime += Time.deltaTime;
             float progress = elapsedTime / duration;
-            musicAudioSource.volume = Mathf.Lerp(0f, targetVolume, progress);
+            // Recalculate target volume each frame to respond to volume changes
+            float targetVolume = musicVolume * masterVolume;
+            musicAudioSource.volume = Mathf.Lerp(startVolume, targetVolume, progress);
             yield return null;
         }
 
-        musicAudioSource.volume = targetVolume;
+        // Ensure final volume matches current musicVolume setting
+        musicAudioSource.volume = musicVolume * masterVolume;
         fadeCoroutine = null;
     }
 
     /// <summary>
     /// Fade out music to silence
+    /// If volume is changed during fade out, the fade will continue smoothly
     /// </summary>
     private IEnumerator FadeOutMusic(float duration)
     {
@@ -525,11 +547,13 @@ public class SoundManager : MonoBehaviour
         {
             elapsedTime += Time.deltaTime;
             float progress = elapsedTime / duration;
+            // Fade to silence regardless of volume changes
             musicAudioSource.volume = Mathf.Lerp(startVolume, 0f, progress);
             yield return null;
         }
 
         musicAudioSource.Stop();
+        // Set volume to current musicVolume setting for next playback
         musicAudioSource.volume = musicVolume * masterVolume;
         currentMusicClip = null;
         fadeCoroutine = null;
@@ -537,6 +561,7 @@ public class SoundManager : MonoBehaviour
 
     /// <summary>
     /// Crossfade from current music to new music
+    /// Dynamically reads musicVolume each frame during fade in to respond to volume changes
     /// </summary>
     private IEnumerator CrossfadeMusic(AudioClip newMusicClip, float duration)
     {
@@ -546,7 +571,6 @@ public class SoundManager : MonoBehaviour
         }
 
         float startVolume = musicAudioSource.volume;
-        float targetVolume = musicVolume * masterVolume;
         float halfDuration = duration * 0.5f;
 
         // Fade out current music
@@ -571,11 +595,14 @@ public class SoundManager : MonoBehaviour
         {
             elapsedTime += Time.deltaTime;
             float progress = elapsedTime / halfDuration;
+            // Recalculate target volume each frame to respond to volume changes
+            float targetVolume = musicVolume * masterVolume;
             musicAudioSource.volume = Mathf.Lerp(0f, targetVolume, progress);
             yield return null;
         }
 
-        musicAudioSource.volume = targetVolume;
+        // Ensure final volume matches current musicVolume setting
+        musicAudioSource.volume = musicVolume * masterVolume;
         fadeCoroutine = null;
 
         if (showDebugInfo)

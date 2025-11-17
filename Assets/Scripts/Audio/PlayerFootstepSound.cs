@@ -13,7 +13,7 @@ public class PlayerFootstepSound : MonoBehaviour
     [SerializeField] private AudioClip footstepSound;
     
     [Tooltip("Volume of footstep sounds (0.0 to 2.0, can exceed 1.0 for louder sounds)")]
-    [SerializeField, Range(0f, 2f)] private float footstepVolume = 0.5f;
+    [SerializeField, Range(0f, 2f)] private float footstepVolume = 1.5f;
 
     [Header("Timing Settings")]
     [Tooltip("Minimum time between footstep sounds (in seconds)")]
@@ -37,6 +37,7 @@ public class PlayerFootstepSound : MonoBehaviour
     private PlayerMovement playerMovement;
     private PlayerStateMachine stateMachine;
     private SoundManager soundManager;
+    private AudioSource audioSource;
 
     // Footstep timing
     private float timeSinceLastStep = 0f;
@@ -69,6 +70,29 @@ public class PlayerFootstepSound : MonoBehaviour
 
         // Initialize SoundManager reference
         soundManager = SoundManager.GetInstance();
+
+        // Initialize AudioSource component for footstep sounds
+        InitializeAudioSource();
+    }
+
+    /// <summary>
+    /// Initialize the AudioSource component for footstep sound playback
+    /// Configured as 2D sound to avoid distance attenuation issues
+    /// </summary>
+    private void InitializeAudioSource()
+    {
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        // Configure AudioSource for 2D playback (no spatialization)
+        // This ensures footstep sounds are not affected by distance attenuation
+        audioSource.spatialBlend = 0f; // 0 = 2D sound, 1 = 3D sound
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
+        audioSource.volume = footstepVolume;
     }
 
     void Update()
@@ -157,6 +181,8 @@ public class PlayerFootstepSound : MonoBehaviour
 
     /// <summary>
     /// Play a footstep sound
+    /// Uses dedicated AudioSource component for better volume control
+    /// Configured as 2D sound to avoid distance attenuation
     /// </summary>
     private void PlayFootstepSound()
     {
@@ -165,19 +191,19 @@ public class PlayerFootstepSound : MonoBehaviour
             return;
         }
 
-        // Get sound position (player's position)
-        Vector3 soundPosition = transform.position;
+        // Ensure AudioSource is initialized
+        if (audioSource == null)
+        {
+            InitializeAudioSource();
+        }
 
-        // Play sound through SoundManager with fallback
-        if (soundManager != null)
-        {
-            soundManager.PlaySound(footstepSound, soundPosition, footstepVolume);
-        }
-        else
-        {
-            // Fallback to direct playback if SoundManager is not available
-            AudioSource.PlayClipAtPoint(footstepSound, soundPosition, footstepVolume);
-        }
+        // Set AudioSource volume to footstepVolume (can be 0.0 to 2.0)
+        // AudioSource.volume can exceed 1.0 to amplify sound beyond normal range
+        audioSource.volume = footstepVolume;
+
+        // Play sound using AudioSource (2D sound, no distance attenuation)
+        // Use volume scale of 1.0 since AudioSource.volume already controls the amplification
+        audioSource.PlayOneShot(footstepSound, 1f);
     }
 
     /// <summary>
@@ -198,10 +224,17 @@ public class PlayerFootstepSound : MonoBehaviour
 
     /// <summary>
     /// Set the footstep volume (0.0 to 2.0)
+    /// Updates the AudioSource volume immediately if it exists
     /// </summary>
     public void SetFootstepVolume(float volume)
     {
         footstepVolume = Mathf.Clamp(volume, 0f, 2f);
+        
+        // Update AudioSource volume if it exists
+        if (audioSource != null)
+        {
+            audioSource.volume = footstepVolume;
+        }
     }
 
     /// <summary>

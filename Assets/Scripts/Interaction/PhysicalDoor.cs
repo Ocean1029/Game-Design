@@ -26,8 +26,16 @@ public class PhysicalDoor : MonoBehaviour
     [Tooltip("門開啟時的音效")]
     public AudioClip openSound;
     
+    [Tooltip("門開啟音效的音量 (0.0 到 1.0)")]
+    [Range(0f, 1f)]
+    public float openSoundVolume = 1f;
+    
     [Tooltip("門關閉時的音效")]
     public AudioClip closeSound;
+    
+    [Tooltip("門關閉音效的音量 (0.0 到 1.0)")]
+    [Range(0f, 1f)]
+    public float closeSoundVolume = 1f;
     
     [Header("視覺效果")]
     [Tooltip("門開啟時的粒子效果")]
@@ -40,6 +48,7 @@ public class PhysicalDoor : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Collider2D doorCollider;
     private AudioSource audioSource;
+    private SoundManager soundManager;
     private Color originalColor;
     private Color targetColor;
     private InventoryPromptManager promptManager;
@@ -50,9 +59,10 @@ public class PhysicalDoor : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         doorCollider = GetComponent<Collider2D>();
         audioSource = GetComponent<AudioSource>();
+        soundManager = SoundManager.GetInstance();
         promptManager = InventoryPromptManager.GetInstance();
         
-        // 如果沒有 AudioSource，添加一個
+        // 如果沒有 AudioSource，添加一個（作為 fallback）
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
@@ -272,10 +282,19 @@ public class PhysicalDoor : MonoBehaviour
         isAnimating = true;
         isOpened = true;
         
-        // 播放開啟音效
+        // 播放開啟音效（優先使用 SoundManager，有 fallback）
         if (openSound != null)
         {
-            audioSource.PlayOneShot(openSound);
+            if (soundManager != null)
+            {
+                // Use SoundManager for unified volume control
+                soundManager.PlaySound(openSound, transform.position, openSoundVolume);
+            }
+            else if (audioSource != null)
+            {
+                // Fallback to direct playback if SoundManager is not available
+                audioSource.PlayOneShot(openSound, openSoundVolume);
+            }
         }
         
         // 播放粒子效果
@@ -353,10 +372,19 @@ public class PhysicalDoor : MonoBehaviour
     {
         isAnimating = true;
         
-        // 播放關閉音效
+        // 播放關閉音效（優先使用 SoundManager，有 fallback）
         if (closeSound != null)
         {
-            audioSource.PlayOneShot(closeSound);
+            if (soundManager != null)
+            {
+                // Use SoundManager for unified volume control
+                soundManager.PlaySound(closeSound, transform.position, closeSoundVolume);
+            }
+            else if (audioSource != null)
+            {
+                // Fallback to direct playback if SoundManager is not available
+                audioSource.PlayOneShot(closeSound, closeSoundVolume);
+            }
         }
         
         // 重新啟用碰撞器

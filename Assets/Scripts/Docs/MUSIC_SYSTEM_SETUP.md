@@ -30,15 +30,33 @@ The `SceneMusic` component allows each scene to automatically play its backgroun
 
 ## Setup Instructions
 
-### Method 1: Using SceneMusic Component (Recommended)
+### Method 1: Using Editor Tool (Fastest - Recommended)
 
-This is the easiest way to add music to a scene.
+The easiest way to set up music is using the built-in Editor tool.
+
+#### Quick Setup Steps
+
+1. Open the scene where you want to add music
+2. Go to menu: **Tools > Audio > Setup Scene Music**
+3. The tool will automatically:
+   - Create or find SoundManager in the scene
+   - Create MusicManager GameObject with SceneMusic component
+   - Find and assign the default music file (song18.mp3) if available
+   - Apply default settings (volume 0.7, fade in/out enabled)
+4. Review the settings in the Inspector and adjust if needed
+5. Enter Play mode to test - music will automatically play when scene loads
+
+**Note**: If the music file is not found automatically, you can manually assign it in the SceneMusic component Inspector.
+
+### Method 2: Manual Setup with SceneMusic Component
+
+If you prefer manual setup or need more control:
 
 #### Step 1: Add SceneMusic to Scene
 
 1. In your scene, create an empty GameObject (or use an existing manager object)
 2. Add the `SceneMusic` component to it
-3. Name it something like "SceneMusicManager" for clarity
+3. Name it something like "MusicManager" for clarity
 
 #### Step 2: Configure Music
 
@@ -58,7 +76,7 @@ This is the easiest way to add music to a scene.
 2. Music should automatically start playing when scene loads
 3. When transitioning to another scene, music should fade out (if configured)
 
-### Method 2: Manual Music Control via Code
+### Method 3: Manual Music Control via Code
 
 You can also control music programmatically:
 
