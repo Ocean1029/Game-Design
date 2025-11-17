@@ -30,11 +30,18 @@ public class PlayerController : MonoBehaviour, IInteractor
     [Header("Rappelling Settings")]
     [SerializeField] private float rappellingDuration = 1.0f;
 
+    [Header("Rendering Settings")]
+    [Tooltip("Z index (Sorting Order) for player sprite renderers. Higher values render on top")]
+    [SerializeField] private int playerZIndex = 1;
+
     // Chair interaction state
     private chair currentChair = null;
 
     // Movement state tracking for animation triggers
     private bool wasMoving = false;
+
+    // Sprite renderer references for z index management
+    private SpriteRenderer[] spriteRenderers;
 
     void Awake()
     {
@@ -49,6 +56,12 @@ public class PlayerController : MonoBehaviour, IInteractor
         {
             Debug.LogWarning("PlayerController: PlayerEnergy component not found! Jump energy system will be disabled.");
         }
+
+        // Get all SpriteRenderer components in player and children
+        spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+        
+        // Apply initial z index setting
+        SetPlayerZIndex(playerZIndex);
     }
 
     void Start()
@@ -572,6 +585,42 @@ public class PlayerController : MonoBehaviour, IInteractor
     GameObject IInteractor.GetGameObject()
     {
         return gameObject;
+    }
+
+    // ==================== Z INDEX MANAGEMENT ====================
+
+    /// <summary>
+    /// Set the z index (Sorting Order) for all player sprite renderers
+    /// Higher values render on top of lower values
+    /// </summary>
+    /// <param name="zIndex">The sorting order value to set</param>
+    public void SetPlayerZIndex(int zIndex)
+    {
+        playerZIndex = zIndex;
+
+        // Refresh sprite renderer references if needed
+        if (spriteRenderers == null || spriteRenderers.Length == 0)
+        {
+            spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+        }
+
+        // Apply z index to all sprite renderers
+        foreach (SpriteRenderer renderer in spriteRenderers)
+        {
+            if (renderer != null)
+            {
+                renderer.sortingOrder = zIndex;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Get the current z index (Sorting Order) of the player
+    /// </summary>
+    /// <returns>The current sorting order value</returns>
+    public int GetPlayerZIndex()
+    {
+        return playerZIndex;
     }
 }
 
