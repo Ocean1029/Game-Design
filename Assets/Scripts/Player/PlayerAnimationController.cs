@@ -11,6 +11,11 @@ public class PlayerAnimationController : MonoBehaviour
     [Header("Component References")]
     [Tooltip("Animator component. If not assigned, will search in children (e.g., Visual child).")]
     public Animator animator;
+    [Tooltip("The TeleportEffect child GameObject that shows the teleport animation.")]
+    [SerializeField] private GameObject teleportEffect;
+    [Header("Teleport Animation Settings")]
+    [Tooltip("The animator layer index where the teleport animation is located. Set to -1 to auto-detect.")]
+    [SerializeField] private int teleportLayerIndex = -1;
 
     private SpriteRenderer spriteRenderer;
 
@@ -21,6 +26,7 @@ public class PlayerAnimationController : MonoBehaviour
     private readonly string PARAM_JUMP_TRIGGER = "Jump";
     private readonly string PARAM_WALK_TRIGGER = "Walk";
     private readonly string PARAM_INTERACT_TRIGGER = "Interact";
+    private readonly string PARAM_TELEPORT_TRIGGER = "Teleport";
 
     // Jump animation control
     private const int JUMP_TOTAL_FRAMES = 8;
@@ -55,6 +61,22 @@ public class PlayerAnimationController : MonoBehaviour
         if (spriteRenderer == null)
         {
             Debug.LogWarning("PlayerAnimationController: SpriteRenderer not found on player object or children!");
+        }
+
+        // Get teleport effect if not assigned
+        if (teleportEffect == null)
+        {
+            teleportEffect = transform.Find("TeleportEffect")?.gameObject;
+            Debug.Log($"PlayerAnimationController: Looking for TeleportEffect - {(teleportEffect != null ? "FOUND" : "NOT FOUND")}");
+        }
+
+        if (teleportEffect == null)
+        {
+            Debug.LogWarning("PlayerAnimationController: TeleportEffect GameObject not found! Teleport animation will not show.");
+        }
+        else
+        {
+            Debug.Log("PlayerAnimationController: TeleportEffect found and ready");
         }
 
         // Check if animator has a valid controller
@@ -293,6 +315,71 @@ public class PlayerAnimationController : MonoBehaviour
             animator.SetTrigger(PARAM_INTERACT_TRIGGER);
         }
     }
+
+    /// <summary>
+    /// Trigger the teleport animation
+    /// Uses a simple sprite animation approach instead of Animator for more reliable results
+    /// </summary>
+    public void TriggerTeleport()
+    {
+        Debug.Log($"PlayerAnimationController: TriggerTeleport called. TeleportEffect: {(teleportEffect != null ? "found" : "null")}");
+
+        if (teleportEffect != null)
+        {
+            // Start the manual teleport effect animation
+            StartCoroutine(PlayTeleportEffect());
+        }
+        else
+        {
+            Debug.LogWarning("PlayerAnimationController: TeleportEffect is null!");
+        }
+
+        // Still trigger the animator for any base layer effects if needed
+        if (animator != null && HasParameter(PARAM_TELEPORT_TRIGGER))
+        {
+            animator.SetTrigger(PARAM_TELEPORT_TRIGGER);
+        }
+    }
+
+    /// <summary>
+    /// Manually animate the teleport effect by cycling through sprites
+    /// </summary>
+    private System.Collections.IEnumerator PlayTeleportEffect()
+    {
+        Debug.Log("Starting manual teleport effect animation");
+
+        SpriteRenderer spriteRenderer = teleportEffect.GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null)
+        {
+            Debug.LogError("TeleportEffect has no SpriteRenderer!");
+            yield break;
+        }
+
+        // Enable the effect
+        teleportEffect.SetActive(true);
+
+        // Simple sprite cycling - you can adjust timing and sprites as needed
+        // For now, we'll just flash the renderer to test visibility
+        Color originalColor = spriteRenderer.color;
+        float startTime = Time.time;
+
+        while (Time.time - startTime < 0.8f) // 0.8 seconds animation
+        {
+            // Simple flash effect - alternate between visible and semi-transparent
+            float t = (Time.time - startTime) / 0.8f;
+            float alpha = Mathf.PingPong(t * 4, 1f); // Flash 4 times
+            spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
+
+            Debug.Log($"Teleport effect frame - time: {t:F2}, alpha: {alpha:F2}, visible: {teleportEffect.activeSelf}");
+            yield return null;
+        }
+
+        // Reset color and disable
+        spriteRenderer.color = originalColor;
+        teleportEffect.SetActive(false);
+        Debug.Log("Teleport effect animation completed");
+    }
+
 
     /// <summary>
     /// Flip the sprite to face a specific direction
