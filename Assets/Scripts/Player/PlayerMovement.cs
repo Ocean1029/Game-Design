@@ -30,6 +30,13 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("Volume of jump sound (0.0 to 1.0)")]
     [SerializeField, Range(0f, 1f)] private float jumpSoundVolume = 0.6f;
 
+    [Header("Landing Sound")]
+    [Tooltip("Sound played when player lands on the ground (optional)")]
+    [SerializeField] private AudioClip landingSound;
+    
+    [Tooltip("Volume of landing sounds (0.0 to 10.0, can exceed 1.0 for louder sounds)")]
+    [SerializeField, Range(0f, 10f)] private float landingSoundVolume = 7.5f;
+
     [Header("Gravity Settings")]
     [Tooltip("Gravity scale multiplier for the Rigidbody2D")]
     [SerializeField] private float gravityScale = 2f;
@@ -55,6 +62,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Collider2D playerCollider;
     private bool isGrounded;
+    private bool wasGroundedPreviousFrame; // Track previous frame's grounded state for landing detection
     private float currentGravityScale = 1f;
     
     // Jump state tracking
@@ -73,6 +81,9 @@ public class PlayerMovement : MonoBehaviour
 
     // Sound manager reference (cached for performance)
     private SoundManager soundManager;
+    
+    // AudioSource for landing sound playback (similar to footstep sound implementation)
+    private AudioSource landingAudioSource;
 
     void Awake()
     {
@@ -90,11 +101,44 @@ public class PlayerMovement : MonoBehaviour
         
         // Initialize sound manager reference
         soundManager = SoundManager.GetInstance();
+        
+        // Initialize AudioSource component for landing sounds
+        InitializeLandingAudioSource();
+    }
+    
+    /// <summary>
+    /// Initialize the AudioSource component for landing sound playback
+    /// Configured as 2D sound to avoid distance attenuation issues
+    /// Uses same approach as PlayerFootstepSound for consistent volume control
+    /// </summary>
+    private void InitializeLandingAudioSource()
+    {
+        landingAudioSource = GetComponent<AudioSource>();
+        if (landingAudioSource == null)
+        {
+            landingAudioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        // Configure AudioSource for 2D playback (no spatialization)
+        // This ensures landing sounds are not affected by distance attenuation
+        landingAudioSource.spatialBlend = 0f; // 0 = 2D sound, 1 = 3D sound
+        landingAudioSource.playOnAwake = false;
+        landingAudioSource.loop = false;
+        landingAudioSource.volume = landingSoundVolume;
     }
 
     void FixedUpdate()
     {
+        // Store previous frame's grounded state before checking
+        wasGroundedPreviousFrame = isGrounded;
+        
         CheckGrounded();
+        
+        // Detect landing event: transition from air to ground
+        if (!wasGroundedPreviousFrame && isGrounded)
+        {
+            PlayLandingSound();
+        }
         
         // Don't apply movement if movement is locked (e.g., when sitting)
         if (isMovementLocked)
@@ -348,6 +392,74 @@ public class PlayerMovement : MonoBehaviour
     public float GetJumpSoundVolume()
     {
         return jumpSoundVolume;
+    }
+
+    // ==================== Landing Sound ====================
+
+    /// <summary>
+    /// Play landing sound using dedicated AudioSource component
+    /// Uses same approach as PlayerFootstepSound for consistent volume control
+    /// Called automatically when player transitions from air to ground
+    /// </summary>
+    private void PlayLandingSound()
+    {
+        if (landingSound == null)
+        {
+            return;
+        }
+
+        // Ensure AudioSource is initialized
+        if (landingAudioSource == null)
+        {
+            InitializeLandingAudioSource();
+        }
+
+        // Set AudioSource volume to landingSoundVolume (can be 0.0 to 10.0)
+        // AudioSource.volume can exceed 1.0 to amplify sound beyond normal range
+        landingAudioSource.volume = landingSoundVolume;
+
+        // Play sound using AudioSource (2D sound, no distance attenuation)
+        // Use volume scale of 1.0 since AudioSource.volume already controls the amplification
+        landingAudioSource.PlayOneShot(landingSound, 1f);
+    }
+
+    /// <summary>
+    /// Set the landing sound clip
+    /// </summary>
+    public void SetLandingSound(AudioClip clip)
+    {
+        landingSound = clip;
+    }
+
+    /// <summary>
+    /// Get the current landing sound clip
+    /// </summary>
+    public AudioClip GetLandingSound()
+    {
+        return landingSound;
+    }
+
+    /// <summary>
+    /// Set the landing sound volume (0.0 to 10.0)
+    /// Updates the AudioSource volume immediately if it exists
+    /// </summary>
+    public void SetLandingSoundVolume(float volume)
+    {
+        landingSoundVolume = Mathf.Clamp(volume, 0f, 10f);
+        
+        // Update AudioSource volume if it exists
+        if (landingAudioSource != null)
+        {
+            landingAudioSource.volume = landingSoundVolume;
+        }
+    }
+
+    /// <summary>
+    /// Get the current landing sound volume
+    /// </summary>
+    public float GetLandingSoundVolume()
+    {
+        return landingSoundVolume;
     }
 
     /// <summary>
