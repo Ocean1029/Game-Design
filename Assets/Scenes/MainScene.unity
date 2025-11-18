@@ -7284,7 +7284,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerFootstepSound
   footstepSound: {fileID: 8300000, guid: eb05f2421a1844a76951f0c5fc215484, type: 3}
-  footstepVolume: 1.34
+  footstepVolume: 0.35
   minStepInterval: 0.3
   maxStepInterval: 0.5
   minMovementSpeed: 0.1
