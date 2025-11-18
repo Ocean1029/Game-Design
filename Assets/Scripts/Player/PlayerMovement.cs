@@ -12,10 +12,10 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Jump Settings")]
     [Tooltip("Initial upward force when jump starts")]
-    [SerializeField] private float jumpForce = 8f;
+    [SerializeField] private float jumpForce = 8.5f;
     
     [Tooltip("Additional upward acceleration while holding jump button")]
-    [SerializeField] private float jumpHoldAcceleration = 15f;
+    [SerializeField] private float jumpHoldAcceleration = 8f;
     
     [Tooltip("Maximum time the player can hold jump button (in seconds)")]
     [SerializeField] private float maxJumpHoldTime = 0.3f;
@@ -29,6 +29,10 @@ public class PlayerMovement : MonoBehaviour
     
     [Tooltip("Volume of jump sound (0.0 to 1.0)")]
     [SerializeField, Range(0f, 1f)] private float jumpSoundVolume = 0.6f;
+
+    [Header("Gravity Settings")]
+    [Tooltip("Gravity scale multiplier for the Rigidbody2D")]
+    [SerializeField] private float gravityScale = 2f;
 
     [Header("Ground Detection")]
     [SerializeField] private Transform groundCheck;
@@ -59,7 +63,9 @@ public class PlayerMovement : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        currentGravityScale = rb.gravityScale;
+        // Set gravity scale from serialized field
+        rb.gravityScale = gravityScale;
+        currentGravityScale = gravityScale;
         
         // Initialize sound manager reference
         soundManager = SoundManager.GetInstance();

@@ -8190,7 +8190,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9027734300911509487, guid: e75b47577670f44af9baf508f763a683, type: 3}
       propertyPath: jumpForce
-      value: 6
+      value: 8.5
       objectReference: {fileID: 0}
     - target: {fileID: 9027734300911509487, guid: e75b47577670f44af9baf508f763a683, type: 3}
       propertyPath: jumpSound
@@ -8202,7 +8202,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9027734300911509487, guid: e75b47577670f44af9baf508f763a683, type: 3}
       propertyPath: jumpHoldAcceleration
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
