@@ -39,7 +39,21 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private LayerMask groundLayer;
 
+    [Header("Step Up Settings")]
+    [Tooltip("Maximum height the player can automatically step over (in units)")]
+    [SerializeField] private float maxStepHeight = 0.4f;
+    
+    [Tooltip("Distance ahead of player to check for obstacles")]
+    [SerializeField] private float stepCheckDistance = 0.4f;
+    
+    [Tooltip("Upward force applied when stepping over obstacles")]
+    [SerializeField] private float stepUpForce = 4f;
+    
+    [Tooltip("Vertical offset from ground check for step detection (should be slightly above ground)")]
+    [SerializeField] private float stepCheckVerticalOffset = 0.1f;
+
     private Rigidbody2D rb;
+    private Collider2D playerCollider;
     private bool isGrounded;
     private float currentGravityScale = 1f;
     
@@ -67,6 +81,13 @@ public class PlayerMovement : MonoBehaviour
         rb.gravityScale = gravityScale;
         currentGravityScale = gravityScale;
         
+        // Get player collider for step detection
+        playerCollider = GetComponent<Collider2D>();
+        if (playerCollider == null)
+        {
+            Debug.LogWarning("PlayerMovement: No Collider2D found on player. Step up feature may not work correctly.");
+        }
+        
         // Initialize sound manager reference
         soundManager = SoundManager.GetInstance();
     }
@@ -89,6 +110,12 @@ public class PlayerMovement : MonoBehaviour
         // Apply movement in FixedUpdate to ensure physics consistency
         if (shouldApplyMovement)
         {
+            // Check for step up before applying movement
+            if (isGrounded && !isJumping && Mathf.Abs(horizontalInput) > 0.01f)
+            {
+                TryStepUp(horizontalInput);
+            }
+            
             rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocity.y);
             shouldApplyMovement = false;
         }
@@ -323,6 +350,65 @@ public class PlayerMovement : MonoBehaviour
         return jumpSoundVolume;
     }
 
+    /// <summary>
+    /// Attempts to step over small obstacles in the movement direction
+    /// Uses raycast to detect obstacles and their height
+    /// </summary>
+    /// <param name="moveDirection">Direction of movement (-1 for left, 1 for right)</param>
+    private void TryStepUp(float moveDirection)
+    {
+        if (groundCheck == null || playerCollider == null)
+        {
+            return;
+        }
+
+        // Calculate detection point position at player's feet level, offset forward
+        Vector2 detectionStart = groundCheck.position;
+        detectionStart.x += moveDirection * stepCheckDistance;
+
+        // Raycast forward horizontally to detect if there's an obstacle blocking movement
+        Vector2 rayDirection = Vector2.right * moveDirection;
+        float rayDistance = 0.2f; // Short distance to detect immediate obstacles
+        RaycastHit2D forwardHit = Physics2D.Raycast(detectionStart, rayDirection, rayDistance, groundLayer);
+
+        // If we hit something, it means there's an obstacle in front
+        if (forwardHit.collider != null)
+        {
+            // Get the obstacle's bounds to find its top
+            Bounds obstacleBounds = forwardHit.collider.bounds;
+            float obstacleTop = obstacleBounds.max.y;
+
+            // Get the player's current ground level (at ground check position)
+            float playerGroundLevel = groundCheck.position.y;
+
+            // Calculate height difference between obstacle top and player ground level
+            float heightDifference = obstacleTop - playerGroundLevel;
+
+            // Check if the obstacle is within step-up range
+            // Minimum 0.05f to avoid stepping over tiny bumps, maximum is maxStepHeight
+            if (heightDifference > 0.05f && heightDifference <= maxStepHeight)
+            {
+                // Check if there's enough space above the obstacle for the player to move into
+                // Raycast upward from the top of the obstacle to check for ceiling
+                Vector2 topCheckStart = new Vector2(forwardHit.point.x, obstacleTop + 0.01f);
+                float playerHeight = playerCollider.bounds.size.y;
+                float clearanceCheck = playerHeight + 0.1f; // Extra clearance for safety
+                RaycastHit2D ceilingCheck = Physics2D.Raycast(topCheckStart, Vector2.up, clearanceCheck, groundLayer);
+
+                // If there's no ceiling blocking us, apply step-up force
+                if (ceilingCheck.collider == null)
+                {
+                    // Apply upward velocity to step over the obstacle
+                    // Only step up if player is not already moving up significantly (to avoid interfering with jumps)
+                    if (rb.linearVelocity.y <= 0.1f)
+                    {
+                        rb.linearVelocity = new Vector2(rb.linearVelocity.x, stepUpForce);
+                    }
+                }
+            }
+        }
+    }
+
     // Draw ground check gizmo in editor
     void OnDrawGizmosSelected()
     {
@@ -330,6 +416,18 @@ public class PlayerMovement : MonoBehaviour
         {
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        }
+
+        // Draw step detection gizmos for debugging
+        if (groundCheck != null && Application.isPlaying && Mathf.Abs(horizontalInput) > 0.01f)
+        {
+            float moveDirection = Mathf.Sign(horizontalInput);
+            Vector2 detectionStart = groundCheck.position;
+            detectionStart.x += moveDirection * stepCheckDistance;
+
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(detectionStart, 0.05f);
+            Gizmos.DrawLine(detectionStart, detectionStart + Vector2.right * moveDirection * 0.2f);
         }
     }
 }
