@@ -154,7 +154,6 @@ public class PlayerAnimationController : MonoBehaviour
         {
             float absSpeed = Mathf.Abs(speed);
             animator.SetFloat(PARAM_SPEED, absSpeed);
-            Debug.Log($"PlayerAnimationController: Set Speed parameter to {absSpeed}");
         }
         else
         {
@@ -170,7 +169,6 @@ public class PlayerAnimationController : MonoBehaviour
         if (animator != null && HasParameter(PARAM_IS_GROUNDED))
         {
             animator.SetBool(PARAM_IS_GROUNDED, grounded);
-            Debug.Log($"PlayerAnimationController: Set IsGrounded parameter to {grounded}");
         }
         else
         {
