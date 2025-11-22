@@ -473,6 +473,13 @@ public class SpawnPointSystem : MonoBehaviour
     {
         if (playerController != null)
         {
+            // Trigger teleport animation before teleporting
+            PlayerAnimationController animationController = playerController.GetComponent<PlayerAnimationController>();
+            if (animationController != null && animationController.IsAnimationSystemReady())
+            {
+                animationController.TriggerTeleport();
+            }
+            
             playerController.transform.position = position;
             Debug.Log($"SpawnPointSystem: Teleported player to {position}");
         }

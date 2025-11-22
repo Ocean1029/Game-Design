@@ -11,6 +11,11 @@ public class PlayerAnimationController : MonoBehaviour
     [Header("Component References")]
     [Tooltip("Animator component. If not assigned, will search in children (e.g., Visual child).")]
     public Animator animator;
+    [Tooltip("The effects child GameObject that contains the teleport Animator.")]
+    [SerializeField] private GameObject effects;
+    [Header("Teleport Animation Settings")]
+    [Tooltip("The animator layer index where the teleport animation is located. Set to -1 to auto-detect.")]
+    [SerializeField] private int teleportLayerIndex = -1;
 
     private SpriteRenderer spriteRenderer;
 
@@ -21,6 +26,7 @@ public class PlayerAnimationController : MonoBehaviour
     private readonly string PARAM_JUMP_TRIGGER = "Jump";
     private readonly string PARAM_WALK_TRIGGER = "Walk";
     private readonly string PARAM_INTERACT_TRIGGER = "Interact";
+    private readonly string PARAM_TELEPORT_TRIGGER = "Teleport";
 
     // Jump animation control
     private const int JUMP_TOTAL_FRAMES = 8;
@@ -39,38 +45,102 @@ public class PlayerAnimationController : MonoBehaviour
             animator = GetComponent<Animator>();
         }
 
-        // If still not found, search in children (for Visual child)
+        // If still not found, search for Visual child specifically
         if (animator == null)
         {
-            animator = GetComponentInChildren<Animator>();
+            Transform visualChild = transform.Find("Visual");
+            if (visualChild != null)
+            {
+                animator = visualChild.GetComponent<Animator>();
+            }
         }
 
-        // Get sprite renderer from current GameObject or children
+        // Fallback: search all children (but avoid effects animator)
+        if (animator == null)
+        {
+            Animator[] allAnimators = GetComponentsInChildren<Animator>();
+            foreach (Animator anim in allAnimators)
+            {
+                // Skip the effects animator, we want the main player animator
+                if (anim.gameObject.name != "effects")
+                {
+                    animator = anim;
+                    break;
+                }
+            }
+        }
+
+        // Get sprite renderer from current GameObject first
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // If not found, look specifically in Visual child
         if (spriteRenderer == null)
         {
-            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            Transform visualChild = transform.Find("Visual");
+            if (visualChild != null)
+            {
+                spriteRenderer = visualChild.GetComponent<SpriteRenderer>();
+            }
         }
 
+        // Fallback: search all children (but avoid effects sprite renderer)
         if (spriteRenderer == null)
+        {
+            SpriteRenderer[] allSpriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+            foreach (SpriteRenderer sr in allSpriteRenderers)
+            {
+                // Skip the effects sprite renderer, we want the main player sprite
+                if (sr.gameObject.name != "effects")
+                {
+                    spriteRenderer = sr;
+                    break;
+                }
+            }
+        }
+
+        if (spriteRenderer != null)
+        {
+            Debug.Log($"PlayerAnimationController: Found SpriteRenderer on GameObject '{spriteRenderer.gameObject.name}'");
+        }
+        else
         {
             Debug.LogWarning("PlayerAnimationController: SpriteRenderer not found on player object or children!");
         }
 
-        // Check if animator has a valid controller
-        if (animator != null && animator.runtimeAnimatorController == null)
+        // Get effects child if not assigned
+        if (effects == null)
         {
-            Debug.LogWarning("PlayerAnimationController: Animator found but no AnimatorController assigned. Animation features will be disabled.");
+            effects = transform.Find("effects")?.gameObject;
+            Debug.Log($"PlayerAnimationController: Looking for effects child - {(effects != null ? "FOUND" : "NOT FOUND")}");
         }
-        
-        // Set animation speed
+
+        if (effects == null)
+        {
+            Debug.LogWarning("PlayerAnimationController: effects GameObject not found! Teleport animation will not show.");
+        }
+        else
+        {
+            Debug.Log("PlayerAnimationController: effects child found and ready");
+        }
+
+        // Check if animator has a valid controller
         if (animator != null)
         {
-            animator.speed = animationSpeed;
+            Debug.Log($"PlayerAnimationController: Found animator on GameObject '{animator.gameObject.name}' with controller '{animator.runtimeAnimatorController?.name ?? "None"}'");
+            if (animator.runtimeAnimatorController == null)
+            {
+                Debug.LogWarning("PlayerAnimationController: Animator found but no AnimatorController assigned. Animation features will be disabled.");
+            }
         }
         else
         {
             Debug.LogWarning("PlayerAnimationController: No Animator component found! Please assign one or ensure there's an Animator in a child GameObject.");
+        }
+
+        // Set animation speed
+        if (animator != null)
+        {
+            animator.speed = animationSpeed;
         }
     }
 
@@ -82,7 +152,12 @@ public class PlayerAnimationController : MonoBehaviour
     {
         if (animator != null && HasParameter(PARAM_SPEED))
         {
-            animator.SetFloat(PARAM_SPEED, Mathf.Abs(speed));
+            float absSpeed = Mathf.Abs(speed);
+            animator.SetFloat(PARAM_SPEED, absSpeed);
+        }
+        else
+        {
+            Debug.LogWarning($"PlayerAnimationController: Cannot set Speed parameter - animator: {(animator != null ? "found" : "null")}, has parameter: {HasParameter(PARAM_SPEED)}");
         }
     }
 
@@ -94,6 +169,10 @@ public class PlayerAnimationController : MonoBehaviour
         if (animator != null && HasParameter(PARAM_IS_GROUNDED))
         {
             animator.SetBool(PARAM_IS_GROUNDED, grounded);
+        }
+        else
+        {
+            Debug.LogWarning($"PlayerAnimationController: Cannot set IsGrounded parameter - animator: {(animator != null ? "found" : "null")}, has parameter: {HasParameter(PARAM_IS_GROUNDED)}");
         }
     }
 
@@ -295,6 +374,82 @@ public class PlayerAnimationController : MonoBehaviour
     }
 
     /// <summary>
+    /// Trigger the teleport animation
+    /// Uses the effects child's Animator to play the teleport animation
+    /// </summary>
+    public void TriggerTeleport()
+    {
+        Debug.Log($"PlayerAnimationController: TriggerTeleport called. effects: {(effects != null ? "found" : "null")}");
+
+        // Enable the effects GameObject
+        if (effects != null)
+        {
+            effects.SetActive(true);
+            Debug.Log("PlayerAnimationController: effects enabled");
+
+            // Get the Animator from the effects child
+            Animator effectsAnimator = effects.GetComponent<Animator>();
+            if (effectsAnimator != null)
+            {
+                Debug.Log($"PlayerAnimationController: Found effects Animator on '{effectsAnimator.gameObject.name}' with controller '{effectsAnimator.runtimeAnimatorController?.name ?? "None"}'");
+
+                // Start the teleport animation immediately (no trigger delay)
+                Debug.Log("PlayerAnimationController: Starting teleport animation immediately");
+                effectsAnimator.Play("teleport", 0, 0f); // Play from start of animation
+                Debug.Log("PlayerAnimationController: Teleport animation started immediately on effects Animator");
+
+                // Start coroutine to handle post-animation logic
+                StartCoroutine(DisableTeleportEffectAfterAnimation());
+            }
+            else
+            {
+                Debug.LogWarning("PlayerAnimationController: effects GameObject has no Animator component!");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("PlayerAnimationController: effects GameObject is null!");
+        }
+    }
+
+    /// <summary>
+    /// Disable the teleport effect after the animation completes
+    /// Comment out the disabling line if you want the effect to stay visible
+    /// </summary>
+    private System.Collections.IEnumerator DisableTeleportEffectAfterAnimation()
+    {
+        // Wait for the animation to complete (0.83 seconds based on the clip)
+        yield return new WaitForSeconds(0.9f); // Slightly longer than animation duration
+
+        // Disable the effects GameObject (commented out - keeping effect always visible)
+        // if (effects != null)
+        // {
+        //     effects.SetActive(false);
+        //     Debug.Log("PlayerAnimationController: effects disabled after animation");
+        // }
+    }
+
+    /// <summary>
+    /// Get the index of the Teleport layer in the Animator
+    /// </summary>
+    private int GetTeleportLayerIndex()
+    {
+        if (animator == null) return -1;
+
+        for (int i = 0; i < animator.layerCount; i++)
+        {
+            if (animator.GetLayerName(i) == "Teleport")
+            {
+                return i;
+            }
+        }
+
+        Debug.LogWarning("PlayerAnimationController: Could not find Teleport layer in Animator!");
+        return -1;
+    }
+
+
+    /// <summary>
     /// Flip the sprite to face a specific direction
     /// </summary>
     /// <param name="facingRight">True to face right, false to face left</param>
@@ -303,6 +458,11 @@ public class PlayerAnimationController : MonoBehaviour
         if (spriteRenderer != null)
         {
             spriteRenderer.flipX = !facingRight;
+            Debug.Log($"PlayerAnimationController: Set facing direction - facingRight: {facingRight}, flipX: {!facingRight} on '{spriteRenderer.gameObject.name}'");
+        }
+        else
+        {
+            Debug.LogWarning("PlayerAnimationController: Cannot set facing direction - spriteRenderer is null!");
         }
     }
 
@@ -323,15 +483,23 @@ public class PlayerAnimationController : MonoBehaviour
     /// </summary>
     private bool HasParameter(string paramName)
     {
+        return HasParameterOnAnimator(animator, paramName);
+    }
+
+    /// <summary>
+    /// Check if a specific Animator has a specific parameter
+    /// </summary>
+    private bool HasParameterOnAnimator(Animator targetAnimator, string paramName)
+    {
         // Check if animator exists and has a valid controller
-        if (animator == null || animator.runtimeAnimatorController == null)
+        if (targetAnimator == null || targetAnimator.runtimeAnimatorController == null)
         {
             return false;
         }
 
         try
         {
-            foreach (AnimatorControllerParameter param in animator.parameters)
+            foreach (AnimatorControllerParameter param in targetAnimator.parameters)
             {
                 if (param.name == paramName) return true;
             }
@@ -341,7 +509,7 @@ public class PlayerAnimationController : MonoBehaviour
             Debug.LogWarning($"PlayerAnimationController: Error accessing animator parameters: {e.Message}");
             return false;
         }
-        
+
         return false;
     }
 

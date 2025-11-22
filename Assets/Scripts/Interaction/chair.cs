@@ -11,7 +11,7 @@ public class chair : MonoBehaviour, IInteractable
     public Transform sitpoint;
 
     [Header("UI Prompts")]
-    [Tooltip("UI element shown when interactor can sit down (Press Z)")]
+    [Tooltip("UI element shown when interactor can sit down and teleport (Press Z)")]
     public GameObject pressZPrompt;
 
     [Header("Spawn Point Configuration")]
@@ -117,10 +117,13 @@ public class chair : MonoBehaviour, IInteractable
         // Make the player sit down
         Debug.Log("Making player sit on chair (Press Z)");
         player.SitOnChair(this);
-        
+
         // Save progress by setting this chair as spawn point
         SaveProgress();
-        
+
+        // Automatically open the fast travel menu when sitting
+        OpenFastTravelMenuForPlayer(player);
+
         // Keep prompt visible (can press Z to stand up)
         ShowPromptZ(true);
         
@@ -245,6 +248,27 @@ public class chair : MonoBehaviour, IInteractable
     public string GetLocationDescription()
     {
         return locationDescription;
+    }
+
+    /// <summary>
+    /// Open the fast travel menu for the player when they sit on the chair
+    /// </summary>
+    private void OpenFastTravelMenuForPlayer(PlayerController player)
+    {
+        Debug.Log("Chair: Automatically opening fast travel menu for sitting player");
+
+        // Find the FastTravelUI component
+        FastTravelUI fastTravelUI = FindFirstObjectByType<FastTravelUI>();
+
+        if (fastTravelUI != null)
+        {
+            Debug.Log("Chair: FastTravelUI found, opening fast travel menu...");
+            fastTravelUI.OpenFastTravelUI();
+        }
+        else
+        {
+            Debug.LogWarning("Chair: FastTravelUI not found! Cannot open fast travel menu.");
+        }
     }
 
     /// <summary>

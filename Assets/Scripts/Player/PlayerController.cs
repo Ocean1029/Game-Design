@@ -30,11 +30,18 @@ public class PlayerController : MonoBehaviour, IInteractor
     [Header("Rappelling Settings")]
     [SerializeField] private float rappellingDuration = 1.0f;
 
+    [Header("Rendering Settings")]
+    [Tooltip("Z index (Sorting Order) for player sprite renderers. Higher values render on top")]
+    [SerializeField] private int playerZIndex = 1;
+
     // Chair interaction state
     private chair currentChair = null;
-    
+
     // Movement state tracking for animation triggers
     private bool wasMoving = false;
+
+    // Sprite renderer references for z index management
+    private SpriteRenderer[] spriteRenderers;
 
     void Awake()
     {
@@ -44,11 +51,17 @@ public class PlayerController : MonoBehaviour, IInteractor
         animationController = GetComponent<PlayerAnimationController>();
         interactionHandler = GetComponent<InteractionHandler>();
         energySystem = GetComponent<PlayerEnergy>();
-        
+
         if (energySystem == null)
         {
             Debug.LogWarning("PlayerController: PlayerEnergy component not found! Jump energy system will be disabled.");
         }
+
+        // Get all SpriteRenderer components in player and children
+        spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+        
+        // Apply initial z index setting
+        SetPlayerZIndex(playerZIndex);
     }
 
     void Start()
@@ -80,6 +93,12 @@ public class PlayerController : MonoBehaviour, IInteractor
     {
         if (!stateMachine.CanMove())
         {
+            // Clear input when movement is not allowed (e.g., when sitting)
+            // This prevents cached input from being applied in FixedUpdate
+            if (stateMachine.CurrentState == PlayerState.Sitting)
+            {
+                movement.ClearInput();
+            }
             return;
         }
 
@@ -104,7 +123,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         {
             animationController.TriggerWalk();
         }
-        
+
         // Update movement state tracking
         wasMoving = isMoving;
 
@@ -127,14 +146,14 @@ public class PlayerController : MonoBehaviour, IInteractor
                     Debug.Log("Cannot jump - not enough energy!");
                     return;
                 }
-                
+
                 // Consume energy for the jump
                 if (!energySystem.ConsumeJumpEnergy())
                 {
                     return;
                 }
             }
-            
+
             movement.StartJump();
             if (animationController.IsAnimationSystemReady())
             {
@@ -142,13 +161,13 @@ public class PlayerController : MonoBehaviour, IInteractor
             }
             stateMachine.ChangeState(PlayerState.Jumping);
         }
-        
+
         // Continue applying upward force while button is held
         if (Input.GetKey(jumpKey))
         {
             movement.ContinueJump();
         }
-        
+
         // Stop jump early when button is released
         if (Input.GetKeyUp(jumpKey))
         {
@@ -206,7 +225,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         {
             ToggleFastTravelMenu();
         }
-        
+
         // Handle chair interaction with Z key
         // Note: This is now handled by the interaction system (InteractionHandler)
         // The Z key is mapped to the interact key
@@ -225,21 +244,21 @@ public class PlayerController : MonoBehaviour, IInteractor
 
         Vector2 velocity = movement.GetVelocity();
         bool isGrounded = movement.IsGrounded();
-        
+
         animationController.SetSpeed(Mathf.Abs(velocity.x));
         animationController.SetGrounded(isGrounded);
         animationController.SetSitting(stateMachine.CurrentState == PlayerState.Sitting);
-        
+
         // Update jump animation dynamically based on vertical velocity
         if (!isGrounded)
         {
             // Get height above ground for better animation timing
             float heightAboveGround = CalculateHeightAboveGround();
-            
+
             // Get gravity scale from rigidbody
             Rigidbody2D rb = movement.GetComponent<Rigidbody2D>();
             float gravityScale = rb != null ? rb.gravityScale : 1f;
-            
+
             animationController.UpdateJumpAnimation(velocity.y, isGrounded, heightAboveGround, gravityScale);
         }
     }
@@ -290,12 +309,12 @@ public class PlayerController : MonoBehaviour, IInteractor
     {
         // Cast ray downward to detect ground
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 50f, LayerMask.GetMask("Ground"));
-        
+
         if (hit.collider != null)
         {
             return transform.position.y - hit.point.y;
         }
-        
+
         // Fallback: assume reasonable height if no ground detected
         return 2f;
     }
@@ -315,18 +334,21 @@ public class PlayerController : MonoBehaviour, IInteractor
 
         currentChair = chairToSit;
         transform.position = chairToSit.sitpoint.position;
-        
+
+
+        // Stop movement and lock it to prevent any input from being applied
         movement.StopMovement();
+        movement.SetMovementLocked(true);
         movement.SetGravityEnabled(false);
-        
+
         stateMachine.ChangeState(PlayerState.Sitting);
-        
+
         // Start restoring energy while sitting
         if (energySystem != null)
         {
             energySystem.StartEnergyRestore();
         }
-        
+
         Debug.Log("Player sat down on chair - energy restoring");
     }
 
@@ -346,20 +368,23 @@ public class PlayerController : MonoBehaviour, IInteractor
             energySystem.StopEnergyRestore();
         }
 
+        // Unlock movement before changing position
+        movement.SetMovementLocked(false);
+
         // Move slightly upward to avoid re-triggering the chair
         transform.position += new Vector3(0f, 0.5f, 0f);
-        
+
         movement.SetGravityEnabled(true);
         stateMachine.ChangeState(PlayerState.Idle);
-        
+
         currentChair = null;
-        
+
         FastTravelUI fastTravelUI = FindFirstObjectByType<FastTravelUI>();
         if (fastTravelUI != null && fastTravelUI.IsOpen())
         {
             fastTravelUI.CloseFastTravelUI();
         }
-        
+
         Debug.Log("Player left the chair");
     }
 
@@ -386,6 +411,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         // Hide player sprite during rappelling animation
         animationController.SetVisible(false);
         movement.StopMovement();
+        movement.SetMovementLocked(true);
         movement.SetGravityEnabled(false);
 
         Debug.Log("Rappelling started");
@@ -395,6 +421,7 @@ public class PlayerController : MonoBehaviour, IInteractor
 
         // Teleport to target position
         movement.Teleport(targetPosition.position);
+        movement.SetMovementLocked(false);
         movement.SetGravityEnabled(true);
 
         // Show player sprite again
@@ -413,7 +440,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         Debug.Log("Player triggered: " + collision.gameObject.name);
 
         // Key pickup is now handled by Key component itself (automatic collection)
-        
+
         // Handle interactable objects
         IInteractable interactable = collision.GetComponent<IInteractable>();
         if (interactable != null)
@@ -474,7 +501,7 @@ public class PlayerController : MonoBehaviour, IInteractor
 
         // Fallback to original FastTravelUI
         FastTravelUI fastTravelUI = FindFirstObjectByType<FastTravelUI>();
-        
+
         if (fastTravelUI != null)
         {
             Debug.Log("PlayerController: FastTravelUI found, toggling menu...");
@@ -558,6 +585,42 @@ public class PlayerController : MonoBehaviour, IInteractor
     GameObject IInteractor.GetGameObject()
     {
         return gameObject;
+    }
+
+    // ==================== Z INDEX MANAGEMENT ====================
+
+    /// <summary>
+    /// Set the z index (Sorting Order) for all player sprite renderers
+    /// Higher values render on top of lower values
+    /// </summary>
+    /// <param name="zIndex">The sorting order value to set</param>
+    public void SetPlayerZIndex(int zIndex)
+    {
+        playerZIndex = zIndex;
+
+        // Refresh sprite renderer references if needed
+        if (spriteRenderers == null || spriteRenderers.Length == 0)
+        {
+            spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+        }
+
+        // Apply z index to all sprite renderers
+        foreach (SpriteRenderer renderer in spriteRenderers)
+        {
+            if (renderer != null)
+            {
+                renderer.sortingOrder = zIndex;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Get the current z index (Sorting Order) of the player
+    /// </summary>
+    /// <returns>The current sorting order value</returns>
+    public int GetPlayerZIndex()
+    {
+        return playerZIndex;
     }
 }
 

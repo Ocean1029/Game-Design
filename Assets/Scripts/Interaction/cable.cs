@@ -37,6 +37,9 @@ public class cable : MonoBehaviour, IInteractable
     [Tooltip("修復狀態的視覺物件（可選）")]
     [SerializeField] private GameObject repairedVisual;
 
+    [Header("Debug")]
+    [SerializeField] private bool showDebugInfo = true;
+
     private Animator cableAnimator;
     private bool hasBeenUsed = false;
     private bool isBroken = true;
@@ -81,14 +84,30 @@ public class cable : MonoBehaviour, IInteractable
     
     void Update()
     {
-        // 如果玩家在附近且 cable 壞掉且有 rope，按 Z 鍵修復
-        if (isPlayerNearby && isBroken && !hasBeenUsed && nearbyPlayer != null)
+        // 如果玩家在附近且有 rope，按 Z 鍵使用繩索啟動 cable
+        if (isPlayerNearby && nearbyPlayer != null)
         {
             if (Input.GetKeyDown(KeyCode.Z))
             {
+                if (showDebugInfo)
+                {
+                    Debug.Log($"[Cable] Z key pressed. isPlayerNearby={isPlayerNearby}, nearbyPlayer={nearbyPlayer?.name}");
+                }
+                
                 if (HasRequiredRope(nearbyPlayer))
                 {
-                    RepairCable(nearbyPlayer);
+                    if (showDebugInfo)
+                    {
+                        Debug.Log($"[Cable] Player has rope! Calling UseRopeOnCable");
+                    }
+                    UseRopeOnCable(nearbyPlayer);
+                }
+                else
+                {
+                    if (showDebugInfo)
+                    {
+                        Debug.Log($"[Cable] Z pressed but player doesn't have rope");
+                    }
                 }
             }
         }
@@ -101,45 +120,61 @@ public class cable : MonoBehaviour, IInteractable
     /// </summary>
     public void OnInteractorEnterZone(IInteractor interactor)
     {
+        if (showDebugInfo)
+        {
+            Debug.Log("[Cable] OnInteractorEnterZone called");
+        }
+
         // Don't allow interaction if already used
         if (hasBeenUsed)
         {
+            if (showDebugInfo)
+            {
+                Debug.Log("[Cable] Already used, ignoring");
+            }
             return;
         }
 
-        Debug.Log("Interactor entered cable zone");
+        Debug.Log("[Cable] Interactor entered cable zone");
         currentInteractor = interactor;
 
         // 獲取玩家
         PlayerController player = interactor.GetGameObject().GetComponent<PlayerController>();
         if (player != null)
         {
+            if (showDebugInfo)
+            {
+                Debug.Log($"[Cable] Found player: {player.name}");
+            }
             isPlayerNearby = true;
             nearbyPlayer = player;
         }
-
-        // 如果 cable 壞掉，檢查玩家是否有 rope
-        if (isBroken)
+        else
         {
-            if (player != null && HasRequiredRope(player))
+            if (showDebugInfo)
             {
-                // 顯示背包 rope 物件上方的按鍵提示
-                ShowRopePrompt(player);
+                Debug.Log("[Cable] No PlayerController found!");
             }
-            else
+        }
+
+        // 檢查玩家是否有 rope
+        if (player != null && HasRequiredRope(player))
+        {
+            if (showDebugInfo)
             {
-                // 顯示需要 rope 的訊息
-                ShowRopeRequiredMessage();
+                Debug.Log("[Cable] Player has rope! Showing rope prompt");
             }
+            // 顯示背包 rope 物件上方的按鍵提示
+            ShowRopePrompt(player);
         }
         else
         {
-            // Cable 已修復，顯示使用提示
-        if (usePrompt != null)
-        {
-            usePrompt.SetActive(true);
-            Debug.Log("Showing rappel prompt");
+            if (showDebugInfo)
+            {
+                Debug.Log("[Cable] Player missing or no rope. Showing rope required message");
             }
+            // 顯示需要 rope 的訊息
+            ShowRopeRequiredMessage();
         }
     }
 
@@ -303,36 +338,47 @@ public class cable : MonoBehaviour, IInteractable
     }
     
     /// <summary>
-    /// 修復 cable（消耗 rope）
+    /// 使用繩索啟動 cable（消耗 rope 並觸發 animator）
     /// </summary>
-    private void RepairCable(PlayerController player)
+    private void UseRopeOnCable(PlayerController player)
     {
-        if (!isBroken)
-        {
-            Debug.Log("Cable is already repaired!");
-            return;
-        }
-        
-        Debug.Log($"Cable: Attempting to repair with rope");
-        
+        Debug.Log($"Cable: Using rope to activate cable");
+
         // 先隱藏提示
         HideRopePrompt();
-        
+
         // 消耗 rope
         ConsumeRope(player);
-        
-        // 修復 cable
-        isBroken = false;
-        UpdateCableState();
-        
-        Debug.Log("Cable: Successfully repaired!");
-        
-        // 顯示浮動文字
+
+        // 觸發 cable animator
+        if (cableAnimator != null)
+        {
+            cableAnimator.SetTrigger(animationTriggerName);
+            Debug.Log($"Cable: Triggered animator with '{animationTriggerName}'");
+        }
+
+        // 如果 cable 是壞掉的，修復它
+        if (isBroken)
+        {
+            isBroken = false;
+            UpdateCableState();
+            Debug.Log("Cable: Repaired during activation!");
+        }
+
+        // Show floating text
         FloatingTextManager floatingTextManager = FloatingTextManager.GetInstance();
         if (floatingTextManager != null)
         {
-            floatingTextManager.ShowFloatingText("Cable 已修復！", transform.position, Color.green);
+            floatingTextManager.ShowFloatingText("Cable activated!", transform.position, Color.green);
         }
+    }
+
+    /// <summary>
+    /// 修復 cable（舊方法，保留相容性）
+    /// </summary>
+    private void RepairCable(PlayerController player)
+    {
+        UseRopeOnCable(player);
     }
     
     /// <summary>
@@ -363,7 +409,7 @@ public class cable : MonoBehaviour, IInteractable
     }
     
     /// <summary>
-    /// 顯示需要 rope 的訊息
+    /// Show message that rope is required to repair
     /// </summary>
     private void ShowRopeRequiredMessage()
     {
@@ -372,7 +418,7 @@ public class cable : MonoBehaviour, IInteractable
         FloatingTextManager floatingTextManager = FloatingTextManager.GetInstance();
         if (floatingTextManager != null)
         {
-            floatingTextManager.ShowFloatingText("需要繩索修復！", transform.position, Color.red);
+            floatingTextManager.ShowFloatingText("Rope required to repair!", transform.position, Color.red);
         }
     }
     
