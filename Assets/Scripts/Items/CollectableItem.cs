@@ -76,56 +76,70 @@ public class CollectableItem : MonoBehaviour
             Debug.LogError("CollectableItem: itemData is null!");
             return;
         }
-        
+
         isCollected = true;
 
         // Add to inventory
         bool success = inventory.AddItem(itemData, quantity);
-        
+
         if (!success)
         {
             Debug.LogWarning($"CollectableItem: Failed to add {itemData.itemName} to inventory (full?)");
-            isCollected = false; // Allow retry
+            isCollected = false; 
             return;
         }
 
-        // Mark this world item as collected (for persistence)
+        // Mark collected
         if (!string.IsNullOrEmpty(collectableId))
         {
             SaveSystem.MarkItemCollected(collectableId);
-            Debug.Log($"CollectableItem: Marked '{collectableId}' as permanently collected");
         }
 
-        // Show floating text
+        // ==== Get FloatingTextManager (必須先取得，再用) ====
         FloatingTextManager floatingTextManager = FloatingTextManager.GetInstance();
+
         if (floatingTextManager != null)
         {
-            string message = quantity > 1 ? $"+ {itemData.itemName} x{quantity}" : $"+ {itemData.itemName}";
-            Color itemColor = new Color(1f, 0.84f, 0f); // Gold color
-            floatingTextManager.ShowFloatingText(message, transform.position, itemColor);
+            string message = quantity > 1 ?
+                $"+ {itemData.itemName} x{quantity}" :
+                $"+ {itemData.itemName}";
+
+            Color itemColor = new Color(1f, 0.84f, 0f); // 金色
+
+            // === 顯示文字（並取得 floating text transform） ===
+            var floatText = floatingTextManager.ShowFloatingText(
+                message,
+                transform.position,
+                itemColor
+            );
+
+            // === 顯示圖片（在文字上面 30px） ===
+            floatingTextManager.ShowFloatingImage(
+                itemData.icon,
+                floatText.transform.position + new Vector3(0, 30f, 0)
+            );
         }
         else
         {
             Debug.Log($"Collected {itemData.itemName} x{quantity}");
         }
 
-        // Play collect sound through SoundManager (with fallback for backward compatibility)
+        // Play sound
         AudioClip sound = collectSound != null ? collectSound : itemData.collectSound;
         if (sound != null)
         {
             PlayCollectSound(sound, transform.position);
         }
 
-        // Spawn collect effect
-        GameObject effect = collectEffect;
-        if (effect != null)
+        // Spawn effect
+        if (collectEffect != null)
         {
-            Instantiate(effect, transform.position, Quaternion.identity);
+            Instantiate(collectEffect, transform.position, Quaternion.identity);
         }
 
-        // Destroy item object
         Destroy(gameObject);
     }
+
 
     /// <summary>
     /// Set item data (useful for runtime spawning)

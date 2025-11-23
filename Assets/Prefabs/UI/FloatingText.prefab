@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 10}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5164889249404450462
@@ -69,7 +69,7 @@ MonoBehaviour:
   m_text: "\u6E2C\u8A66\u6587\u5B57"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5f603ac9426b447ee9fb38537d63ec59, type: 2}
-  m_sharedMaterial: {fileID: 0}
+  m_sharedMaterial: {fileID: 4394943282294839314, guid: 5f603ac9426b447ee9fb38537d63ec59, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -88,7 +88,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -149,6 +149,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7dbe2fc76f3c4ae0ab75ac38dbeebd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FloatingText
-  lifetime: 2
-  floatSpeed: 1
-  floatDistance: 2
+  lifetime: 3.5
+  floatDistance: 3

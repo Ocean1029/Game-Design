@@ -9,7 +9,7 @@ public class FloatingText : MonoBehaviour
 {
     [Header("Animation Settings")]
     [Tooltip("How long the text stays visible")]
-    [SerializeField] private float lifetime = 2f;
+    [SerializeField] private float lifetime = 3f;
     
     [Tooltip("Distance the text floats upward before fading")]
     [SerializeField] private float floatDistance = 2f;
@@ -30,7 +30,8 @@ public class FloatingText : MonoBehaviour
         }
 
         startPosition = transform.position;
-        startColor = textComponent.color;
+        startColor = Color.white;
+        textComponent.color = Color.white;
     }
 
     void Update()
@@ -72,8 +73,8 @@ public class FloatingText : MonoBehaviour
     {
         if (textComponent != null)
         {
-            startColor = color;
-            textComponent.color = color;
+            startColor = Color.white;
+            textComponent.color = Color.white;
         }
     }
 
