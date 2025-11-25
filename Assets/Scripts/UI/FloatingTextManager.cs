@@ -83,7 +83,16 @@ public class FloatingTextManager : MonoBehaviour
             floatingText.SetText(text);
             floatingText.SetColor(color ?? defaultColor);
             floatingText.SetFontSize(fontSize ?? defaultFontSize);
-            return floatingText;
+            
+            // 套用 FontManager 的字體
+            if (FontManager.Instance != null)
+            {
+                TextMeshProUGUI tmpText = textObj.GetComponent<TextMeshProUGUI>();
+                if (tmpText != null)
+                {
+                    FontManager.Instance.ApplyPixellariFont(tmpText);
+                }
+            }
         }
         else
         {

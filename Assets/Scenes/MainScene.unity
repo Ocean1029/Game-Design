@@ -3522,6 +3522,52 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2277676754856186160, guid: 6e2e472f2f9a3de4ea7c54ce52bbb278, type: 3}
   m_PrefabInstance: {fileID: 1011498937}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1013742157
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1013742159}
+  - component: {fileID: 1013742158}
+  m_Layer: 0
+  m_Name: FontManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1013742158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013742157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc03276aa63b9412894d01bd126422c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FontManager
+  defaultFont: {fileID: 11400000, guid: cffd747bc08544a75a3cee0f08d5ba8b, type: 2}
+  pixellariFontAsset: {fileID: 11400000, guid: cffd747bc08544a75a3cee0f08d5ba8b, type: 2}
+--- !u!4 &1013742159
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013742157}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1019256720
 GameObject:
   m_ObjectHideFlags: 0
@@ -9290,6 +9336,4 @@ SceneRoots:
   - {fileID: 635869907}
   - {fileID: 1896559044}
   - {fileID: 893980182}
-  - {fileID: 9160984277838772925}
-  - {fileID: 4052461774814805550}
-  - {fileID: 3050136085818789769}
+  - {fileID: 1013742159}
