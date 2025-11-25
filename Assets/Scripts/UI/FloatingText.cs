@@ -33,6 +33,23 @@ public class FloatingText : MonoBehaviour
         startColor = textComponent.color;
     }
 
+    void Start()
+    {
+        // 在 Start 中套用字體，確保 FontManager 已經初始化
+        ApplyFontManagerFont();
+    }
+
+    /// <summary>
+    /// 套用 FontManager 設定的字體
+    /// </summary>
+    private void ApplyFontManagerFont()
+    {
+        if (FontManager.Instance != null && textComponent != null)
+        {
+            FontManager.Instance.ApplyPixellariFont(textComponent);
+        }
+    }
+
     void Update()
     {
         elapsedTime += Time.unscaledDeltaTime;
