@@ -93,6 +93,8 @@ public class FloatingTextManager : MonoBehaviour
                     FontManager.Instance.ApplyPixellariFont(tmpText);
                 }
             }
+
+            return floatingText;
         }
         else
         {

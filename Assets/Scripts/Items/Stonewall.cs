@@ -1,9 +1,17 @@
+using System.Collections;
 using UnityEngine;
 
 public class StoneWall : MonoBehaviour
 {
     [Header("Stone Wall Settings")]
     public Collider2D wallCollider;
+
+    [Header("升起動畫設定")]
+   /**
+    * 上升高度（你可以調）
+    */
+    public float raiseHeight = 2f;
+    public float raiseDuration = 1f;
 
     private bool isRaised = false;
 
@@ -13,24 +21,35 @@ public class StoneWall : MonoBehaviour
             wallCollider = GetComponent<Collider2D>();
     }
 
-    /// <summary>
-    /// 被 StoneButton 呼叫，讓石牆進入「升起」狀態
-    /// </summary>
-    public void RaiseWall()
+    public IEnumerator PlayRaiseAnimation()
     {
-        if (isRaised) return;
+        if (isRaised) yield break;
 
         isRaised = true;
-        Debug.Log("StoneWall: RaiseWall 被呼叫");
 
-        // 無動畫版，直接關閉 collider
+        Debug.Log("StoneWall: 播放上升動畫");
+
         if (wallCollider != null)
             wallCollider.enabled = false;
+
+        Vector3 startPos = transform.position;
+        Vector3 endPos = startPos + new Vector3(0, raiseHeight, 0);
+
+        float elapsed = 0f;
+
+        while (elapsed < raiseDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / raiseDuration);
+
+            transform.position = Vector3.Lerp(startPos, endPos, t);
+
+            yield return null;
+        }
+
+        transform.position = endPos;
     }
 
-    /// <summary>
-    /// 給 HintTrigger 使用：石牆是否被升起？
-    /// </summary>
     public bool IsRaised()
     {
         return isRaised;
