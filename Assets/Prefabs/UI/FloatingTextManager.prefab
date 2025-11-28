@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FloatingTextManager
   floatingTextPrefab: {fileID: 7113080889727214066, guid: a53e7612b3cbd4fc784e06b3cfa648a6, type: 3}
+  floatingImagePrefab: {fileID: 6487193746508117249, guid: dfd7f512a53b4d24fb49bb6669d5e9a5, type: 3}
   defaultFontSize: 24
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
   worldOffset: {x: 0, y: 1, z: 0}

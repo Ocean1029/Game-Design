@@ -1,10 +1,6 @@
 using UnityEngine;
 using TMPro;
 
-/// <summary>
-/// Manages creation and display of floating text messages
-/// Singleton pattern for easy access from anywhere
-/// </summary>
 public class FloatingTextManager : MonoBehaviour
 {
     private static FloatingTextManager instance;
@@ -12,6 +8,7 @@ public class FloatingTextManager : MonoBehaviour
     [Header("Prefab Reference")]
     [Tooltip("Prefab for floating text (must have FloatingText component)")]
     [SerializeField] private GameObject floatingTextPrefab;
+    [SerializeField] private GameObject floatingImagePrefab;
 
     [Header("Default Settings")]
     [SerializeField] private float defaultFontSize = 24f;
@@ -50,26 +47,21 @@ public class FloatingTextManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Show floating text at a world position
+    /// Show floating text at a world position (returns FloatingText)
     /// </summary>
-    /// <param name="text">Text to display</param>
-    /// <param name="worldPosition">World position to spawn text</param>
-    /// <param name="color">Optional text color</param>
-    /// <param name="fontSize">Optional font size</param>
-    public void ShowFloatingText(string text, Vector3 worldPosition, Color? color = null, float? fontSize = null)
+    public FloatingText ShowFloatingText(string text, Vector3 worldPosition, Color? color = null, float? fontSize = null)
     {
         if (floatingTextPrefab == null)
         {
             Debug.LogError("FloatingTextManager: floatingTextPrefab is not assigned!");
-            return;
+            return null;
         }
 
         GameObject textObj;
-        Vector3 spawnPosition;
 
+        // UI Overlay mode
         if (canvas != null && canvas.renderMode == RenderMode.ScreenSpaceOverlay)
         {
-            // Screen space overlay - convert world to screen position
             Vector3 screenPos = mainCamera.WorldToScreenPoint(worldPosition + worldOffset);
             textObj = Instantiate(floatingTextPrefab, canvas.transform);
             textObj.transform.position = screenPos;
@@ -77,13 +69,11 @@ public class FloatingTextManager : MonoBehaviour
         else
         {
             // World space or screen space camera
-            spawnPosition = worldPosition + worldOffset;
+            Vector3 spawnPosition = worldPosition + worldOffset;
             textObj = Instantiate(floatingTextPrefab, spawnPosition, Quaternion.identity);
-            
+
             if (canvas != null)
-            {
                 textObj.transform.SetParent(canvas.transform, true);
-            }
         }
 
         // Setup floating text
@@ -103,20 +93,62 @@ public class FloatingTextManager : MonoBehaviour
                     FontManager.Instance.ApplyPixellariFont(tmpText);
                 }
             }
+
+            return floatingText;
         }
         else
         {
             Debug.LogError("FloatingTextManager: FloatingText component not found on prefab!");
             Destroy(textObj);
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Show floating image (icon popup)
+    /// </summary>
+    public void ShowFloatingImage(Sprite sprite, Vector3 worldPosition)
+    {
+        if (floatingImagePrefab == null)
+        {
+            Debug.LogError("FloatingTextManager: floatingImagePrefab not assigned!");
+            return;
+        }
+
+        GameObject imgObj;
+
+        // UI Overlay mode
+        if (canvas != null && canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+        {
+            Vector3 screenPos = mainCamera.WorldToScreenPoint(worldPosition + worldOffset);
+            imgObj = Instantiate(floatingImagePrefab, canvas.transform);
+            imgObj.transform.position = screenPos;
+        }
+        else
+        {
+            Vector3 spawnPosition = worldPosition + worldOffset;
+            imgObj = Instantiate(floatingImagePrefab, spawnPosition, Quaternion.identity);
+
+            if (canvas != null)
+                imgObj.transform.SetParent(canvas.transform, true);
+        }
+
+        // Set sprite
+        FloatingImage floatingImage = imgObj.GetComponent<FloatingImage>();
+        if (floatingImage != null)
+        {
+            floatingImage.SetSprite(sprite);
+        }
+        else
+        {
+            Debug.LogError("FloatingTextManager: FloatingImage component not found on prefab!");
+            Destroy(imgObj);
         }
     }
 
     /// <summary>
     /// Show floating text at player's position
     /// </summary>
-    /// <param name="text">Text to display</param>
-    /// <param name="color">Optional text color</param>
-    /// <param name="fontSize">Optional font size</param>
     public void ShowFloatingTextAtPlayer(string text, Color? color = null, float? fontSize = null)
     {
         PlayerController player = FindFirstObjectByType<PlayerController>();
@@ -130,22 +162,17 @@ public class FloatingTextManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Show key collected message
-    /// </summary>
-    /// <param name="keyName">Name of the key</param>
-    /// <param name="worldPosition">Position to show text</param>
     public void ShowKeyCollected(string keyName, Vector3 worldPosition)
     {
-        string message = $"+ {keyName}";  // Use + symbol for collected items
-        Color keyColor = new Color(1f, 0.84f, 0f); // Gold color
+        string message = $"+ {keyName}";
+        Color keyColor = new Color(1f, 0.84f, 0f); // Gold
         ShowFloatingText(message, worldPosition, keyColor, defaultFontSize * 1.2f);
     }
+
     public void ShowBombCollected(string bombName, Vector3 worldPosition)
     {
         string message = $"+ {bombName}";
-        Color bombColor = new Color(1f, 0.3f, 0.1f); // 紅橙色（Bomb感覺）
+        Color bombColor = new Color(1f, 0.3f, 0.1f);
         ShowFloatingText(message, worldPosition, bombColor, defaultFontSize * 1.2f);
     }
 }
-
