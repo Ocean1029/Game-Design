@@ -26,11 +26,13 @@ public class PlayerEnergy : MonoBehaviour
     private int currentEnergy;
     private bool isRestoring = false;
     private float restoreTimer = 0f;
+    private bool hasTrippedOnce = false;
 
     // Events for UI updates
     public event Action<int, int> OnEnergyChanged; // (currentEnergy, maxEnergy)
     public event Action OnEnergyDepleted;
     public event Action OnEnergyRestored;
+    public event Action OnFirstEnergyDepletion;
 
     void Start()
     {
@@ -93,6 +95,18 @@ public class PlayerEnergy : MonoBehaviour
         }
         
         OnEnergyChanged?.Invoke(currentEnergy, maxEnergy);
+
+        if (currentEnergy <= 0 && !hasTrippedOnce)
+        {
+            hasTrippedOnce = true;
+            Debug.Log("PlayerEnergy: INVOKING OnFirstEnergyDepletion event!");
+            OnFirstEnergyDepletion?.Invoke();
+            if (showDebugInfo)
+            {
+                Debug.Log("<color=orange>PlayerEnergy: First time energy depletion! Tripping...</color>");
+            }
+        }
+
         return true;
     }
 

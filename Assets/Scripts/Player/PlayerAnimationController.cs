@@ -27,6 +27,8 @@ public class PlayerAnimationController : MonoBehaviour
     private readonly string PARAM_WALK_TRIGGER = "Walk";
     private readonly string PARAM_INTERACT_TRIGGER = "Interact";
     private readonly string PARAM_TELEPORT_TRIGGER = "Teleport";
+    private readonly string PARAM_TRIP_TRIGGER = "Trip";
+    private readonly string PARAM_RECOVER_TRIGGER = "Recover";
 
     // Jump animation control
     private const int JUMP_TOTAL_FRAMES = 8;
@@ -409,6 +411,35 @@ public class PlayerAnimationController : MonoBehaviour
         else
         {
             Debug.LogWarning("PlayerAnimationController: effects GameObject is null!");
+        }
+    }
+
+    /// <summary>
+    /// Trigger the trip/fall animation
+    /// </summary>
+    public void TriggerTrip()
+    {
+        if (animator != null)
+        {
+            if (HasParameter(PARAM_TRIP_TRIGGER))
+            {
+                animator.SetTrigger(PARAM_TRIP_TRIGGER);
+            }
+            else
+            {
+                Debug.LogWarning("PlayerAnimationController: 'Trip' parameter not found in Animator!");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Trigger the recover animation (transition from Trip to Idle)
+    /// </summary>
+    public void TriggerRecover()
+    {
+        if (animator != null && HasParameter(PARAM_RECOVER_TRIGGER))
+        {
+            animator.SetTrigger(PARAM_RECOVER_TRIGGER);
         }
     }
 

@@ -70,7 +70,8 @@ public class PlayerStateMachine : MonoBehaviour
     public bool IsInputLocked()
     {
         return currentState == PlayerState.Rappelling || 
-               currentState == PlayerState.Cutscene;
+               currentState == PlayerState.Cutscene ||
+               currentState == PlayerState.Tripping;
     }
 }
 

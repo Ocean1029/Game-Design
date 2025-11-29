@@ -10,6 +10,7 @@ public enum PlayerState
     Falling,        // Falling without initial jump
     Sitting,        // Sitting on a chair, limited input
     Rappelling,     // Descending on a cable, input locked
+    Tripping,       // Player has tripped due to low energy, input locked
     Interacting,    // Generic interaction state (talking, reading, etc.)
     Cutscene        // During cutscene, all input locked
 }

@@ -43,6 +43,29 @@ public class PlayerController : MonoBehaviour, IInteractor
     // Sprite renderer references for z index management
     private SpriteRenderer[] spriteRenderers;
 
+    // Track the trip coroutine so we can stop it when pressing R
+    private Coroutine tripCoroutine = null;
+    private PlayerState lastState = PlayerState.Idle; // For debug logging
+
+    void OnEnable()
+    {
+        if (energySystem == null)
+            energySystem = GetComponent<PlayerEnergy>();
+            
+        if (energySystem != null)
+        {
+            energySystem.OnFirstEnergyDepletion += HandleTrip;
+        }
+    }
+
+    void OnDisable()
+    {
+        if (energySystem != null)
+        {
+            energySystem.OnFirstEnergyDepletion -= HandleTrip;
+        }
+    }
+
     void Awake()
     {
         // Get all required components
@@ -72,6 +95,27 @@ public class PlayerController : MonoBehaviour, IInteractor
 
     void Update()
     {
+        // Debug current state at start of each update
+        if (stateMachine.CurrentState != lastState)
+        {
+            Debug.Log($"PlayerController: State changed from {lastState} to {stateMachine.CurrentState}");
+            lastState = stateMachine.CurrentState;
+        }
+
+        // Check R key first (before any input locking)
+        if (Input.GetKeyDown(respawnKey))
+        {
+            Debug.Log($"PlayerController: R key pressed! Current state: {stateMachine.CurrentState}");
+
+            // Allow respawn if tripping
+            if (stateMachine.CurrentState == PlayerState.Tripping)
+            {
+                Debug.Log("PlayerController: R key detected while Tripping! Calling RespawnAtLastChair...");
+                RespawnAtLastChair();
+                return;
+            }
+        }
+
         // Don't process input if in locked state
         if (stateMachine.IsInputLocked())
         {
@@ -93,9 +137,10 @@ public class PlayerController : MonoBehaviour, IInteractor
     {
         if (!stateMachine.CanMove())
         {
-            // Clear input when movement is not allowed (e.g., when sitting)
+            // Clear input when movement is not allowed (e.g., when sitting or tripping)
             // This prevents cached input from being applied in FixedUpdate
-            if (stateMachine.CurrentState == PlayerState.Sitting)
+            if (stateMachine.CurrentState == PlayerState.Sitting || 
+                stateMachine.CurrentState == PlayerState.Tripping)
             {
                 movement.ClearInput();
             }
@@ -271,7 +316,8 @@ public class PlayerController : MonoBehaviour, IInteractor
         // Don't update if in special states
         if (stateMachine.CurrentState == PlayerState.Sitting ||
             stateMachine.CurrentState == PlayerState.Rappelling ||
-            stateMachine.CurrentState == PlayerState.Cutscene)
+            stateMachine.CurrentState == PlayerState.Cutscene ||
+            stateMachine.CurrentState == PlayerState.Tripping)
         {
             return;
         }
@@ -474,8 +520,50 @@ public class PlayerController : MonoBehaviour, IInteractor
     /// </summary>
     private void RespawnAtLastChair()
     {
-        Debug.Log("PlayerController: R key pressed - attempting to respawn");
+        Debug.Log("PlayerController: RespawnAtLastChair called");
 
+        // Force state reset if we were tripping
+        if (stateMachine.CurrentState == PlayerState.Tripping)
+        {
+            Debug.Log("PlayerController: Recovering from trip via respawn - starting recovery...");
+            
+            // Stop the trip coroutine if it's running
+            if (tripCoroutine != null)
+            {
+                Debug.Log("PlayerController: Stopping trip coroutine");
+                StopCoroutine(tripCoroutine);
+                tripCoroutine = null;
+            }
+            
+            Debug.Log("PlayerController: Changing state to Idle");
+            stateMachine.ChangeState(PlayerState.Idle);
+            
+            Debug.Log("PlayerController: Unlocking movement");
+            movement.SetMovementLocked(false);
+            movement.SetGravityEnabled(true);
+
+            // Trigger Recover animation to transition out of Trip
+            if (animationController.IsAnimationSystemReady())
+            {
+                Debug.Log("PlayerController: Triggering Recover animation");
+                animationController.TriggerRecover();
+            }
+            else
+            {
+                Debug.LogWarning("PlayerController: Animation system not ready!");
+            }
+            
+            // Restore energy since we are respawning (presumably at a save point/chair)
+            if (energySystem != null)
+            {
+                Debug.Log("PlayerController: Restoring all energy");
+                energySystem.RestoreAllEnergy();
+            }
+            
+            Debug.Log("PlayerController: Recovery from trip complete!");
+        }
+
+        Debug.Log("PlayerController: Getting GameManager for respawn");
         GameManager gameManager = GameManager.GetInstance();
         if (gameManager == null)
         {
@@ -483,6 +571,7 @@ public class PlayerController : MonoBehaviour, IInteractor
             return;
         }
 
+        Debug.Log("PlayerController: Calling GameManager.RespawnPlayer()");
         gameManager.RespawnPlayer();
     }
 
@@ -621,6 +710,59 @@ public class PlayerController : MonoBehaviour, IInteractor
     public int GetPlayerZIndex()
     {
         return playerZIndex;
+    }
+
+    // ==================== TRIP LOGIC ====================
+
+    private void HandleTrip()
+    {
+        // Only trip if not already in a critical state
+        if (stateMachine.CurrentState != PlayerState.Cutscene && 
+            stateMachine.CurrentState != PlayerState.Rappelling &&
+            stateMachine.CurrentState != PlayerState.Tripping)
+        {
+            tripCoroutine = StartCoroutine(TripRoutine());
+        }
+    }
+
+    private IEnumerator TripRoutine()
+    {
+        Debug.Log("PlayerController: TripRoutine started! Setting state to Tripping...");
+
+        stateMachine.ChangeState(PlayerState.Tripping);
+        Debug.Log($"PlayerController: State changed. Current state: {stateMachine.CurrentState}");
+
+        movement.StopMovement(); // Ensure physics stop
+        movement.SetMovementLocked(true); // Lock movement to prevent player from moving
+        Debug.Log("PlayerController: Movement locked");
+
+        if (animationController.IsAnimationSystemReady())
+        {
+            animationController.TriggerTrip();
+            Debug.Log("PlayerController: Trip animation triggered");
+        }
+
+        Debug.Log("PlayerController: Waiting 2 seconds...");
+        // Wait for animation or fixed time
+        yield return new WaitForSeconds(2.0f); // 2 seconds trip time
+
+        Debug.Log($"PlayerController: 2 seconds elapsed. Current state: {stateMachine.CurrentState}");
+
+        // Restore to idle if we are still tripping (haven't been interrupted by cutscene etc)
+        if (stateMachine.CurrentState == PlayerState.Tripping)
+        {
+            Debug.Log("PlayerController: Auto-recovering from trip (2 seconds passed)");
+            movement.SetMovementLocked(false); // Unlock movement
+            stateMachine.ChangeState(PlayerState.Idle);
+        }
+        else
+        {
+            Debug.Log($"PlayerController: Not auto-recovering - state changed to: {stateMachine.CurrentState}");
+        }
+
+        // Clear the coroutine reference
+        tripCoroutine = null;
+        Debug.Log("PlayerController: TripRoutine ended");
     }
 }
 
