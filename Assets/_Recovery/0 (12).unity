@@ -455,22 +455,22 @@ PrefabInstance:
     - target: {fileID: 506099366924343387, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -8533606670350889490, guid: 6a8db11baf32a48d9bd085b15f23773f, type: 3}
+      objectReference: {fileID: -3135110031507587850, guid: 3419268ff66acb14fb58674b5f6597f1, type: 3}
     - target: {fileID: 506099366924343387, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1436608448917759867, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
       propertyPath: m_Radius
-      value: 1.101767
+      value: 3.206727
       objectReference: {fileID: 0}
     - target: {fileID: 1436608448917759867, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
       propertyPath: m_Offset.x
-      value: -0.16705713
+      value: -0.13956045
       objectReference: {fileID: 0}
     - target: {fileID: 1436608448917759867, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
       propertyPath: m_Offset.y
-      value: 0.023182085
+      value: -1.232512
       objectReference: {fileID: 0}
     - target: {fileID: 4517595999469868446, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
       propertyPath: collectSound
@@ -482,23 +482,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8757125629993804523, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.5816436
+      value: 0.29779804
       objectReference: {fileID: 0}
     - target: {fileID: 8757125629993804523, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.5816436
+      value: 0.29779804
       objectReference: {fileID: 0}
     - target: {fileID: 8757125629993804523, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.5816436
+      value: 0.29779804
       objectReference: {fileID: 0}
     - target: {fileID: 8757125629993804523, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 14.08
+      value: 13.831
       objectReference: {fileID: 0}
     - target: {fileID: 8757125629993804523, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -15.8108
+      value: -15.951
       objectReference: {fileID: 0}
     - target: {fileID: 8757125629993804523, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
       propertyPath: m_LocalPosition.z
@@ -536,10 +536,7 @@ PrefabInstance:
     - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8557279393519003148, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 208128195}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
 --- !u!1001 &102363418
 PrefabInstance:
@@ -699,33 +696,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6e2e472f2f9a3de4ea7c54ce52bbb278, type: 3}
---- !u!1 &208128190 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8557279393519003148, guid: 1c50ad45a14e64c1e909a4225fc3e930, type: 3}
-  m_PrefabInstance: {fileID: 83419321}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &208128195
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 208128190}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c7a908c51dddb48a688e4dc22a108ea6, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &225243705
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6435,28 +6405,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!95 &1523370911
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1523370904}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: fd4ebc28a1852425da9f449e19200f8e, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &1525889582
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9319,21 +9267,17 @@ PrefabInstance:
       propertyPath: m_IsTrigger
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 772257893823099752, guid: 058c7ce2a8f4a4be2b33af1c45b439c4, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -2182124076254010665, guid: d96ea90fd6d804c26837e6ab57cf6701, type: 3}
     - target: {fileID: 2647517838476283510, guid: 058c7ce2a8f4a4be2b33af1c45b439c4, type: 3}
       propertyPath: m_Name
       value: stone
       objectReference: {fileID: 0}
     - target: {fileID: 3215559219360795980, guid: 058c7ce2a8f4a4be2b33af1c45b439c4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 10.71
+      value: 10.61
       objectReference: {fileID: 0}
     - target: {fileID: 3215559219360795980, guid: 058c7ce2a8f4a4be2b33af1c45b439c4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -10.3
+      value: -10.09
       objectReference: {fileID: 0}
     - target: {fileID: 3215559219360795980, guid: 058c7ce2a8f4a4be2b33af1c45b439c4, type: 3}
       propertyPath: m_LocalPosition.z
@@ -9683,9 +9627,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2961591212641946955, guid: eb48b590d26b1ac408ee2fc68c9b8c38, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1523370908}
-    - targetCorrespondingSourceObject: {fileID: 2961591212641946955, guid: eb48b590d26b1ac408ee2fc68c9b8c38, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1523370911}
   m_SourcePrefab: {fileID: 100100000, guid: eb48b590d26b1ac408ee2fc68c9b8c38, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
