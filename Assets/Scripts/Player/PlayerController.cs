@@ -43,27 +43,27 @@ public class PlayerController : MonoBehaviour, IInteractor
     // Sprite renderer references for z index management
     private SpriteRenderer[] spriteRenderers;
 
-    // Track the trip coroutine so we can stop it when pressing R
-    private Coroutine tripCoroutine = null;
     private PlayerState lastState = PlayerState.Idle; // For debug logging
 
     void OnEnable()
     {
         if (energySystem == null)
             energySystem = GetComponent<PlayerEnergy>();
-            
-        if (energySystem != null)
-        {
-            energySystem.OnFirstEnergyDepletion += HandleTrip;
-        }
+
+        // Removed automatic trip on energy depletion - now only trips when pressing space with no energy
+        // if (energySystem != null)
+        // {
+        //     energySystem.OnFirstEnergyDepletion += HandleTrip;
+        // }
     }
 
     void OnDisable()
     {
-        if (energySystem != null)
-        {
-            energySystem.OnFirstEnergyDepletion -= HandleTrip;
-        }
+        // Removed automatic trip on energy depletion - now only trips when pressing space with no energy
+        // if (energySystem != null)
+        // {
+        //     energySystem.OnFirstEnergyDepletion -= HandleTrip;
+        // }
     }
 
     void Awake()
@@ -110,8 +110,8 @@ public class PlayerController : MonoBehaviour, IInteractor
             // Allow respawn if tripping
             if (stateMachine.CurrentState == PlayerState.Tripping)
             {
-                Debug.Log("PlayerController: R key detected while Tripping! Calling RespawnAtLastChair...");
-                RespawnAtLastChair();
+                Debug.Log("PlayerController: R key detected while Tripping! Starting recovery...");
+                StartCoroutine(RecoverFromTrip());
                 return;
             }
         }
@@ -188,7 +188,9 @@ public class PlayerController : MonoBehaviour, IInteractor
             {
                 if (!energySystem.HasEnergyToJump())
                 {
-                    Debug.Log("Cannot jump - not enough energy!");
+                    // Player is out of energy and trying to jump - trigger trip
+                    Debug.Log("Cannot jump - not enough energy! Triggering trip...");
+                    HandleTrip();
                     return;
                 }
 
@@ -520,50 +522,8 @@ public class PlayerController : MonoBehaviour, IInteractor
     /// </summary>
     private void RespawnAtLastChair()
     {
-        Debug.Log("PlayerController: RespawnAtLastChair called");
+        Debug.Log("PlayerController: RespawnAtLastChair called (normal respawn, not from trip)");
 
-        // Force state reset if we were tripping
-        if (stateMachine.CurrentState == PlayerState.Tripping)
-        {
-            Debug.Log("PlayerController: Recovering from trip via respawn - starting recovery...");
-            
-            // Stop the trip coroutine if it's running
-            if (tripCoroutine != null)
-            {
-                Debug.Log("PlayerController: Stopping trip coroutine");
-                StopCoroutine(tripCoroutine);
-                tripCoroutine = null;
-            }
-            
-            Debug.Log("PlayerController: Changing state to Idle");
-            stateMachine.ChangeState(PlayerState.Idle);
-            
-            Debug.Log("PlayerController: Unlocking movement");
-            movement.SetMovementLocked(false);
-            movement.SetGravityEnabled(true);
-
-            // Trigger Recover animation to transition out of Trip
-            if (animationController.IsAnimationSystemReady())
-            {
-                Debug.Log("PlayerController: Triggering Recover animation");
-                animationController.TriggerRecover();
-            }
-            else
-            {
-                Debug.LogWarning("PlayerController: Animation system not ready!");
-            }
-            
-            // Restore energy since we are respawning (presumably at a save point/chair)
-            if (energySystem != null)
-            {
-                Debug.Log("PlayerController: Restoring all energy");
-                energySystem.RestoreAllEnergy();
-            }
-            
-            Debug.Log("PlayerController: Recovery from trip complete!");
-        }
-
-        Debug.Log("PlayerController: Getting GameManager for respawn");
         GameManager gameManager = GameManager.GetInstance();
         if (gameManager == null)
         {
@@ -717,17 +677,17 @@ public class PlayerController : MonoBehaviour, IInteractor
     private void HandleTrip()
     {
         // Only trip if not already in a critical state
-        if (stateMachine.CurrentState != PlayerState.Cutscene && 
+        if (stateMachine.CurrentState != PlayerState.Cutscene &&
             stateMachine.CurrentState != PlayerState.Rappelling &&
             stateMachine.CurrentState != PlayerState.Tripping)
         {
-            tripCoroutine = StartCoroutine(TripRoutine());
+            StartTrip();
         }
     }
 
-    private IEnumerator TripRoutine()
+    private void StartTrip()
     {
-        Debug.Log("PlayerController: TripRoutine started! Setting state to Tripping...");
+        Debug.Log("PlayerController: StartTrip called! Setting state to Tripping...");
 
         stateMachine.ChangeState(PlayerState.Tripping);
         Debug.Log($"PlayerController: State changed. Current state: {stateMachine.CurrentState}");
@@ -742,27 +702,62 @@ public class PlayerController : MonoBehaviour, IInteractor
             Debug.Log("PlayerController: Trip animation triggered");
         }
 
-        Debug.Log("PlayerController: Waiting 2 seconds...");
-        // Wait for animation or fixed time
-        yield return new WaitForSeconds(2.0f); // 2 seconds trip time
+        Debug.Log("PlayerController: Player is tripped - waiting for R key to recover...");
+        // Player stays tripped until pressing R - no auto-recovery
+    }
 
-        Debug.Log($"PlayerController: 2 seconds elapsed. Current state: {stateMachine.CurrentState}");
+    private IEnumerator RecoverFromTrip()
+    {
+        Debug.Log("PlayerController: RecoverFromTrip coroutine started!");
 
-        // Restore to idle if we are still tripping (haven't been interrupted by cutscene etc)
-        if (stateMachine.CurrentState == PlayerState.Tripping)
+        // Immediately change state to Idle to unlock input
+        Debug.Log("PlayerController: Changing state from Tripping to Idle");
+        stateMachine.ChangeState(PlayerState.Idle);
+        
+        // Clear and unlock movement
+        Debug.Log("PlayerController: Clearing movement and unlocking");
+        movement.StopMovement();
+        movement.ClearInput();
+        movement.SetMovementLocked(false);
+        movement.SetGravityEnabled(true);
+        
+        // Force animation system to idle state
+        if (animationController.IsAnimationSystemReady())
         {
-            Debug.Log("PlayerController: Auto-recovering from trip (2 seconds passed)");
-            movement.SetMovementLocked(false); // Unlock movement
-            stateMachine.ChangeState(PlayerState.Idle);
+            Debug.Log("PlayerController: Forcing animation to idle");
+            animationController.TriggerRecover();
+            
+            // Also reset all animation parameters
+            animationController.SetSpeed(0f);
+            animationController.SetGrounded(true);
+            animationController.SetSitting(false);
+        }
+        
+        // Restore full energy
+        if (energySystem != null)
+        {
+            Debug.Log("PlayerController: Restoring all energy");
+            energySystem.RestoreAllEnergy();
+        }
+        
+        // Reset tracking variables
+        wasMoving = false;
+        
+        // Wait one frame to ensure all systems have updated
+        yield return null;
+        
+        Debug.Log("PlayerController: Recovery complete! Now calling RespawnAtLastChair");
+        
+        // Now respawn at the last chair
+        GameManager gameManager = GameManager.GetInstance();
+        if (gameManager != null)
+        {
+            gameManager.RespawnPlayer();
         }
         else
         {
-            Debug.Log($"PlayerController: Not auto-recovering - state changed to: {stateMachine.CurrentState}");
+            Debug.LogError("PlayerController: GameManager not found for respawn!");
         }
-
-        // Clear the coroutine reference
-        tripCoroutine = null;
-        Debug.Log("PlayerController: TripRoutine ended");
     }
 }
 
