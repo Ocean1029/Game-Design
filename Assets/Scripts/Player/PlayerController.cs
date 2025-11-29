@@ -43,6 +43,22 @@ public class PlayerController : MonoBehaviour, IInteractor
     // Sprite renderer references for z index management
     private SpriteRenderer[] spriteRenderers;
 
+    // R button prompt for tripping state
+    private GameObject tripPromptObject;
+    private SpriteRenderer tripPromptRenderer;
+    [SerializeField] private Sprite rButtonSprite;
+    private Vector3 tripPromptOffset = new Vector3(0f, 1.5f, 0f);
+    private Vector2 tripPromptSize = new Vector2(1.5f, 0.75f);
+    private float tripPromptPulseSpeed = 2f;
+    private float tripPromptMinAlpha = 0.5f;
+    private float tripPromptMaxAlpha = 1f;
+    private bool tripPromptEnableFloat = true;
+    private float tripPromptFloatDistance = 0.1f;
+    private float tripPromptFloatSpeed = 2f;
+    private bool isTripPromptVisible = false;
+    private Vector3 tripPromptBasePosition;
+    private float tripPromptFloatTimer = 0f;
+
     private PlayerState lastState = PlayerState.Idle; // For debug logging
 
     void OnEnable()
@@ -85,6 +101,9 @@ public class PlayerController : MonoBehaviour, IInteractor
         
         // Apply initial z index setting
         SetPlayerZIndex(playerZIndex);
+
+        // Initialize trip prompt
+        InitializeTripPrompt();
     }
 
     void Start()
@@ -101,6 +120,9 @@ public class PlayerController : MonoBehaviour, IInteractor
             Debug.Log($"PlayerController: State changed from {lastState} to {stateMachine.CurrentState}");
             lastState = stateMachine.CurrentState;
         }
+
+        // Update trip prompt animation regardless of input lock state
+        UpdateTripPromptAnimation();
 
         // Check R key first (before any input locking)
         if (Input.GetKeyDown(respawnKey))
@@ -672,6 +694,159 @@ public class PlayerController : MonoBehaviour, IInteractor
         return playerZIndex;
     }
 
+    // ==================== TRIP PROMPT LOGIC ====================
+
+    private void InitializeTripPrompt()
+    {
+        // Load R button sprite if not assigned
+        if (rButtonSprite == null)
+        {
+            LoadRButtonSprite();
+        }
+
+        // Create the prompt object
+        CreateTripPromptObject();
+
+        // Initially hide the prompt
+        SetTripPromptVisible(false);
+    }
+
+    private void LoadRButtonSprite()
+    {
+        // For now, use Z button sprite since R button doesn't exist yet
+        // TODO: Create an R button sprite
+        rButtonSprite = Resources.Load<Sprite>("UI/zbutton");
+
+        #if UNITY_EDITOR
+        if (rButtonSprite == null)
+        {
+            rButtonSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Image/UI/zbutton.png");
+        }
+        #endif
+
+        if (rButtonSprite == null)
+        {
+            Debug.LogWarning("PlayerController: Could not load button sprite for trip prompt!");
+        }
+        else
+        {
+            Debug.Log($"PlayerController: Successfully loaded button sprite: {rButtonSprite.name}, texture: {rButtonSprite.texture?.name}, rect: {rButtonSprite.rect}, bounds: {rButtonSprite.bounds}");
+        }
+    }
+
+    private void CreateTripPromptObject()
+    {
+        // Create new GameObject for the prompt
+        tripPromptObject = new GameObject("TripPrompt_RButton");
+        tripPromptObject.transform.SetParent(transform);
+        tripPromptObject.transform.localPosition = tripPromptOffset;
+        tripPromptBasePosition = tripPromptObject.transform.position;
+
+        // Add SpriteRenderer
+        tripPromptRenderer = tripPromptObject.AddComponent<SpriteRenderer>();
+        tripPromptRenderer.sprite = rButtonSprite;
+        tripPromptRenderer.sortingOrder = 500; // Very high sorting order to appear above everything
+        // tripPromptRenderer.sortingLayerName = "UI"; // Removed - may not exist in this project
+
+        // Force color to be visible
+        tripPromptRenderer.color = new Color(1f, 1f, 1f, 1f);
+
+        Debug.Log($"PlayerController: Created SpriteRenderer with sprite: {rButtonSprite?.name}, enabled: {tripPromptRenderer.enabled}, sortingOrder: {tripPromptRenderer.sortingOrder}");
+
+        // Set size
+        if (rButtonSprite != null)
+        {
+            Vector3 scale = new Vector3(
+                tripPromptSize.x / rButtonSprite.bounds.size.x,
+                tripPromptSize.y / rButtonSprite.bounds.size.y,
+                1f
+            );
+            tripPromptObject.transform.localScale = scale;
+            Debug.Log($"PlayerController: Set trip prompt scale to {scale}, sprite bounds: {rButtonSprite.bounds.size}, final size: {scale.x * rButtonSprite.bounds.size.x} x {scale.y * rButtonSprite.bounds.size.y}");
+        }
+        else
+        {
+            Debug.LogWarning("PlayerController: Cannot set trip prompt size - rButtonSprite is null!");
+        }
+
+        // Initially hide
+        tripPromptRenderer.enabled = false;
+
+        Debug.Log("PlayerController: Trip prompt object created successfully");
+    }
+
+    private void SetTripPromptVisible(bool visible)
+    {
+        isTripPromptVisible = visible;
+
+        if (tripPromptRenderer != null)
+        {
+            tripPromptRenderer.enabled = visible;
+            Debug.Log($"PlayerController: Trip prompt renderer enabled: {visible}");
+
+            if (visible)
+            {
+                // Reset animation state
+                tripPromptFloatTimer = 0f;
+                if (tripPromptObject != null)
+                {
+                    tripPromptBasePosition = transform.position + tripPromptOffset;
+                    tripPromptObject.transform.position = tripPromptBasePosition;
+                    Debug.Log($"PlayerController: Trip prompt positioned at {tripPromptBasePosition}, player position: {transform.position}");
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning("PlayerController: Trip prompt renderer is null!");
+        }
+    }
+
+    private void UpdateTripPromptAnimation()
+    {
+        if (!isTripPromptVisible || tripPromptRenderer == null) return;
+
+        // Debug logging to check if animation is running
+        Debug.Log("TripPromptAnimation: Updating animation");
+
+        // Update pulse animation
+        UpdateTripPromptPulse();
+
+        // Update float animation if enabled
+        if (tripPromptEnableFloat)
+        {
+            UpdateTripPromptFloat();
+        }
+    }
+
+    private void UpdateTripPromptPulse()
+    {
+        if (tripPromptRenderer == null) return;
+
+        // Calculate pulsing alpha
+        float pulse = Mathf.Sin(Time.time * tripPromptPulseSpeed * Mathf.PI * 2f) * 0.5f + 0.5f;
+        float alpha = Mathf.Lerp(tripPromptMinAlpha, tripPromptMaxAlpha, pulse);
+
+        // Apply alpha
+        Color color = tripPromptRenderer.color;
+        color.a = alpha;
+        tripPromptRenderer.color = color;
+
+        // Debug logging
+        Debug.Log($"TripPromptPulse: Alpha = {alpha}, Pulse = {pulse}, Color = {color}, Enabled = {tripPromptRenderer.enabled}, Position = {tripPromptRenderer.transform.position}");
+    }
+
+    private void UpdateTripPromptFloat()
+    {
+        if (tripPromptObject == null) return;
+
+        tripPromptFloatTimer += Time.deltaTime * tripPromptFloatSpeed;
+        float yOffset = Mathf.Sin(tripPromptFloatTimer) * tripPromptFloatDistance;
+
+        Vector3 newPosition = tripPromptBasePosition + Vector3.up * yOffset;
+        tripPromptObject.transform.position = newPosition;
+    }
+
     // ==================== TRIP LOGIC ====================
 
     private void HandleTrip()
@@ -702,6 +877,10 @@ public class PlayerController : MonoBehaviour, IInteractor
             Debug.Log("PlayerController: Trip animation triggered");
         }
 
+        // Show the R button prompt above the player
+        Debug.Log("PlayerController: Setting trip prompt visible");
+        SetTripPromptVisible(true);
+
         Debug.Log("PlayerController: Player is tripped - waiting for R key to recover...");
         // Player stays tripped until pressing R - no auto-recovery
     }
@@ -726,13 +905,16 @@ public class PlayerController : MonoBehaviour, IInteractor
         {
             Debug.Log("PlayerController: Forcing animation to idle");
             animationController.TriggerRecover();
-            
+
             // Also reset all animation parameters
             animationController.SetSpeed(0f);
             animationController.SetGrounded(true);
             animationController.SetSitting(false);
         }
-        
+
+        // Hide the trip prompt
+        SetTripPromptVisible(false);
+
         // Restore full energy
         if (energySystem != null)
         {
@@ -757,6 +939,15 @@ public class PlayerController : MonoBehaviour, IInteractor
         else
         {
             Debug.LogError("PlayerController: GameManager not found for respawn!");
+        }
+    }
+
+    void OnDestroy()
+    {
+        // Clean up trip prompt object
+        if (tripPromptObject != null)
+        {
+            Destroy(tripPromptObject);
         }
     }
 }
