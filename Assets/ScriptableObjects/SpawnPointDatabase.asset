@@ -33,7 +33,7 @@ MonoBehaviour:
     sceneName: MainScene
     isOneTimeUse: 0
     isTransportable: 1
-    isActive: 1
+    isActive: 0
     isChairSpawn: 1
     activeVisual: {fileID: 0}
     activationSound: {fileID: 0}
