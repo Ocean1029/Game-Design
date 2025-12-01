@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour, IInteractor
     [SerializeField] private KeyCode moveLeftKey = KeyCode.LeftArrow;
     [SerializeField] private KeyCode moveRightKey = KeyCode.RightArrow;
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
+    [SerializeField] private KeyCode runKey = KeyCode.LeftShift;
     [SerializeField] private KeyCode interactKey = KeyCode.Z;  // 改用 Z 鍵來互動（坐下、起立、使用鑰匙、使用炸彈等）
     [SerializeField] private KeyCode respawnKey = KeyCode.R;
     [SerializeField] private KeyCode fastTravelMenuKey = KeyCode.M;
@@ -171,6 +172,7 @@ public class PlayerController : MonoBehaviour, IInteractor
 
         float horizontal = 0f;
         bool isMoving = false;
+        bool isRunning = false;
 
         if (Input.GetKey(moveRightKey))
         {
@@ -185,6 +187,12 @@ public class PlayerController : MonoBehaviour, IInteractor
             isMoving = true;
         }
 
+        // Check if run key is held while moving
+        if (isMoving && Input.GetKey(runKey))
+        {
+            isRunning = true;
+        }
+
         // Trigger walk animation when movement starts (transition from idle to moving)
         if (isMoving && !wasMoving && movement.IsGrounded() && animationController.IsAnimationSystemReady())
         {
@@ -194,7 +202,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         // Update movement state tracking
         wasMoving = isMoving;
 
-        movement.Move(horizontal);
+        movement.Move(horizontal, isRunning);
     }
 
     /// <summary>
@@ -317,6 +325,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         animationController.SetSpeed(Mathf.Abs(velocity.x));
         animationController.SetGrounded(isGrounded);
         animationController.SetSitting(stateMachine.CurrentState == PlayerState.Sitting);
+        animationController.SetRunning(movement.IsRunning());
 
         // Update jump animation dynamically based on vertical velocity
         if (!isGrounded)

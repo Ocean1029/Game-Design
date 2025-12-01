@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float runSpeedMultiplier = 1.8f;
 
     [Header("Jump Settings")]
     [Tooltip("Initial upward force when jump starts")]
@@ -72,6 +73,7 @@ public class PlayerMovement : MonoBehaviour
     // Movement input caching (set in Update, applied in FixedUpdate)
     private float horizontalInput = 0f;
     private bool shouldApplyMovement = false;
+    private bool isRunning = false;
     
     // Jump input caching (set in Update, applied in FixedUpdate)
     private bool shouldContinueJump = false;
@@ -160,7 +162,9 @@ public class PlayerMovement : MonoBehaviour
                 TryStepUp(horizontalInput);
             }
             
-            rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocity.y);
+            // Apply run speed multiplier if running
+            float currentSpeed = isRunning ? moveSpeed * runSpeedMultiplier : moveSpeed;
+            rb.linearVelocity = new Vector2(horizontalInput * currentSpeed, rb.linearVelocity.y);
             shouldApplyMovement = false;
         }
         
@@ -191,10 +195,20 @@ public class PlayerMovement : MonoBehaviour
     /// The actual velocity will be applied in FixedUpdate for physics consistency
     /// </summary>
     /// <param name="horizontal">Input value (-1 for left, 1 for right, 0 for no movement)</param>
-    public void Move(float horizontal)
+    /// <param name="running">Whether the player is running (applies speed multiplier)</param>
+    public void Move(float horizontal, bool running = false)
     {
         horizontalInput = horizontal;
+        isRunning = running;
         shouldApplyMovement = true;
+    }
+    
+    /// <summary>
+    /// Get whether the player is currently running
+    /// </summary>
+    public bool IsRunning()
+    {
+        return isRunning;
     }
 
     /// <summary>

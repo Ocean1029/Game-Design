@@ -23,6 +23,7 @@ public class PlayerAnimationController : MonoBehaviour
     private readonly string PARAM_SPEED = "Speed";
     private readonly string PARAM_IS_GROUNDED = "IsGrounded";
     private readonly string PARAM_IS_SITTING = "IsSitting";
+    private readonly string PARAM_IS_RUNNING = "IsRunning";
     private readonly string PARAM_JUMP_TRIGGER = "Jump";
     private readonly string PARAM_WALK_TRIGGER = "Walk";
     private readonly string PARAM_INTERACT_TRIGGER = "Interact";
@@ -155,6 +156,9 @@ public class PlayerAnimationController : MonoBehaviour
         if (animator != null && HasParameter(PARAM_SPEED))
         {
             float absSpeed = Mathf.Abs(speed);
+            // Ensure global animator speed is reset to normal when setting movement speed
+            // This prevents jump animation speed modifications from affecting walk animations
+            animator.speed = animationSpeed;
             animator.SetFloat(PARAM_SPEED, absSpeed);
         }
         else
@@ -186,6 +190,17 @@ public class PlayerAnimationController : MonoBehaviour
         if (animator != null && HasParameter(PARAM_IS_SITTING))
         {
             animator.SetBool(PARAM_IS_SITTING, sitting);
+        }
+    }
+
+    /// <summary>
+    /// Set whether the player is running
+    /// </summary>
+    public void SetRunning(bool running)
+    {
+        if (animator != null && HasParameter(PARAM_IS_RUNNING))
+        {
+            animator.SetBool(PARAM_IS_RUNNING, running);
         }
     }
 
@@ -224,7 +239,8 @@ public class PlayerAnimationController : MonoBehaviour
             isAtPeak = false;
             isFalling = false;
             hasSetPeakPosition = false;
-            animator.speed = animationSpeed; // Ensure normal speed when grounded
+            // Always reset to normal animation speed when grounded, regardless of jump state
+            animator.speed = animationSpeed;
             return;
         }
 
