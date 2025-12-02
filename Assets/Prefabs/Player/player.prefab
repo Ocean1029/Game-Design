@@ -417,18 +417,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97d946330630b4608ba108365f4a6f3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  moveSpeed: 5
+  moveSpeed: 3
+  runSpeedMultiplier: 1.8
   jumpForce: 3
   jumpHoldAcceleration: 5
   maxJumpHoldTime: 0.3
   jumpCutMultiplier: 0.5
   jumpSound: {fileID: 0}
   jumpSoundVolume: 0.6
+  landingSound: {fileID: 0}
+  landingSoundVolume: 7.5
+  gravityScale: 2
   groundCheck: {fileID: 7592233052414579502}
   groundCheckRadius: 0.2
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  maxStepHeight: 0.4
+  stepCheckDistance: 0.4
+  stepUpForce: 4
+  stepCheckVerticalOffset: 0.1
 --- !u!114 &1166567923796349270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -485,11 +493,13 @@ MonoBehaviour:
   moveLeftKey: 276
   moveRightKey: 275
   jumpKey: 32
+  runKey: 304
   interactKey: 117
   respawnKey: 114
   fastTravelMenuKey: 109
   rappellingDuration: 1
   playerZIndex: 1
+  rButtonSprite: {fileID: 0}
 --- !u!114 &1530574304414831166
 MonoBehaviour:
   m_ObjectHideFlags: 0
