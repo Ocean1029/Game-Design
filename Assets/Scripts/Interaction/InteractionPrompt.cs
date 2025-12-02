@@ -20,7 +20,7 @@ public class InteractionPrompt : MonoBehaviour
     
     [Header("閃動動畫設定")]
     [Tooltip("閃動動畫的速度（每秒閃動次數）")]
-    [SerializeField] private float pulseSpeed = 1.2f;
+    [SerializeField] private float pulseSpeed = 1.0f;
     
     [Tooltip("閃動動畫的最小透明度")]
     [Range(0f, 1f)]

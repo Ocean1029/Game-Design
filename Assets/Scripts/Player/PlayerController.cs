@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour, IInteractor
     [SerializeField] private Sprite rButtonSprite;
     private Vector3 tripPromptOffset = new Vector3(0f, 1.5f, 0f);
     private Vector2 tripPromptSize = new Vector2(1.5f, 0.75f);
-    private float tripPromptPulseSpeed = 1.2f;  // 閃爍速度調慢
+    private float tripPromptPulseSpeed = 1.0f;  // 閃爍速度調慢
     private float tripPromptMinAlpha = 0.7f;
     private float tripPromptMaxAlpha = 1f;
     private bool tripPromptEnableFloat = true;
