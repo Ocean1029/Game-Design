@@ -18,6 +18,8 @@ public class StoneButton : MonoBehaviour
     private Vector3 originalCameraPos;
     private PlayerController cachedPlayer;
     private PlayerMovement cachedMovement; // ⭐ movement system
+    private Animator animator;
+
 
     private void Start()
     {
@@ -26,6 +28,8 @@ public class StoneButton : MonoBehaviour
 
         if (followScript == null)
             followScript = mainCamera.GetComponent<CameraFollow>();
+
+        animator = GetComponent<Animator>();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -45,6 +49,10 @@ public class StoneButton : MonoBehaviour
         cachedMovement.SetGravityEnabled(false);
 
         originalCameraPos = mainCamera.transform.position;
+
+        // ⭐ 被按下後關閉發光動畫
+        if (animator != null)
+            animator.enabled = false;
 
         StartCoroutine(CameraFlow());
     }
