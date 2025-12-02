@@ -20,11 +20,11 @@ public class InventorySlotPrompt : MonoBehaviour
     
     [Header("閃動動畫設定")]
     [Tooltip("閃動動畫的速度（每秒閃動次數）")]
-    [SerializeField] private float pulseSpeed = 2f;
+    [SerializeField] private float pulseSpeed = 1.0f;
     
     [Tooltip("閃動動畫的最小透明度")]
     [Range(0f, 1f)]
-    [SerializeField] private float minAlpha = 0.5f;
+    [SerializeField] private float minAlpha = 0.7f;
     
     [Tooltip("閃動動畫的最大透明度")]
     [Range(0f, 1f)]
@@ -85,14 +85,14 @@ public class InventorySlotPrompt : MonoBehaviour
     /// </summary>
     private void LoadButtonSprite()
     {
-        // 嘗試從 Resources 載入
-        buttonSprite = Resources.Load<Sprite>("UI/zbutton");
+        // 嘗試從 Resources 載入新的 Z_but 圖片
+        buttonSprite = Resources.Load<Sprite>("UI/Z_but");
         
         // 如果還是沒有，嘗試使用 UnityEditor 的 AssetDatabase（僅在編輯器中）
         #if UNITY_EDITOR
         if (buttonSprite == null)
         {
-            buttonSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Image/UI/zbutton.png");
+            buttonSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Image/UI/Z_but.png");
         }
         #endif
     }

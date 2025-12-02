@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float runSpeedMultiplier = 1.8f;
+    [SerializeField] private float runSpeedMultiplier = 2.1f;
 
     [Header("Jump Settings")]
     [Tooltip("Initial upward force when jump starts")]

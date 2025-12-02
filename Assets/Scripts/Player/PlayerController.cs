@@ -50,12 +50,12 @@ public class PlayerController : MonoBehaviour, IInteractor
     [SerializeField] private Sprite rButtonSprite;
     private Vector3 tripPromptOffset = new Vector3(0f, 1.5f, 0f);
     private Vector2 tripPromptSize = new Vector2(1.5f, 0.75f);
-    private float tripPromptPulseSpeed = 2f;
-    private float tripPromptMinAlpha = 0.5f;
+    private float tripPromptPulseSpeed = 1.0f;  // 閃爍速度調慢
+    private float tripPromptMinAlpha = 0.7f;
     private float tripPromptMaxAlpha = 1f;
     private bool tripPromptEnableFloat = true;
     private float tripPromptFloatDistance = 0.1f;
-    private float tripPromptFloatSpeed = 2f;
+    private float tripPromptFloatSpeed = 1.2f;  // 浮動速度也調慢以保持協調
     private bool isTripPromptVisible = false;
     private Vector3 tripPromptBasePosition;
     private float tripPromptFloatTimer = 0f;
@@ -722,24 +722,23 @@ public class PlayerController : MonoBehaviour, IInteractor
 
     private void LoadRButtonSprite()
     {
-        // For now, use Z button sprite since R button doesn't exist yet
-        // TODO: Create an R button sprite
-        rButtonSprite = Resources.Load<Sprite>("UI/zbutton");
+        // 載入新的 R_but 圖片
+        rButtonSprite = Resources.Load<Sprite>("UI/R_but");
 
         #if UNITY_EDITOR
         if (rButtonSprite == null)
         {
-            rButtonSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Image/UI/zbutton.png");
+            rButtonSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Image/UI/R_but.png");
         }
         #endif
 
         if (rButtonSprite == null)
         {
-            Debug.LogWarning("PlayerController: Could not load button sprite for trip prompt!");
+            Debug.LogWarning("PlayerController: 無法載入 R 鍵圖片！路徑：Assets/Image/UI/R_but.png");
         }
         else
         {
-            Debug.Log($"PlayerController: Successfully loaded button sprite: {rButtonSprite.name}, texture: {rButtonSprite.texture?.name}, rect: {rButtonSprite.rect}, bounds: {rButtonSprite.bounds}");
+            Debug.Log($"PlayerController: 成功載入 R 鍵圖片：{rButtonSprite.name}, texture: {rButtonSprite.texture?.name}, rect: {rButtonSprite.rect}, bounds: {rButtonSprite.bounds}");
         }
     }
 
