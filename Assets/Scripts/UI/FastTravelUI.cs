@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,24 +15,52 @@ public class FastTravelUI : MonoBehaviour
     [Header("UI References")]
     [Tooltip("Main panel for fast travel UI")]
     [SerializeField] private GameObject fastTravelPanel;
-    
+
     [Tooltip("Scroll view content for spawn point list")]
     [SerializeField] private Transform spawnPointListContent;
-    
+
     [Tooltip("Prefab for spawn point list item")]
     [SerializeField] private GameObject spawnPointListItemPrefab;
-    
+
     [Tooltip("Close button")]
     [SerializeField] private Button closeButton;
-    
+
     [Tooltip("Title text")]
     [SerializeField] private TextMeshProUGUI titleText;
 
     [Header("Map Preview")]
     [Tooltip("RawImage component to display map preview")]
     [SerializeField] private RawImage mapPreviewImage;
-    
+
     private MapPreviewCamera mapPreviewCamera;
+
+    [Header("Full Map Display (Right Side)")]
+    [Tooltip("RawImage component to display minimap on right side (same as bottom-right minimap)")]
+    [SerializeField] private RawImage fullMapImage;
+
+    [Tooltip("RawImage component to display fog overlay on minimap")]
+    [SerializeField] private RawImage fullMapFogImage;
+
+    [Tooltip("Reference to the minimap camera (MiniMapCamera) - will auto-find if not assigned")]
+    [SerializeField] private Camera minimapCamera;
+
+    [Tooltip("Reference to the minimap render texture - will auto-find if not assigned")]
+    [SerializeField] private RenderTexture minimapRenderTexture;
+
+    [Tooltip("Parent transform for chair markers on the map")]
+    [SerializeField] private Transform chairMarkersParent;
+
+    [Tooltip("Prefab for chair marker (Image component with sprite)")]
+    [SerializeField] private GameObject chairMarkerPrefab;
+
+    [Tooltip("Sprite for normal chair marker")]
+    [SerializeField] private Sprite chairMarkerSprite;
+
+    [Tooltip("Sprite for selected chair marker (highlighted)")]
+    [SerializeField] private Sprite selectedChairMarkerSprite;
+
+    [Tooltip("Size of chair markers on the map")]
+    [SerializeField] private Vector2 chairMarkerSize = new Vector2(20f, 20f);
 
     [Header("Settings")]
     [Tooltip("Whether to show debug information")]
@@ -39,7 +68,7 @@ public class FastTravelUI : MonoBehaviour
 
     [Tooltip("Whether to show one-time use spawn points")]
     [SerializeField] private bool showOneTimeUseSpawnPoints = false;
-    
+
     [Tooltip("Whether to show map preview on hover (true) or only on click (false)")]
     [SerializeField] private bool previewOnHover = true;
 
@@ -49,14 +78,25 @@ public class FastTravelUI : MonoBehaviour
     private List<GameObject> spawnPointListItems = new List<GameObject>();
     private SpawnPointData currentlyPreviewedSpawnPoint = null;
 
+    // Keyboard navigation
+    private int selectedIndex = 0;
+    private float lastNavigationTime = 0f;
+    private float navigationCooldown = 0.2f; // Prevent rapid navigation
+
     // References
     private GameManager gameManager;
     private PlayerController playerController;
+    private MinimapFogOfWar fogSystem;
+
+    // Chair markers on map
+    private Dictionary<string, GameObject> chairMarkers = new Dictionary<string, GameObject>();
+    private Vector2 mapWorldMin;
+    private Vector2 mapWorldMax;
 
     void Start()
     {
         Debug.Log("FastTravelUI: Start() called");
-        
+
         // Get references
         gameManager = GameManager.GetInstance();
         if (gameManager == null)
@@ -67,7 +107,7 @@ public class FastTravelUI : MonoBehaviour
         {
             Debug.Log("FastTravelUI: GameManager found");
         }
-        
+
         playerController = FindFirstObjectByType<PlayerController>();
         if (playerController == null)
         {
@@ -93,6 +133,9 @@ public class FastTravelUI : MonoBehaviour
 
         // Initialize map preview system
         InitializeMapPreview();
+
+        // Initialize full map display
+        InitializeFullMapDisplay();
 
         // Subscribe to events
         SubscribeToEvents();
@@ -153,7 +196,7 @@ public class FastTravelUI : MonoBehaviour
             GameObject cameraObject = new GameObject("MapPreviewCamera");
             cameraObject.transform.SetParent(transform);
             mapPreviewCamera = cameraObject.AddComponent<MapPreviewCamera>();
-            
+
             if (showDebugInfo)
             {
                 Debug.Log("FastTravelUI: Created MapPreviewCamera");
@@ -169,7 +212,7 @@ public class FastTravelUI : MonoBehaviour
         {
             // Hide map preview initially
             mapPreviewImage.gameObject.SetActive(false);
-            
+
             if (showDebugInfo)
             {
                 Debug.Log($"FastTravelUI: MapPreviewImage found: {mapPreviewImage.gameObject.name}");
@@ -215,11 +258,17 @@ public class FastTravelUI : MonoBehaviour
 
     void LateUpdate()
     {
-        // Check for escape key to close (only when open)
-        if (isOpen && Input.GetKeyDown(KeyCode.Escape))
+        if (!isOpen) return;
+
+        // Check for escape key to close
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             CloseFastTravelUI();
+            return;
         }
+
+        // Handle keyboard navigation
+        HandleKeyboardNavigation();
     }
 
     // ==================== UI Management ====================
@@ -229,56 +278,32 @@ public class FastTravelUI : MonoBehaviour
     /// </summary>
     public void OpenFastTravelUI()
     {
-        if (isOpen)
+        if (isOpen) return;
+
+        if (gameManager == null || fastTravelPanel == null)
         {
-            if (showDebugInfo)
-            {
-                Debug.Log("FastTravelUI: UI is already open");
-            }
+            Debug.LogError("FastTravelUI: Missing references!");
             return;
         }
 
-        if (gameManager == null)
-        {
-            Debug.LogError("FastTravelUI: Cannot open - GameManager is null! Make sure GameManager exists in the scene.");
-            return;
-        }
-
-        if (fastTravelPanel == null)
-        {
-            Debug.LogError("FastTravelUI: Cannot open - fastTravelPanel is not assigned! Please assign it in the Inspector.");
-            return;
-        }
-
-        // Pause the game
         Time.timeScale = 0f;
 
-        // Update available spawn points
         UpdateAvailableSpawnPoints();
-
-        // Show UI
         SetUIVisibility(true);
         isOpen = true;
-
-        // Update spawn point list
         UpdateSpawnPointList();
 
-        // Show preview for current active spawn point
-        SpawnPointData currentActive = gameManager.GetCurrentActiveSpawnPoint();
-        if (currentActive != null)
-        {
-            UpdateMapPreview(currentActive);
-        }
+        // --- 修改開始 ---
+        // 原本的程式碼: UpdateMapPreview(currentActive);
+        // 修改後: 強制顯示全地圖與迷霧，並隱藏舊的預覽圖
+        if (mapPreviewImage != null) mapPreviewImage.gameObject.SetActive(false);
+        UpdateFullMapDisplay();
+        CreateChairMarkers(); // 確保椅子標記被建立
+        // --- 修改結束 ---
 
-        if (showDebugInfo)
-        {
-            Debug.Log($"FastTravelUI: Opened with {availableSpawnPoints.Count} available spawn points");
-        }
-
-        // Show warning if no spawn points available
         if (availableSpawnPoints.Count == 0)
         {
-            Debug.LogWarning("FastTravelUI: No teleportable spawn points available. Players need to activate save points first.");
+            Debug.LogWarning("FastTravelUI: No spawn points available.");
         }
     }
 
@@ -301,6 +326,15 @@ public class FastTravelUI : MonoBehaviour
 
         // Clear map preview
         ClearMapPreview();
+
+        // Clear full map display
+        ClearFullMapDisplay();
+
+        // Clear chair markers
+        ClearChairMarkers();
+
+        // Reset selection
+        selectedIndex = 0;
 
         if (showDebugInfo)
         {
@@ -335,7 +369,7 @@ public class FastTravelUI : MonoBehaviour
 
         // Get all teleportable spawn points
         List<SpawnPointData> spawnPoints = gameManager.GetTransportableSpawnPoints();
-        
+
         if (spawnPoints == null)
         {
             Debug.LogWarning("FastTravelUI: GetTransportableSpawnPoints returned null");
@@ -452,18 +486,18 @@ public class FastTravelUI : MonoBehaviour
 
         // Find UI components - try multiple methods
         Button teleportButton = listItem.GetComponentInChildren<Button>();
-        
+
         // Try to find text components by name (direct children first, then recursive)
         TextMeshProUGUI nameText = FindTextComponent(listItem.transform, "NameText");
         TextMeshProUGUI sceneText = FindTextComponent(listItem.transform, "SceneText");
         TextMeshProUGUI descriptionText = FindTextComponent(listItem.transform, "DescriptionText");
-        
+
         // Try to find active indicator
         Image activeIndicator = FindImageComponent(listItem.transform, "ActiveIndicator");
 
         // Set text content - prioritize button text for simple prefabs
         TextMeshProUGUI buttonText = teleportButton?.GetComponentInChildren<TextMeshProUGUI>();
-        
+
         if (nameText != null)
         {
             nameText.text = spawnPoint.displayName;
@@ -508,7 +542,7 @@ public class FastTravelUI : MonoBehaviour
         {
             teleportButton.onClick.RemoveAllListeners();
             teleportButton.onClick.AddListener(() => TeleportToSpawnPoint(spawnPoint.spawnPointId));
-            
+
             // Disable button if spawn point is in current scene and player is already there
             string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
             if (spawnPoint.sceneName == currentScene && playerController != null)
@@ -519,7 +553,7 @@ public class FastTravelUI : MonoBehaviour
                     teleportButton.interactable = false;
                 }
             }
-            
+
             if (showDebugInfo)
             {
                 Debug.Log($"FastTravelUI: Button configured for '{spawnPoint.displayName}'");
@@ -573,10 +607,8 @@ public class FastTravelUI : MonoBehaviour
     /// </summary>
     private void OnListItemPointerEnter(SpawnPointData spawnPoint)
     {
-        if (previewOnHover)
-        {
-            UpdateMapPreview(spawnPoint);
-        }
+        // No longer updating map preview on hover
+        // Right side always shows full map with fog
     }
 
     /// <summary>
@@ -584,8 +616,7 @@ public class FastTravelUI : MonoBehaviour
     /// </summary>
     private void OnListItemPointerExit()
     {
-        // Optionally clear preview when mouse leaves
-        // For now, we keep the preview visible
+        // No action needed - full map always visible
     }
 
     /// <summary>
@@ -593,67 +624,12 @@ public class FastTravelUI : MonoBehaviour
     /// </summary>
     private void OnListItemPointerClick(SpawnPointData spawnPoint)
     {
-        UpdateMapPreview(spawnPoint);
-    }
-
-    /// <summary>
-    /// Update map preview to show a specific spawn point
-    /// </summary>
-    private void UpdateMapPreview(SpawnPointData spawnPoint)
-    {
-        if (spawnPoint == null)
+        // No longer updating map preview on click
+        // Right side always shows full map with fog
+        // Just teleport directly if clicked
+        if (spawnPoint != null)
         {
-            Debug.LogWarning("FastTravelUI: Cannot update map preview - spawn point is null");
-            return;
-        }
-
-        if (mapPreviewCamera == null)
-        {
-            Debug.LogWarning("FastTravelUI: MapPreviewCamera not initialized");
-            return;
-        }
-
-        if (!mapPreviewCamera.IsReady())
-        {
-            Debug.LogWarning("FastTravelUI: MapPreviewCamera is not ready");
-            return;
-        }
-
-        if (mapPreviewImage == null)
-        {
-            Debug.LogWarning("FastTravelUI: MapPreviewImage is not assigned in Inspector!");
-            return;
-        }
-
-        // Update preview camera
-        RenderTexture previewTexture = mapPreviewCamera.UpdatePreview(spawnPoint);
-        
-        if (previewTexture == null)
-        {
-            Debug.LogWarning($"FastTravelUI: Failed to get preview texture for '{spawnPoint.displayName}'");
-            return;
-        }
-
-        if (mapPreviewImage != null)
-        {
-            mapPreviewImage.texture = previewTexture;
-            mapPreviewImage.gameObject.SetActive(true);
-            
-            if (showDebugInfo)
-            {
-                Debug.Log($"FastTravelUI: Set preview texture for '{spawnPoint.displayName}', RawImage active: {mapPreviewImage.gameObject.activeSelf}");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("FastTravelUI: MapPreviewImage is null, cannot display preview");
-        }
-
-        currentlyPreviewedSpawnPoint = spawnPoint;
-
-        if (showDebugInfo)
-        {
-            Debug.Log($"FastTravelUI: Updated map preview for '{spawnPoint.displayName}' at position {spawnPoint.position} in scene '{spawnPoint.sceneName}'");
+            TeleportToSpawnPoint(spawnPoint.spawnPointId);
         }
     }
 
@@ -722,10 +698,17 @@ public class FastTravelUI : MonoBehaviour
         return null;
     }
 
+    [Header("Teleport Animation")]
+    [Tooltip("Duration of the zoom-in/out animation")]
+    [SerializeField] private float zoomAnimationDuration = 0.4f;
+
+    [Tooltip("How much to zoom out. 2 means zooming out to twice the normal camera size.")]
+    [SerializeField] private float zoomOutFactor = 1.5f;
+
     // ==================== Teleportation ====================
 
     /// <summary>
-    /// Teleport to a specific spawn point
+    /// Starts the teleport sequence, which includes the zoom animation.
     /// </summary>
     private void TeleportToSpawnPoint(string spawnPointId)
     {
@@ -735,34 +718,90 @@ public class FastTravelUI : MonoBehaviour
             return;
         }
 
-        // Attempt to teleport
-        bool success = gameManager.TeleportToSpawnPoint(spawnPointId);
-        
-        if (success)
+        // The coroutine will handle closing the UI and other state changes.
+        StartCoroutine(AnimateTeleport(spawnPointId));
+    }
+
+    /// <summary>
+    /// Coroutine to handle the zoom-out, teleport, and zoom-in animation.
+    /// </summary>
+    private IEnumerator AnimateTeleport(string spawnPointId)
+    {
+        // Hide the UI panel immediately to show the game world during animation.
+        if (fastTravelPanel != null)
         {
+            fastTravelPanel.SetActive(false);
+        }
+
+        Camera mainCamera = Camera.main;
+        if (mainCamera == null)
+        {
+            Debug.LogError("FastTravelUI: Main Camera not found! Cannot perform zoom animation. Teleporting instantly.");
+            gameManager.TeleportToSpawnPoint(spawnPointId);
+            CloseFastTravelUI();
+            yield break;
+        }
+
+        float originalSize = mainCamera.orthographicSize;
+        float zoomedOutSize = originalSize * zoomOutFactor;
+
+        // --- Zoom Out ---
+        float timer = 0f;
+        while (timer < zoomAnimationDuration)
+        {
+            // Using a simple Ease-Out curve for a smoother feel
+            float progress = timer / zoomAnimationDuration;
+            mainCamera.orthographicSize = Mathf.Lerp(originalSize, zoomedOutSize, 1 - Mathf.Pow(1 - progress, 3));
+            timer += Time.unscaledDeltaTime; // Use unscaled time as the game is paused
+            yield return null;
+        }
+        mainCamera.orthographicSize = zoomedOutSize;
+
+        // --- Teleport Player ---
+        if (showDebugInfo)
+        {
+            Debug.Log($"FastTravelUI: Teleporting to spawn point '{spawnPointId}'");
+        }
+        bool success = gameManager.TeleportToSpawnPoint(spawnPointId);
+
+        if (!success)
+        {
+            Debug.LogWarning($"FastTravelUI: Failed to teleport to spawn point '{spawnPointId}'");
+            // If teleport fails, we still zoom back in before closing.
+        }
+        else
+        {
+            // If sitting, leave the chair post-teleport
             if (playerController == null)
             {
                 playerController = FindFirstObjectByType<PlayerController>();
             }
-
             if (playerController != null && playerController.IsSitting())
             {
                 playerController.LeaveChair();
             }
+        }
 
-            // Close the UI
-            CloseFastTravelUI();
-            
-            if (showDebugInfo)
-            {
-                Debug.Log($"FastTravelUI: Teleporting to spawn point '{spawnPointId}'");
-            }
-        }
-        else
+        // A brief pause at the zoomed-out level can make the transition feel better.
+        yield return new WaitForSecondsRealtime(0.1f);
+
+        // --- Zoom In ---
+        timer = 0f;
+        while (timer < zoomAnimationDuration)
         {
-            Debug.LogWarning($"FastTravelUI: Failed to teleport to spawn point '{spawnPointId}'");
+            // Using a simple Ease-In curve
+            float progress = timer / zoomAnimationDuration;
+            mainCamera.orthographicSize = Mathf.Lerp(zoomedOutSize, originalSize, progress * progress * progress);
+            timer += Time.unscaledDeltaTime;
+            yield return null;
         }
+        mainCamera.orthographicSize = originalSize;
+
+        // --- Final Cleanup ---
+        // CloseFastTravelUI handles un-pausing the game and other cleanup.
+        CloseFastTravelUI();
     }
+
 
     // ==================== Event Handlers ====================
 
@@ -818,6 +857,527 @@ public class FastTravelUI : MonoBehaviour
         }
     }
 
+    // ==================== Full Map Display ====================
+
+    /// <summary>
+    /// Initialize minimap display system (uses same camera and render texture as bottom-right minimap)
+    /// </summary>
+    private void InitializeFullMapDisplay()
+    {
+        // Find fog system
+        fogSystem = MinimapFogOfWar.GetInstance();
+        if (fogSystem == null)
+        {
+            fogSystem = FindFirstObjectByType<MinimapFogOfWar>();
+        }
+
+        // Find minimap camera if not assigned
+        if (minimapCamera == null)
+        {
+            GameObject minimapCameraObj = GameObject.Find("MiniMapCamera");
+            if (minimapCameraObj != null)
+            {
+                minimapCamera = minimapCameraObj.GetComponent<Camera>();
+            }
+
+            if (minimapCamera == null)
+            {
+                // Try to find by tag or component
+                Camera[] cameras = FindObjectsOfType<Camera>();
+                foreach (Camera cam in cameras)
+                {
+                    if (cam.name.Contains("MiniMap") || cam.name.Contains("Minimap"))
+                    {
+                        minimapCamera = cam;
+                        break;
+                    }
+                }
+            }
+
+            if (showDebugInfo)
+            {
+                if (minimapCamera != null)
+                {
+                    Debug.Log($"FastTravelUI: Found minimap camera: {minimapCamera.name}");
+                }
+                else
+                {
+                    Debug.LogWarning("FastTravelUI: Minimap camera not found! Please assign it in Inspector.");
+                }
+            }
+        }
+
+        // Find minimap render texture if not assigned
+        if (minimapRenderTexture == null && minimapCamera != null)
+        {
+            minimapRenderTexture = minimapCamera.targetTexture;
+
+            if (showDebugInfo)
+            {
+                if (minimapRenderTexture != null)
+                {
+                    Debug.Log($"FastTravelUI: Found minimap render texture: {minimapRenderTexture.name}");
+                }
+                else
+                {
+                    Debug.LogWarning("FastTravelUI: Minimap render texture not found!");
+                }
+            }
+        }
+
+        // Set up minimap image (use same render texture as bottom-right minimap)
+        if (fullMapImage != null && minimapRenderTexture != null)
+        {
+            fullMapImage.texture = minimapRenderTexture;
+            fullMapImage.uvRect = new Rect(0, 0, 1, 0.8f); // Same UV rect as minimap
+            fullMapImage.gameObject.SetActive(false);
+
+            if (showDebugInfo)
+            {
+                Debug.Log("FastTravelUI: Set up minimap image with render texture");
+            }
+        }
+
+        // Set up fog overlay (same as bottom-right minimap)
+        if (fullMapFogImage != null)
+        {
+            if (fogSystem != null)
+            {
+                Texture2D fogTexture = fogSystem.GetFogTexture();
+                if (fogTexture != null)
+                {
+                    fullMapFogImage.texture = fogTexture;
+                    fullMapFogImage.uvRect = new Rect(0, 0, 1, 1);
+                    fullMapFogImage.color = Color.white;
+                    fullMapFogImage.gameObject.SetActive(false);
+
+                    if (showDebugInfo)
+                    {
+                        Debug.Log("FastTravelUI: Set up fog overlay");
+                    }
+                }
+            }
+        }
+
+        // Create chair markers parent if not assigned
+        if (chairMarkersParent == null && fullMapImage != null)
+        {
+            GameObject markersParent = new GameObject("ChairMarkersParent");
+            markersParent.transform.SetParent(fullMapImage.transform);
+            RectTransform markersRect = markersParent.AddComponent<RectTransform>();
+            markersRect.anchorMin = Vector2.zero;
+            markersRect.anchorMax = Vector2.one;
+            markersRect.sizeDelta = Vector2.zero;
+            markersRect.anchoredPosition = Vector2.zero;
+            chairMarkersParent = markersParent.transform;
+
+            if (showDebugInfo)
+            {
+                Debug.Log("FastTravelUI: Created ChairMarkersParent");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Update minimap display on right side (same as bottom-right minimap)
+    /// </summary>
+
+private void UpdateFullMapDisplay()
+    {
+        // 顯示全地圖 (RenderTexture)
+        if (fullMapImage != null && minimapRenderTexture != null)
+        {
+            fullMapImage.texture = minimapRenderTexture;
+            fullMapImage.gameObject.SetActive(true);
+        }
+
+        // 顯示迷霧 (Fog Overlay)
+        if (fullMapFogImage != null)
+        {
+            if (fogSystem == null) fogSystem = MinimapFogOfWar.GetInstance(); // 確保獲取系統
+
+            if (fogSystem != null)
+            {
+                Texture2D fogTexture = fogSystem.GetFogTexture();
+                if (fogTexture != null)
+                {
+                    fullMapFogImage.texture = fogTexture;
+                    fullMapFogImage.gameObject.SetActive(true); // 確保它是開啟的
+                    // 確保迷霧在最上層 (但在椅子標記之下，視你的層級需求而定)
+                    fullMapFogImage.transform.SetAsLastSibling();
+                }
+            }
+        }
+
+        // 確保椅子標記父物件在迷霧之上 (這樣才看得到目標點)
+        if (chairMarkersParent != null)
+        {
+            chairMarkersParent.SetAsLastSibling();
+        }
+    }
+
+    /// <summary>
+    /// Clear full map display
+    /// </summary>
+    private void ClearFullMapDisplay()
+    {
+        if (fullMapImage != null)
+        {
+            fullMapImage.gameObject.SetActive(false);
+        }
+
+        if (fullMapFogImage != null)
+        {
+            fullMapFogImage.gameObject.SetActive(false);
+        }
+    }
+
+    // ==================== Keyboard Navigation ====================
+
+    /// <summary>
+    /// Handle keyboard navigation for selecting spawn points
+    /// </summary>
+    private void HandleKeyboardNavigation()
+    {
+        if (availableSpawnPoints.Count == 0) return;
+
+        // Check for navigation input
+        bool navigateUp = Input.GetKeyDown(KeyCode.UpArrow);
+        bool navigateDown = Input.GetKeyDown(KeyCode.DownArrow);
+
+        // Handle continuous navigation with cooldown
+        if (Time.unscaledTime - lastNavigationTime < navigationCooldown)
+        {
+            navigateUp = navigateUp && Input.GetKey(KeyCode.UpArrow);
+            navigateDown = navigateDown && Input.GetKey(KeyCode.DownArrow);
+        }
+
+        if (navigateUp || navigateDown)
+        {
+            lastNavigationTime = Time.unscaledTime;
+
+            if (navigateUp)
+            {
+                selectedIndex--;
+                if (selectedIndex < 0)
+                {
+                    selectedIndex = availableSpawnPoints.Count - 1;
+                }
+            }
+            else if (navigateDown)
+            {
+                selectedIndex++;
+                if (selectedIndex >= availableSpawnPoints.Count)
+                {
+                    selectedIndex = 0;
+                }
+            }
+
+            UpdateSelection();
+        }
+
+        // Handle selection confirmation (Enter/Space)
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            if (selectedIndex >= 0 && selectedIndex < availableSpawnPoints.Count)
+            {
+                SpawnPointData selectedSpawnPoint = availableSpawnPoints[selectedIndex];
+                TeleportToSpawnPoint(selectedSpawnPoint.spawnPointId);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Update visual selection state
+    /// </summary>
+    private void UpdateSelection()
+    {
+        if (availableSpawnPoints.Count == 0) return;
+
+        // Update visual feedback for selected item
+        for (int i = 0; i < spawnPointListItems.Count; i++)
+        {
+            if (spawnPointListItems[i] == null) continue;
+
+            // Find selection indicator or button
+            Image selectionIndicator = FindImageComponent(spawnPointListItems[i].transform, "SelectionIndicator");
+            Button itemButton = spawnPointListItems[i].GetComponentInChildren<Button>();
+
+            bool isSelected = (i == selectedIndex);
+
+            // Update selection indicator
+            if (selectionIndicator != null)
+            {
+                selectionIndicator.gameObject.SetActive(isSelected);
+            }
+
+            // Update button colors or other visual feedback
+            if (itemButton != null)
+            {
+                ColorBlock colors = itemButton.colors;
+                if (isSelected)
+                {
+                    colors.normalColor = new Color(0.8f, 0.8f, 1f, 1f); // Light blue when selected
+                }
+                else
+                {
+                    colors.normalColor = Color.white;
+                }
+                itemButton.colors = colors;
+            }
+        }
+
+        // Update chair markers on map
+        UpdateChairMarkersSelection();
+
+        // Update preview for selected spawn point
+        if (selectedIndex >= 0 && selectedIndex < availableSpawnPoints.Count)
+        {
+            SpawnPointData selectedSpawnPoint = availableSpawnPoints[selectedIndex];
+            if (showDebugInfo)
+            {
+                Debug.Log($"FastTravelUI: Selected spawn point '{selectedSpawnPoint.displayName}' (index {selectedIndex})");
+            }
+        }
+    }
+
+    // ==================== Chair Markers on Map ====================
+
+    /// <summary>
+    /// Create chair markers on the full map
+    /// </summary>
+    private void CreateChairMarkers()
+    {
+        if (fullMapImage == null || chairMarkersParent == null)
+        {
+            if (showDebugInfo)
+            {
+                Debug.LogWarning("FastTravelUI: Cannot create chair markers - fullMapImage or chairMarkersParent is null");
+            }
+            return;
+        }
+
+        // Clear existing markers
+        ClearChairMarkers();
+
+        // Create marker for each spawn point
+        foreach (SpawnPointData spawnPoint in availableSpawnPoints)
+        {
+            CreateChairMarker(spawnPoint);
+        }
+
+        if (showDebugInfo)
+        {
+            Debug.Log($"FastTravelUI: Created {chairMarkers.Count} chair markers on map");
+        }
+    }
+
+    /// <summary>
+    /// Create a single chair marker for a spawn point
+    /// </summary>
+    private void CreateChairMarker(SpawnPointData spawnPoint)
+    {
+        if (spawnPoint == null) return;
+
+        // Create marker GameObject
+        GameObject marker;
+        if (chairMarkerPrefab != null)
+        {
+            marker = Instantiate(chairMarkerPrefab, chairMarkersParent);
+        }
+        else
+        {
+            // Create simple marker if no prefab
+            marker = new GameObject($"ChairMarker_{spawnPoint.spawnPointId}");
+            marker.transform.SetParent(chairMarkersParent);
+
+            // Add Image component
+            Image markerImage = marker.AddComponent<Image>();
+            if (chairMarkerSprite != null)
+            {
+                markerImage.sprite = chairMarkerSprite;
+            }
+            else
+            {
+                // Create a simple colored circle if no sprite
+                markerImage.color = Color.yellow;
+            }
+        }
+
+        // Set up RectTransform
+        RectTransform markerRect = marker.GetComponent<RectTransform>();
+        if (markerRect == null)
+        {
+            markerRect = marker.AddComponent<RectTransform>();
+        }
+
+        // Set size
+        markerRect.sizeDelta = chairMarkerSize;
+        markerRect.anchorMin = new Vector2(0.5f, 0.5f);
+        markerRect.anchorMax = new Vector2(0.5f, 0.5f);
+        markerRect.pivot = new Vector2(0.5f, 0.5f);
+
+        // Convert world position to UI position
+        Vector2 uiPosition = WorldToMapUI(spawnPoint.position);
+        markerRect.anchoredPosition = uiPosition;
+
+        // Store marker reference
+        chairMarkers[spawnPoint.spawnPointId] = marker;
+
+        if (showDebugInfo)
+        {
+            Debug.Log($"FastTravelUI: Created marker for '{spawnPoint.displayName}' at UI position {uiPosition}");
+        }
+    }
+
+    /// <summary>
+    /// Convert world position to UI position on the minimap
+    /// </summary>
+    private Vector2 WorldToMapUI(Vector3 worldPosition)
+    {
+        if (fullMapImage == null)
+        {
+            return Vector2.zero;
+        }
+
+        RectTransform mapRect = fullMapImage.rectTransform;
+        if (mapRect == null)
+        {
+            return Vector2.zero;
+        }
+
+        // Declare variables at method scope to avoid conflicts
+        float normalizedX;
+        float normalizedY;
+        float mapWidth = mapRect.rect.width;
+        float mapHeight = mapRect.rect.height;
+
+        // Use minimap camera bounds if available
+        if (minimapCamera != null)
+        {
+            float orthoSize = minimapCamera.orthographicSize;
+            Vector3 cameraPos = minimapCamera.transform.position;
+
+            // Calculate world bounds from camera
+            float worldMinX = cameraPos.x - orthoSize;
+            float worldMaxX = cameraPos.x + orthoSize;
+            float worldMinY = cameraPos.y - orthoSize;
+            float worldMaxY = cameraPos.y + orthoSize;
+
+            // Normalize world position (0-1 range)
+            normalizedX = (worldPosition.x - worldMinX) / (worldMaxX - worldMinX);
+            normalizedY = (worldPosition.y - worldMinY) / (worldMaxY - worldMinY);
+        }
+        else
+        {
+            // Fallback: use stored world bounds
+            Vector2 worldSize = mapWorldMax - mapWorldMin;
+
+            // Normalize world position (0-1 range)
+            normalizedX = (worldPosition.x - mapWorldMin.x) / worldSize.x;
+            normalizedY = (worldPosition.y - mapWorldMin.y) / worldSize.y;
+        }
+
+        // Convert to UI coordinates (common for both paths)
+        float uiX = (normalizedX - 0.5f) * mapWidth;
+        float uiY = (normalizedY - 0.5f) * mapHeight;
+
+        return new Vector2(uiX, uiY);
+    }
+
+    /// <summary>
+    /// Update chair markers selection state
+    /// </summary>
+    private void UpdateChairMarkersSelection()
+    {
+        if (availableSpawnPoints.Count == 0 || selectedIndex < 0 || selectedIndex >= availableSpawnPoints.Count)
+        {
+            // Deselect all markers
+            foreach (var marker in chairMarkers.Values)
+            {
+                if (marker != null)
+                {
+                    UpdateMarkerVisual(marker, false);
+                }
+            }
+            return;
+        }
+
+        SpawnPointData selectedSpawnPoint = availableSpawnPoints[selectedIndex];
+
+        // Update all markers
+        foreach (var kvp in chairMarkers)
+        {
+            if (kvp.Value == null) continue;
+
+            bool isSelected = (kvp.Key == selectedSpawnPoint.spawnPointId);
+            UpdateMarkerVisual(kvp.Value, isSelected);
+        }
+    }
+
+    /// <summary>
+    /// Update visual appearance of a marker
+    /// </summary>
+    private void UpdateMarkerVisual(GameObject marker, bool isSelected)
+    {
+        Image markerImage = marker.GetComponent<Image>();
+        if (markerImage == null) return;
+
+        if (isSelected)
+        {
+            // Use selected sprite or change color
+            if (selectedChairMarkerSprite != null)
+            {
+                markerImage.sprite = selectedChairMarkerSprite;
+            }
+            else
+            {
+                markerImage.color = new Color(1f, 0.8f, 0f, 1f); // Bright orange/yellow when selected
+            }
+
+            // Make selected marker larger
+            RectTransform markerRect = marker.GetComponent<RectTransform>();
+            if (markerRect != null)
+            {
+                markerRect.sizeDelta = chairMarkerSize * 1.5f;
+            }
+        }
+        else
+        {
+            // Use normal sprite or color
+            if (chairMarkerSprite != null)
+            {
+                markerImage.sprite = chairMarkerSprite;
+            }
+            else
+            {
+                markerImage.color = Color.yellow; // Normal yellow
+            }
+
+            // Normal size
+            RectTransform markerRect = marker.GetComponent<RectTransform>();
+            if (markerRect != null)
+            {
+                markerRect.sizeDelta = chairMarkerSize;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Clear all chair markers
+    /// </summary>
+    private void ClearChairMarkers()
+    {
+        foreach (var marker in chairMarkers.Values)
+        {
+            if (marker != null)
+            {
+                Destroy(marker);
+            }
+        }
+        chairMarkers.Clear();
+    }
+
     // ==================== Debug Methods ====================
 
     /// <summary>
@@ -825,6 +1385,6 @@ public class FastTravelUI : MonoBehaviour
     /// </summary>
     public string GetDebugInfo()
     {
-        return $"FastTravelUI: Open={isOpen}, AvailableSpawnPoints={availableSpawnPoints.Count}, ShowOneTimeUse={showOneTimeUseSpawnPoints}";
+        return $"FastTravelUI: Open={isOpen}, AvailableSpawnPoints={availableSpawnPoints.Count}, ShowOneTimeUse={showOneTimeUseSpawnPoints}, SelectedIndex={selectedIndex}, ChairMarkers={chairMarkers.Count}";
     }
 }

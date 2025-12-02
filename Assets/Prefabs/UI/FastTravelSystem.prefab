@@ -49,5 +49,16 @@ MonoBehaviour:
   spawnPointListItemPrefab: {fileID: 8151131086223192049, guid: d9e63e5cfb99e4a93b0e5f9160529505, type: 3}
   closeButton: {fileID: 0}
   titleText: {fileID: 0}
+  mapPreviewImage: {fileID: 0}
+  fullMapImage: {fileID: 6947812584315789879, guid: 154aab177e2ba1c438c22f5b1867d597, type: 3}
+  fullMapFogImage: {fileID: 4544264181042544906, guid: 22db5c57fe024314d9b2e4b5b33c03e5, type: 3}
+  minimapCamera: {fileID: 0}
+  minimapRenderTexture: {fileID: 0}
+  chairMarkersParent: {fileID: 0}
+  chairMarkerPrefab: {fileID: 0}
+  chairMarkerSprite: {fileID: 0}
+  selectedChairMarkerSprite: {fileID: 0}
+  chairMarkerSize: {x: 20, y: 20}
   showDebugInfo: 1
   showOneTimeUseSpawnPoints: 0
+  previewOnHover: 1
