@@ -20,11 +20,11 @@ public class InteractionPrompt : MonoBehaviour
     
     [Header("閃動動畫設定")]
     [Tooltip("閃動動畫的速度（每秒閃動次數）")]
-    [SerializeField] private float pulseSpeed = 2f;
+    [SerializeField] private float pulseSpeed = 1.2f;
     
     [Tooltip("閃動動畫的最小透明度")]
     [Range(0f, 1f)]
-    [SerializeField] private float minAlpha = 0.5f;
+    [SerializeField] private float minAlpha = 0.7f;
     
     [Tooltip("閃動動畫的最大透明度")]
     [Range(0f, 1f)]
@@ -172,14 +172,14 @@ public class InteractionPrompt : MonoBehaviour
     private void LoadButtonSprite()
     {
         // 嘗試從 Resources 載入（如果圖片在 Resources 資料夾中）
-        buttonSprite = Resources.Load<Sprite>("UI/zbutton");
+        buttonSprite = Resources.Load<Sprite>("UI/Z_but");
         
         // 如果還是沒有，嘗試使用 UnityEditor 的 AssetDatabase（僅在編輯器中）
         #if UNITY_EDITOR
         if (buttonSprite == null)
         {
-            // 嘗試從 Assets/Image/UI/ 路徑載入
-            buttonSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Image/UI/zbutton.png");
+            // 嘗試從 Assets/Image/UI/ 路徑載入新的 Z_but 圖片
+            buttonSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Image/UI/Z_but.png");
         }
         #endif
         
@@ -188,7 +188,7 @@ public class InteractionPrompt : MonoBehaviour
         {
             if (showDebugInfo)
             {
-                Debug.LogWarning($"InteractionPrompt: 無法載入按鍵圖片，請在 Inspector 中手動設置！路徑：Assets/Image/UI/zbutton.png");
+                Debug.LogWarning($"InteractionPrompt: 無法載入按鍵圖片，請在 Inspector 中手動設置！路徑：Assets/Image/UI/Z_but.png");
             }
         }
     }
