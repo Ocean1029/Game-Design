@@ -2150,7 +2150,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractionPrompt
   buttonSprite: {fileID: 0}
   worldOffset: {x: 0, y: 1, z: 0}
-  buttonSize: {x: 1, y: 1}
+  buttonSize: {x: 1.5, y: 1.5}
   pulseSpeed: 2
   minAlpha: 0.5
   maxAlpha: 1
@@ -6765,7 +6765,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractionPrompt
   buttonSprite: {fileID: 0}
   worldOffset: {x: 0, y: 1, z: 0}
-  buttonSize: {x: 1, y: 1}
+  buttonSize: {x: 1.5, y: 1.5}
   pulseSpeed: 2
   minAlpha: 0.5
   maxAlpha: 1
