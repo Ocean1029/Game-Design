@@ -479,9 +479,20 @@ public class SpawnPointSystem : MonoBehaviour
             {
                 animationController.TriggerTeleport();
             }
-            
-            playerController.transform.position = position;
-            Debug.Log($"SpawnPointSystem: Teleported player to {position}");
+
+            // Use the PlayerMovement's Teleport method which handles ground detection
+            PlayerMovement playerMovement = playerController.GetComponent<PlayerMovement>();
+            if (playerMovement != null)
+            {
+                playerMovement.Teleport(position);
+                Debug.Log($"SpawnPointSystem: Teleported player to {position} (with ground detection)");
+            }
+            else
+            {
+                // Fallback to direct position setting if PlayerMovement not found
+                playerController.transform.position = position;
+                Debug.LogWarning($"SpawnPointSystem: PlayerMovement not found, teleported to {position} without ground detection");
+            }
         }
     }
 
@@ -511,17 +522,10 @@ public class SpawnPointSystem : MonoBehaviour
 
         if (spawnPoint.isChairSpawn)
         {
-            chair targetChair = FindChairById(spawnPoint.spawnPointId);
-            if (targetChair != null)
-            {
-                playerController.SitOnChair(targetChair);
-                Debug.Log($"SpawnPointSystem: Player seated on chair '{spawnPoint.spawnPointId}' after respawn");
-            }
-            else
-            {
-                Debug.LogWarning($"SpawnPointSystem: Chair '{spawnPoint.spawnPointId}' not found after respawn. Restoring energy instead.");
-                RestoreEnergyToFull();
-            }
+            // When respawning at a chair, restore energy but don't sit the player down
+            // The player should be standing and able to move immediately
+            RestoreEnergyToFull();
+            Debug.Log($"SpawnPointSystem: Player respawned at chair '{spawnPoint.spawnPointId}' (standing, energy restored)");
         }
         else
         {
