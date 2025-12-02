@@ -318,8 +318,48 @@ public class PlayerMovement : MonoBehaviour
     /// <param name="position">Target position</param>
     public void Teleport(Vector3 position)
     {
-        transform.position = position;
+        // First, try to find ground below the teleport position
+        Vector3 groundedPosition = FindGroundedPosition(position);
+
+        // Set the position to the grounded location
+        transform.position = groundedPosition;
         StopMovement();
+    }
+
+    /// <summary>
+    /// Find a grounded position below the given position using raycasting
+    /// </summary>
+    /// <param name="position">The position to check from</param>
+    /// <returns>The grounded position, or the original position if no ground found</returns>
+    private Vector3 FindGroundedPosition(Vector3 position)
+    {
+        // If player is already grounded at current position, don't adjust
+        if (isGrounded && Vector3.Distance(transform.position, position) < 0.5f)
+        {
+            // Player is already on ground and teleporting nearby - keep current position
+            return transform.position;
+        }
+
+        // Cast ray downward from the teleport position to find ground
+        RaycastHit2D hit = Physics2D.Raycast(position, Vector2.down, 50f, groundLayer);
+
+        if (hit.collider != null)
+        {
+            // Position player on the ground with minimal offset to prevent clipping
+            // Use the player's collider bounds to determine proper height
+            float playerBottomOffset = 0f;
+            if (playerCollider != null)
+            {
+                playerBottomOffset = playerCollider.bounds.extents.y;
+            }
+            
+            Vector3 groundedPosition = new Vector3(position.x, hit.point.y + playerBottomOffset, position.z);
+            return groundedPosition;
+        }
+
+        // If no ground found, return original position
+        // This handles cases where spawn points are already on ground or in air intentionally
+        return position;
     }
 
     /// <summary>

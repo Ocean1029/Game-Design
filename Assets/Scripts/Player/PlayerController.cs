@@ -412,8 +412,8 @@ public class PlayerController : MonoBehaviour, IInteractor
         }
 
         currentChair = chairToSit;
-        transform.position = chairToSit.sitpoint.position;
-
+        // Don't change player position - just change state
+        // transform.position = chairToSit.sitpoint.position;
 
         // Stop movement and lock it to prevent any input from being applied
         movement.StopMovement();
@@ -450,8 +450,8 @@ public class PlayerController : MonoBehaviour, IInteractor
         // Unlock movement before changing position
         movement.SetMovementLocked(false);
 
-        // Move slightly upward to avoid re-triggering the chair
-        transform.position += new Vector3(0f, 0.5f, 0f);
+        // Move slightly upward to avoid re-triggering the chair - REMOVED to prevent leaving ground
+        // transform.position += new Vector3(0f, 0.5f, 0f);
 
         movement.SetGravityEnabled(true);
         stateMachine.ChangeState(PlayerState.Idle);
