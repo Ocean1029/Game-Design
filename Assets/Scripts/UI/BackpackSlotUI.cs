@@ -129,11 +129,16 @@ public class BackpackSlotUI : MonoBehaviour
         if (hasItem)
         {
             // Has item - show full color (complete image)
-            iconImage.color = collectedColor;
+            if (iconImage != null)
+            {
+                iconImage.enabled = true;
+                iconImage.color = collectedColor;
+            }
             
             // Update background color
             if (backgroundImage != null)
             {
+                backgroundImage.enabled = true;
                 backgroundImage.color = collectedBackgroundColor;
             }
             
@@ -141,27 +146,18 @@ public class BackpackSlotUI : MonoBehaviour
         }
         else
         {
-            // No item - show dimmed color (outline only)
-            Color previousColor = iconImage.color;
-            iconImage.color = emptyColor;
-            
-            Debug.Log($"[BackpackSlotUI] Setting icon color from {previousColor} to {emptyColor} (alpha: {emptyColor.a}) for '{itemName}'");
-            
-            // Force refresh the image
-            if (iconImage.sprite != null)
+            // No item - hide the slot completely
+            if (iconImage != null)
             {
                 iconImage.enabled = false;
-                iconImage.enabled = true;
             }
             
-            // Update background color
             if (backgroundImage != null)
             {
-                backgroundImage.color = emptyBackgroundColor;
-                Debug.Log($"[BackpackSlotUI] Background color set to {emptyBackgroundColor}");
+                backgroundImage.enabled = false;
             }
             
-            Debug.Log($"[BackpackSlotUI] Showing empty state for '{itemName}' - color set to empty");
+            Debug.Log($"[BackpackSlotUI] Hiding empty slot for '{itemName}'");
         }
     }
     

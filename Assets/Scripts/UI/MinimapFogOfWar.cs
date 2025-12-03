@@ -10,25 +10,18 @@ public class MinimapFogOfWar : MonoBehaviour
     [Header("Fog Settings")]
     [Tooltip("迷霧解析度（越高越精細但性能消耗越大）")]
     [SerializeField] private int fogResolution = 512;
-    
+
     [Tooltip("玩家視野範圍（世界單位）")]
     [SerializeField] private float visionRadius = 15f;
-    
+
     [Tooltip("迷霧顏色")]
-    [SerializeField] private Color fogColor = new Color(0f, 0f, 0f, 0.8f);
-    
+    [SerializeField] private Color fogColor = new Color(0f, 0f, 0f, 0.95f);
+
     [Tooltip("已探索區域的透明度（0=完全透明，1=完全不透明）")]
-    [SerializeField] private float exploredAlpha = 0.3f;
-    
+    [SerializeField] private float exploredAlpha = 0.2f;
+
     [Tooltip("迷霧漸變平滑度")]
     [SerializeField] private float smoothness = 3f;
-
-    [Header("World Bounds")]
-    [Tooltip("地圖世界邊界 - 最小點")]
-    [SerializeField] private Vector2 worldMin = new Vector2(-50f, -50f);
-    
-    [Tooltip("地圖世界邊界 - 最大點")]
-    [SerializeField] private Vector2 worldMax = new Vector2(50f, 50f);
 
     [Header("References")]
     [Tooltip("玩家 Transform")]
@@ -37,7 +30,7 @@ public class MinimapFogOfWar : MonoBehaviour
     [Header("Performance")]
     [Tooltip("更新頻率（秒）- 較高的值可以提升性能")]
     [SerializeField] private float updateInterval = 0.1f;
-    
+
     [Tooltip("是否啟用迷霧系統")]
     [SerializeField] private bool enableFog = true;
 
@@ -49,12 +42,14 @@ public class MinimapFogOfWar : MonoBehaviour
     private Texture2D fogTexture;
     private Color[] fogData;
     private float nextUpdateTime = 0f;
+    private Vector2 worldMin; // Will be calculated from the camera
     private Vector2 worldSize;
     private float pixelsPerUnit;
-    
+    private Camera minimapCamera;
+
     // Singleton
     private static MinimapFogOfWar instance;
-    
+
     public static MinimapFogOfWar GetInstance()
     {
         return instance;
@@ -92,8 +87,32 @@ public class MinimapFogOfWar : MonoBehaviour
             return;
         }
 
-        // 計算世界大小
-        worldSize = worldMax - worldMin;
+        // --- 自動尋找攝影機並計算邊界 ---
+        GameObject camObj = GameObject.Find("MiniMapCamera");
+        if (camObj != null)
+        {
+            minimapCamera = camObj.GetComponent<Camera>();
+        }
+
+        if (minimapCamera == null)
+        {
+            Debug.LogError("MinimapFogOfWar: A GameObject named 'MinimapCamera' with a Camera component is required, but was not found. Fog system will not initialize.", this);
+            return;
+        }
+
+        if (!minimapCamera.orthographic)
+        {
+            Debug.LogError("MinimapFogOfWar: The camera on 'MinimapCamera' must be Orthographic.", minimapCamera);
+            return;
+        }
+
+        float orthoHeight = minimapCamera.orthographicSize * 2f;
+        float orthoWidth = orthoHeight * minimapCamera.aspect;
+        Vector2 cameraPos = minimapCamera.transform.position;
+        worldMin = cameraPos - new Vector2(orthoWidth / 2f, orthoHeight / 2f);
+        worldSize = new Vector2(orthoWidth, orthoHeight);
+        // --- 計算結束 ---
+
         pixelsPerUnit = fogResolution / Mathf.Max(worldSize.x, worldSize.y);
 
         // 初始化迷霧
@@ -120,7 +139,7 @@ public class MinimapFogOfWar : MonoBehaviour
         if (showDebugInfo)
         {
             Debug.Log($"MinimapFogOfWar: Initialized with resolution {fogResolution}x{fogResolution}");
-            Debug.Log($"World bounds: {worldMin} to {worldMax}, size: {worldSize}");
+            Debug.Log($"World bounds calculated from camera '{minimapCamera.name}': {worldMin} to {worldMin + worldSize}");
             Debug.Log($"Pixels per unit: {pixelsPerUnit}");
         }
     }
@@ -216,10 +235,10 @@ public class MinimapFogOfWar : MonoBehaviour
                 // 計算距離衰減
                 float dist = Mathf.Sqrt(distSqr);
                 float normalizedDist = dist / radiusInPixels;
-                
+
                 // 平滑衰減（中心完全透明，邊緣保持已探索的透明度）
                 float targetAlpha = Mathf.Lerp(0f, exploredAlpha, Mathf.Pow(normalizedDist, smoothness));
-                
+
                 // 只更新比當前更透明的區域（不會讓已探索的區域變暗）
                 if (targetAlpha < fogData[index].a)
                 {
@@ -273,7 +292,7 @@ public class MinimapFogOfWar : MonoBehaviour
                 fogData[i] = fogColor;
             }
             UpdateFogTexture();
-            
+
             if (showDebugInfo)
             {
                 Debug.Log("MinimapFogOfWar: Fog reset");
@@ -290,13 +309,13 @@ public class MinimapFogOfWar : MonoBehaviour
         {
             Color clearColor = fogColor;
             clearColor.a = 0f;
-            
+
             for (int i = 0; i < fogData.Length; i++)
             {
                 fogData[i] = clearColor;
             }
             UpdateFogTexture();
-            
+
             if (showDebugInfo)
             {
                 Debug.Log("MinimapFogOfWar: All fog revealed");
@@ -318,7 +337,7 @@ public class MinimapFogOfWar : MonoBehaviour
     public void SetFogEnabled(bool enabled)
     {
         enableFog = enabled;
-        
+
         // 迷霧的顯示/隱藏由 MinimapFogRenderer 控制
         // 這裡只設置系統是否更新迷霧數據
     }
@@ -351,11 +370,15 @@ public class MinimapFogOfWar : MonoBehaviour
     {
         if (!showDebugInfo) return;
 
-        // 繪製世界邊界
-        Gizmos.color = Color.yellow;
-        Vector3 center = new Vector3((worldMin.x + worldMax.x) / 2f, (worldMin.y + worldMax.y) / 2f, 0f);
-        Vector3 size = new Vector3(worldMax.x - worldMin.x, worldMax.y - worldMin.y, 0.1f);
-        Gizmos.DrawWireCube(center, size);
+        // 邊界只在初始化後才有效，用 fogTexture 作為指標
+        if (fogTexture != null)
+        {
+            // 繪製世界邊界
+            Gizmos.color = Color.yellow;
+            Vector3 center = new Vector3(worldMin.x + worldSize.x / 2f, worldMin.y + worldSize.y / 2f, 0f);
+            Vector3 size = new Vector3(worldSize.x, worldSize.y, 0.1f);
+            Gizmos.DrawWireCube(center, size);
+        }
 
         // 繪製玩家視野範圍
         if (player != null)
