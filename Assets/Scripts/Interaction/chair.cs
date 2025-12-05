@@ -30,27 +30,54 @@ public class chair : MonoBehaviour, IInteractable
     [Tooltip("Sound played when player sits on chair (saves progress)")]
     [SerializeField] private AudioClip sitSound;
 
+    [Header("Auto Energy Restore")]
+    [Tooltip("Automatically restore player's energy to full when passing by (no key press needed)")]
+    [SerializeField] private bool autoRestoreEnergyOnPass = true;
+
+    [Tooltip("Sound played when energy is auto-restored")]
+    [SerializeField] private AudioClip energyRestoreSound;
+
+    [Tooltip("Maximum distance from chair center for energy restoration (very small for precise control)")]
+    [SerializeField] private float energyRestoreDistance = 0.5f;
+
     private IInteractor currentInteractor = null;
+    private bool hasRestoredEnergyForCurrentInteractor = false;
+    private PlayerController currentPlayerInZone = null;
 
     void Start()
     {
         // Hide prompt at start
         ShowPromptZ(false);
-        
+
         // Generate chair ID if not set
         if (string.IsNullOrEmpty(chairId))
         {
             chairId = $"chair_{gameObject.name}_{transform.position.x:F0}_{transform.position.y:F0}";
         }
-        
+
         // Generate chair name if not set
         if (string.IsNullOrEmpty(chairName))
         {
             chairName = gameObject.name;
         }
-        
+
         // Update spawn point status
         UpdateSpawnPointStatus();
+    }
+
+    void Update()
+    {
+        // Continuously check for energy restoration while player is in zone
+        if (currentPlayerInZone != null && autoRestoreEnergyOnPass && !hasRestoredEnergyForCurrentInteractor)
+        {
+            float distanceToChair = Vector3.Distance(currentPlayerInZone.transform.position, transform.position);
+            if (distanceToChair <= energyRestoreDistance)
+            {
+                RestorePlayerEnergy(currentPlayerInZone);
+                hasRestoredEnergyForCurrentInteractor = true;
+                Debug.Log($"Player moved within energy restoration range ({distanceToChair:F2} <= {energyRestoreDistance}) at '{chairName}'");
+            }
+        }
     }
 
     // ==================== IInteractable Implementation ====================
@@ -62,13 +89,19 @@ public class chair : MonoBehaviour, IInteractable
     {
         Debug.Log("Interactor entered chair zone");
         currentInteractor = interactor;
-        
-        // Check if this is a player and if they're already sitting
+
+        // Check if this is a player
         PlayerController player = interactor.GetGameObject().GetComponent<PlayerController>();
-        if (player != null && !player.IsSitting())
+        if (player != null)
         {
-            ShowPromptZ(true);
-            Debug.Log("Showing sit prompt (Press Z)");
+            currentPlayerInZone = player;
+
+            // Show sit prompt if not already sitting
+            if (!player.IsSitting())
+            {
+                ShowPromptZ(true);
+                Debug.Log("Showing sit prompt (Press Z)");
+            }
         }
     }
 
@@ -79,13 +112,15 @@ public class chair : MonoBehaviour, IInteractable
     {
         // Check if this is a player and if they're sitting
         PlayerController player = interactor.GetGameObject().GetComponent<PlayerController>();
-        
+
         // Only clear prompts if player is not sitting
         // (when sitting, player should not leave the zone)
         if (player == null || !player.IsSitting())
         {
             ShowPromptZ(false);
             currentInteractor = null;
+            hasRestoredEnergyForCurrentInteractor = false; // Reset for next visit
+            currentPlayerInZone = null; // Clear player reference
         }
     }
 
@@ -148,6 +183,34 @@ public class chair : MonoBehaviour, IInteractable
         if (pressZPrompt != null)
         {
             pressZPrompt.SetActive(show);
+        }
+    }
+
+    // ==================== Energy Restoration ====================
+
+    /// <summary>
+    /// Restore player's energy to full when passing by the chair
+    /// </summary>
+    private void RestorePlayerEnergy(PlayerController player)
+    {
+        if (player == null) return;
+
+        PlayerEnergy energySystem = player.GetEnergySystem();
+        if (energySystem != null)
+        {
+            // Check if player actually needs energy restoration
+            if (!energySystem.IsEnergyFull())
+            {
+                energySystem.RestoreAllEnergy();
+                
+                // Play energy restore sound
+                if (energyRestoreSound != null)
+                {
+                    AudioSource.PlayClipAtPoint(energyRestoreSound, transform.position);
+                }
+                
+                Debug.Log($"Chair: Auto-restored player's energy to full at '{chairName}'");
+            }
         }
     }
 
