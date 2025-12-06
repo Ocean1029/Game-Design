@@ -48354,23 +48354,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -5437995770414451029, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
       propertyPath: m_ColliderPaths.Array.data[0].m_ColliderPaths.Array.data[8].Array.data[13].Y
-      value: 200000000
+      value: 210000000
       objectReference: {fileID: 0}
     - target: {fileID: -5437995770414451029, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
       propertyPath: m_ColliderPaths.Array.data[0].m_ColliderPaths.Array.data[8].Array.data[14].X
-      value: 320000000
+      value: 405000000
       objectReference: {fileID: 0}
     - target: {fileID: -5437995770414451029, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
       propertyPath: m_ColliderPaths.Array.data[0].m_ColliderPaths.Array.data[8].Array.data[14].Y
-      value: 205000000
+      value: 200000000
       objectReference: {fileID: 0}
     - target: {fileID: -5437995770414451029, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
       propertyPath: m_ColliderPaths.Array.data[0].m_ColliderPaths.Array.data[8].Array.data[15].X
-      value: 350000000
+      value: 435000000
       objectReference: {fileID: 0}
     - target: {fileID: -5437995770414451029, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
       propertyPath: m_ColliderPaths.Array.data[0].m_ColliderPaths.Array.data[8].Array.data[15].Y
-      value: 205000000
+      value: 200000000
       objectReference: {fileID: 0}
     - target: {fileID: -5437995770414451029, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
       propertyPath: m_ColliderPaths.Array.data[0].m_ColliderPaths.Array.data[9].Array.data[10].X
@@ -50242,7 +50242,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4024803056407652640, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
       propertyPath: <LevelBgPos>k__BackingField
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4440217937895106231, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
       propertyPath: m_Layer
@@ -50309,8 +50309,48 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9097249882159688420, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
+      propertyPath: <BgColor>k__BackingField.a
+      value: 0.3137255
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097249882159688420, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
+      propertyPath: <BgColor>k__BackingField.b
+      value: 0.11974903
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097249882159688420, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
+      propertyPath: <BgColor>k__BackingField.g
+      value: 0.20143212
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097249882159688420, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
+      propertyPath: <BgColor>k__BackingField.r
+      value: 0.6509434
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097249882159688420, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
+      propertyPath: <ExportLevelBg>k__BackingField
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097249882159688420, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
+      propertyPath: <ExternalLevels>k__BackingField
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097249882159688420, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
       propertyPath: <DefaultGridSize>k__BackingField
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097249882159688420, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
+      propertyPath: <DefaultLevelBgColor>k__BackingField.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097249882159688420, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
+      propertyPath: <DefaultLevelBgColor>k__BackingField.b
+      value: 0.9462619
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097249882159688420, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
+      propertyPath: <DefaultLevelBgColor>k__BackingField.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9097249882159688420, guid: 456f9b80feb714951b0c5eefe76ed857, type: 3}
+      propertyPath: <DefaultLevelBgColor>k__BackingField.r
+      value: 0.9386792
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -53151,10 +53191,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f3a5e9c2b4d8f1a6c9e3b7d5a2f8e4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JumpPromptTrigger
-  pressZPrompt: {fileID: 0}
-  interactionMessage: Jump prompt triggered!
-  oneTimeUse: 0
-  interactionSound: {fileID: 0}
 --- !u!114 &1777909901
 MonoBehaviour:
   m_ObjectHideFlags: 0

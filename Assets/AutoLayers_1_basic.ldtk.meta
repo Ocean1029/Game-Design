@@ -15,7 +15,7 @@ ScriptedImporter:
   _intGridValueColorsVisible: 0
   _useCompositeCollider: 1
   _geometryType: 0
-  _createBackgroundColor: 1
+  _createBackgroundColor: 0
   _createLevelBoundsTrigger: 0
   _useParallax: 1
   _scaleEntities: 1
