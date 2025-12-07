@@ -5,6 +5,7 @@ using System.Collections;
 public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
+    public event System.Action OnDialogueFinished;
 
     [Header("UI 元件")]
     public GameObject dialogueBox;
@@ -70,6 +71,7 @@ public class DialogueManager : MonoBehaviour
         }
 
         isTyping = false;
+        OnDialogueFinished?.Invoke();   // ← 通知所有監聽者「文字全部出完了」
     }
 
     public void HideDialogue()

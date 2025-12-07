@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(Collider2D))]
 public class HintTrigger : MonoBehaviour
@@ -6,6 +7,11 @@ public class HintTrigger : MonoBehaviour
     [Header("提示文字設定")]
     [TextArea(2, 4)]
     public string hintMessage = "這裡可以放提示文字。";
+
+    [Header("能量補滿提示")]
+    [TextArea(2, 4)]
+    public string energyFullMessage = "Energy is refilled!! I can jump again.";
+    private bool hasShownEnergyFull = false;
 
     [Header("門狀態檢查")]
     [Tooltip("若指定，門開啟後將不顯示提示；留空則自動在半徑內搜尋")]
@@ -27,6 +33,7 @@ public class HintTrigger : MonoBehaviour
     [Header("顯示控制")]
     public bool showOnlyOnce = false;
     public float reenterCooldown = 0.25f;
+    private bool isDialogueTyping = false;
 
     private bool _hasShown;
     private float _lastExitTime;
@@ -40,6 +47,22 @@ public class HintTrigger : MonoBehaviour
 
     private void Start()
     {
+        // 監聽能量補滿事件
+        var playerEnergy = FindObjectOfType<PlayerEnergy>();
+        if (playerEnergy != null)
+        {
+            playerEnergy.OnEnergyRestored += () =>
+            {
+                if (!hasShownEnergyFull)
+                {
+                    hasShownEnergyFull = true;
+                    DialogueManager.Instance?.ShowDialogue(energyFullMessage);
+                    isDialogueTyping = true;
+                    DialogueManager.Instance.OnDialogueFinished += HandleDialogueFinished;
+                }
+            };
+        }
+
         // 嘗試自動尋找最近的 PhysicalDoor
         if (linkedDoor == null && detectDoorRadius > 0f)
         {
@@ -128,13 +151,31 @@ public class HintTrigger : MonoBehaviour
             }
         }
    
-        _hasShown = true;
+        if (showOnlyOnce) _hasShown = true;
 
         var dm = DialogueManager.Instance;
         if (dm != null)
         {
             dm.ShowDialogue(hintMessage);
+            isDialogueTyping = true;
+            dm.OnDialogueFinished += HandleDialogueFinished;  // ← 當文字全部出現時回呼
         }
+    }
+
+    private IEnumerator HideAfterDelay(DialogueManager dm, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        dm.HideDialogue();
+    }
+
+    private void HandleDialogueFinished()
+    {
+        isDialogueTyping = false;
+
+        var dm = DialogueManager.Instance;
+        if (dm != null)
+            dm.OnDialogueFinished -= HandleDialogueFinished; // 取消訂閱避免重複觸發
+            StartCoroutine(HideAfterDelay(dm, 2f));
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -144,7 +185,7 @@ public class HintTrigger : MonoBehaviour
         _lastExitTime = Time.time;
 
         var dm = DialogueManager.Instance;
-        if (dm != null)
+        if (dm != null && !isDialogueTyping)
         {
             dm.HideDialogue();
         }
