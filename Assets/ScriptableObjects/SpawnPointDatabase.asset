@@ -29,7 +29,7 @@ MonoBehaviour:
   - spawnPointId: rest_chair
     displayName: Rest Square
     locationDescription: 
-    position: {x: 18.339003, y: -35.724236, z: 0}
+    position: {x: 19.819002, y: -35.724236, z: 0}
     sceneName: MainScene
     isOneTimeUse: 0
     isTransportable: 1
@@ -42,7 +42,7 @@ MonoBehaviour:
   - spawnPointId: hello_chair
     displayName: Hello Square
     locationDescription: 
-    position: {x: 38.293404, y: -29.18624, z: 0}
+    position: {x: 41.373405, y: -28.796238, z: 0}
     sceneName: MainScene
     isOneTimeUse: 0
     isTransportable: 1
@@ -52,11 +52,24 @@ MonoBehaviour:
     activationSound: {fileID: 0}
     restoresEnergy: 1
     energyRestoreAmount: 0
-  currentActiveSpawnPoint:
-    spawnPointId: rest_chair
-    displayName: Rest Square
+  - spawnPointId: village_square_chair
+    displayName: Village Square
     locationDescription: 
-    position: {x: 18.339003, y: -35.724236, z: 0}
+    position: {x: 30.313404, y: -21.726238, z: 0}
+    sceneName: MainScene
+    isOneTimeUse: 0
+    isTransportable: 1
+    isActive: 0
+    isChairSpawn: 1
+    activeVisual: {fileID: 0}
+    activationSound: {fileID: 0}
+    restoresEnergy: 1
+    energyRestoreAmount: 0
+  currentActiveSpawnPoint:
+    spawnPointId: hello_chair
+    displayName: Hello Square
+    locationDescription: 
+    position: {x: 41.373405, y: -28.796238, z: 0}
     sceneName: MainScene
     isOneTimeUse: 0
     isTransportable: 1
