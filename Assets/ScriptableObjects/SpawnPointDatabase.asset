@@ -40,7 +40,7 @@ MonoBehaviour:
     restoresEnergy: 1
     energyRestoreAmount: 0
   - spawnPointId: hello_chair
-    displayName: Hello Square
+    displayName: Gloom Hollow
     locationDescription: 
     position: {x: 41.373405, y: -28.796238, z: 0}
     sceneName: MainScene
@@ -53,7 +53,7 @@ MonoBehaviour:
     restoresEnergy: 1
     energyRestoreAmount: 0
   - spawnPointId: village_square_chair
-    displayName: Village Square
+    displayName: Prime Cloister
     locationDescription: 
     position: {x: 30.313404, y: -21.726238, z: 0}
     sceneName: MainScene
