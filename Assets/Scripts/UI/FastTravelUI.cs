@@ -62,6 +62,21 @@ public class FastTravelUI : MonoBehaviour
     [Tooltip("Size of chair markers on the map")]
     [SerializeField] private Vector2 chairMarkerSize = new Vector2(20f, 20f);
 
+    // --- 新增開始: 玩家位置標記 ---
+    [Header("Player Position Marker")]
+    [Tooltip("Prefab for the player position marker (usually a simple Image)")]
+    [SerializeField] private GameObject playerMarkerPrefab;
+
+    [Tooltip("Sprite for the player position marker (e.g., a dot or player icon)")]
+    [SerializeField] private Sprite playerMarkerSprite;
+
+    [Tooltip("Color for the player position marker")]
+    [SerializeField] private Color playerMarkerColor = Color.blue;
+
+    [Tooltip("Size of the player position marker on the map")]
+    [SerializeField] private Vector2 playerMarkerSize = new Vector2(30f, 30f);
+    // --- 新增結束 ---
+
     [Header("Settings")]
     [Tooltip("Whether to show debug information")]
     [SerializeField] private bool showDebugInfo = false;
@@ -98,10 +113,15 @@ public class FastTravelUI : MonoBehaviour
     private PlayerController playerController;
     private MinimapFogOfWar fogSystem;
 
-    // Chair markers on map
+
     private Dictionary<string, GameObject> chairMarkers = new Dictionary<string, GameObject>();
     private Vector2 mapWorldMin;
     private Vector2 mapWorldMax;
+
+    // --- 新增開始 ---
+    private GameObject playerPositionMarker = null;
+    private const string PlayerMarkerId = "CURRENT_PLAYER_POS";
+    // --- 新增結束 ---
 
     void Start()
     {
@@ -1197,6 +1217,10 @@ private void UpdateFullMapDisplay()
             CreateChairMarker(spawnPoint);
         }
 
+        // --- 修改開始: 建立玩家位置標記 ---
+        CreatePlayerPositionMarker();
+        // --- 修改結束 ---
+
         if (showDebugInfo)
         {
             Debug.Log($"FastTravelUI: Created {chairMarkers.Count} chair markers on map");
@@ -1317,6 +1341,77 @@ private void UpdateFullMapDisplay()
     }
 
     /// <summary>
+    /// Create a marker for the player's current position (if PlayerController is available)
+    /// </summary>
+    private void CreatePlayerPositionMarker()
+    {
+        if (playerController == null || fullMapImage == null || chairMarkersParent == null)
+        {
+            if (showDebugInfo)
+            {
+                Debug.LogWarning("FastTravelUI: Cannot create player marker - missing PlayerController, fullMapImage, or chairMarkersParent.");
+            }
+            return;
+        }
+
+        // 清除舊的玩家標記
+        if (playerPositionMarker != null)
+        {
+            Destroy(playerPositionMarker);
+            playerPositionMarker = null;
+        }
+
+        // --- Marker Creation Logic ---
+        GameObject marker;
+        if (playerMarkerPrefab != null)
+        {
+            marker = Instantiate(playerMarkerPrefab, chairMarkersParent);
+        }
+        else
+        {
+            // Create simple marker if no prefab
+            marker = new GameObject($"PlayerMarker_{PlayerMarkerId}");
+            marker.transform.SetParent(chairMarkersParent);
+
+            // Add Image component
+            Image markerImage = marker.AddComponent<Image>();
+            markerImage.color = playerMarkerColor;
+
+            if (playerMarkerSprite != null)
+            {
+                markerImage.sprite = playerMarkerSprite;
+            }
+        }
+
+        playerPositionMarker = marker;
+
+        // Set up RectTransform
+        RectTransform markerRect = marker.GetComponent<RectTransform>();
+        if (markerRect == null)
+        {
+            markerRect = marker.AddComponent<RectTransform>();
+        }
+
+        // Set size
+        markerRect.sizeDelta = playerMarkerSize;
+        markerRect.anchorMin = new Vector2(0.5f, 0.5f);
+        markerRect.anchorMax = new Vector2(0.5f, 0.5f);
+        markerRect.pivot = new Vector2(0.5f, 0.5f);
+
+        // Convert world position to UI position
+        Vector2 uiPosition = WorldToMapUI(playerController.transform.position);
+        markerRect.anchoredPosition = uiPosition;
+
+        // 確保玩家標記在最上層，這樣它就不會被霧或椅子標記遮擋
+        playerPositionMarker.transform.SetAsLastSibling();
+
+        if (showDebugInfo)
+        {
+            Debug.Log($"FastTravelUI: Created player marker at UI position {uiPosition}");
+        }
+    }
+
+    /// <summary>
     /// Update chair markers selection state
     /// </summary>
     private void UpdateChairMarkersSelection()
@@ -1407,6 +1502,15 @@ private void UpdateFullMapDisplay()
             }
         }
         chairMarkers.Clear();
+
+        // --- 修改開始: 清除玩家位置標記 ---
+        if (playerPositionMarker != null)
+        {
+            Destroy(playerPositionMarker);
+            playerPositionMarker = null;
+        }
+        // --- 修改結束 ---
+
     }
 
     // ==================== Debug Methods ====================

@@ -320,15 +320,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1360983173474417379, guid: 3a0dd02a798a644e99825db62c02374d, type: 3}
       propertyPath: m_LocalScale.x
-      value: 2.7
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1360983173474417379, guid: 3a0dd02a798a644e99825db62c02374d, type: 3}
       propertyPath: m_LocalScale.y
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1360983173474417379, guid: 3a0dd02a798a644e99825db62c02374d, type: 3}
       propertyPath: m_LocalScale.z
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1360983173474417379, guid: 3a0dd02a798a644e99825db62c02374d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -378,17 +378,37 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2218392133754364113, guid: 3a0dd02a798a644e99825db62c02374d, type: 3}
+      propertyPath: m_UVRect.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2218392133754364113, guid: 3a0dd02a798a644e99825db62c02374d, type: 3}
+      propertyPath: m_UVRect.height
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3609612988632997671, guid: 3a0dd02a798a644e99825db62c02374d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3703369359464354303, guid: 3a0dd02a798a644e99825db62c02374d, type: 3}
       propertyPath: m_Name
       value: MiniMapUI
       objectReference: {fileID: 0}
     - target: {fileID: 6227192602534746196, guid: 3a0dd02a798a644e99825db62c02374d, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6227192602534746196, guid: 3a0dd02a798a644e99825db62c02374d, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6227192602534746196, guid: 3a0dd02a798a644e99825db62c02374d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -2.199997
+      value: 179
       objectReference: {fileID: 0}
     - target: {fileID: 6227192602534746196, guid: 3a0dd02a798a644e99825db62c02374d, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 105
+      value: 272
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

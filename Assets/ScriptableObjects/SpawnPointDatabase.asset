@@ -27,7 +27,7 @@ MonoBehaviour:
     restoresEnergy: 1
     energyRestoreAmount: 0
   - spawnPointId: third_chair
-    displayName: 'Deep Chasm '
+    displayName: Deep Chasm
     locationDescription: 
     position: {x: 19.819002, y: -35.724236, z: 0}
     sceneName: MainScene
@@ -39,23 +39,10 @@ MonoBehaviour:
     activationSound: {fileID: 0}
     restoresEnergy: 1
     energyRestoreAmount: 0
-  - spawnPointId: second_chair
-    displayName: Gloom Hollow
+  - spawnPointId: end_chair
+    displayName: Abyssal Terminus
     locationDescription: 
-    position: {x: 41.359406, y: -29.208239, z: 0}
-    sceneName: MainScene
-    isOneTimeUse: 0
-    isTransportable: 1
-    isActive: 1
-    isChairSpawn: 1
-    activeVisual: {fileID: 0}
-    activationSound: {fileID: 0}
-    restoresEnergy: 1
-    energyRestoreAmount: 0
-  - spawnPointId: first_chair
-    displayName: Prime Cloister
-    locationDescription: 
-    position: {x: 30.313404, y: -21.726238, z: 0}
+    position: {x: 1.4234028, y: -47.21624, z: 0}
     sceneName: MainScene
     isOneTimeUse: 0
     isTransportable: 1
@@ -66,10 +53,10 @@ MonoBehaviour:
     restoresEnergy: 1
     energyRestoreAmount: 0
   currentActiveSpawnPoint:
-    spawnPointId: third_chair
-    displayName: Deep Chasm
+    spawnPointId: end_chair
+    displayName: Abyssal Terminus
     locationDescription: 
-    position: {x: 41.359406, y: -29.208239, z: 0}
+    position: {x: 1.4234028, y: -47.21624, z: 0}
     sceneName: MainScene
     isOneTimeUse: 0
     isTransportable: 1
