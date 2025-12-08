@@ -72,6 +72,16 @@ public class FastTravelUI : MonoBehaviour
     [Tooltip("Whether to show map preview on hover (true) or only on click (false)")]
     [SerializeField] private bool previewOnHover = true;
 
+    // --- 新增開始：自定義重生點排序 ---
+    private static readonly string[] customOrderNames = new string[]
+    {
+        "Prime Cloister",
+        "Gloom Hollow",
+        "Deep Chasm",
+        "Abyssal Terminus"
+    };
+    // --- 新增結束 ---
+
     // State
     private bool isOpen = false;
     private List<SpawnPointData> availableSpawnPoints = new List<SpawnPointData>();
@@ -391,7 +401,23 @@ public class FastTravelUI : MonoBehaviour
         // --- 修改結束 ---
 
         // Sort by scene name, then by display name
-        availableSpawnPoints = availableSpawnPoints.OrderBy(sp => sp.sceneName).ThenBy(sp => sp.displayName).ToList();
+        // availableSpawnPoints = availableSpawnPoints.OrderBy(sp => sp.sceneName).ThenBy(sp => sp.displayName).ToList(); // <--- 移除或註釋掉原有的排序
+
+        // --- 修改開始：自定義排序 ---
+        // 1. 根據自定義順序排序，如果名稱不在 customOrderNames 中，則將其排在末尾 (透過給予較大的索引值)
+        availableSpawnPoints = availableSpawnPoints
+            .OrderBy(sp =>
+            {
+                // 查找名稱在自定義列表中的索引，如果找不到則返回一個很大的數字 (例如 int.MaxValue)，確保其排在末尾。
+                // 我們使用 Array.FindIndex 和 StringComparison.OrdinalIgnoreCase 來進行不區分大小寫的查找，以防萬一。
+                int index = System.Array.FindIndex(customOrderNames, name => name.Equals(sp.displayName, System.StringComparison.OrdinalIgnoreCase));
+                return index == -1 ? int.MaxValue : index;
+            })
+            // 2. 對於不在自定義列表中的項目 (或名稱相同的項目)，再依場景名稱和顯示名稱排序作為次要排序規則
+            .ThenBy(sp => sp.sceneName)
+            .ThenBy(sp => sp.displayName)
+            .ToList();
+        // --- 修改結束 ---
 
         if (showDebugInfo)
         {

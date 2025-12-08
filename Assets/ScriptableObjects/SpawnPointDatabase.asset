@@ -66,8 +66,8 @@ MonoBehaviour:
     restoresEnergy: 1
     energyRestoreAmount: 0
   currentActiveSpawnPoint:
-    spawnPointId: second_chair
-    displayName: Gloom Hollow
+    spawnPointId: third_chair
+    displayName: Deep Chasm
     locationDescription: 
     position: {x: 41.359406, y: -29.208239, z: 0}
     sceneName: MainScene
