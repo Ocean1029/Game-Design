@@ -1,0 +1,1118 @@
+fileFormatVersion: 2
+guid: d0f18d26505634458b03d2a68152845c
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3061971618737005194
+    second: wetwet_0
+  - first:
+      213: 7122989957009482654
+    second: wetwet_1
+  - first:
+      213: -735963394382691461
+    second: wetwet_2
+  - first:
+      213: -4660481391335112728
+    second: wetwet_3
+  - first:
+      213: 2277520484070273355
+    second: wetwet_4
+  - first:
+      213: 1102735766342537250
+    second: wetwet_5
+  - first:
+      213: 5864990688358490349
+    second: wetwet_6
+  - first:
+      213: -3916908807117473268
+    second: wetwet_7
+  - first:
+      213: -5920395034754694740
+    second: wetwet_8
+  - first:
+      213: 4710538673374630586
+    second: wetwet_9
+  - first:
+      213: -6947382419146182084
+    second: wetwet_10
+  - first:
+      213: -2626152111266139724
+    second: wetwet_11
+  - first:
+      213: 8137953158716502662
+    second: wetwet_12
+  - first:
+      213: -2915163477464694402
+    second: wetwet_13
+  - first:
+      213: 2219988084997247281
+    second: wetwet_14
+  - first:
+      213: 130039170960134009
+    second: wetwet_15
+  - first:
+      213: 5074448256746474011
+    second: wetwet_16
+  - first:
+      213: 5658035033666086601
+    second: wetwet_17
+  - first:
+      213: -6106410012865985642
+    second: wetwet_18
+  - first:
+      213: 2720967528999011187
+    second: wetwet_19
+  - first:
+      213: -7321935219964202667
+    second: wetwet_20
+  - first:
+      213: -3795928647051742384
+    second: wetwet_21
+  - first:
+      213: 4970717237566709794
+    second: wetwet_22
+  - first:
+      213: 6549169243245137448
+    second: wetwet_23
+  - first:
+      213: 6316918881140482840
+    second: wetwet_24
+  - first:
+      213: -5987878425677031054
+    second: wetwet_25
+  - first:
+      213: -8015924781883134745
+    second: wetwet_26
+  - first:
+      213: -8469552129816345354
+    second: wetwet_27
+  - first:
+      213: -2164511146547310820
+    second: wetwet_28
+  - first:
+      213: -4267506751930902417
+    second: wetwet_29
+  - first:
+      213: -7640377426563404199
+    second: wetwet_30
+  - first:
+      213: -7531978959977829739
+    second: wetwet_31
+  - first:
+      213: -158299319679346806
+    second: wetwet_32
+  - first:
+      213: -338916011685109742
+    second: wetwet_33
+  - first:
+      213: 3442814922874393776
+    second: wetwet_34
+  - first:
+      213: 8714648684285976854
+    second: wetwet_35
+  - first:
+      213: -4992113328095716504
+    second: wetwet_36
+  - first:
+      213: 5723046420695968053
+    second: wetwet_37
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: wetwet_0
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 781
+        width: 294
+        height: 160
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67d5ad82901b185d0800000000000000
+      internalID: -3061971618737005194
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_1
+      rect:
+        serializedVersion: 2
+        x: 343
+        y: 713
+        width: 264
+        height: 241
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e93a93e60a1f9d260800000000000000
+      internalID: 7122989957009482654
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_2
+      rect:
+        serializedVersion: 2
+        x: 636
+        y: 611
+        width: 93
+        height: 338
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b73012e213559c5f0800000000000000
+      internalID: -735963394382691461
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_3
+      rect:
+        serializedVersion: 2
+        x: 758
+        y: 608
+        width: 136
+        height: 333
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8eff62bedd4a25fb0800000000000000
+      internalID: -4660481391335112728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_4
+      rect:
+        serializedVersion: 2
+        x: 917
+        y: 662
+        width: 622
+        height: 291
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b413fad30d06b9f10800000000000000
+      internalID: 2277520484070273355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_5
+      rect:
+        serializedVersion: 2
+        x: 1568
+        y: 640
+        width: 132
+        height: 302
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22017f14654bd4f00800000000000000
+      internalID: 1102735766342537250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_6
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 568
+        width: 290
+        height: 180
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de0e49ef4f1a46150800000000000000
+      internalID: 5864990688358490349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_7
+      rect:
+        serializedVersion: 2
+        x: 311
+        y: 528
+        width: 299
+        height: 166
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0af92e413854a9c0800000000000000
+      internalID: -3916908807117473268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_8
+      rect:
+        serializedVersion: 2
+        x: 639
+        y: 417
+        width: 383
+        height: 169
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca1c57f551886dda0800000000000000
+      internalID: -5920395034754694740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_9
+      rect:
+        serializedVersion: 2
+        x: 1042
+        y: 399
+        width: 385
+        height: 298
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab21c3747f13f5140800000000000000
+      internalID: 4710538673374630586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_10
+      rect:
+        serializedVersion: 2
+        x: 1459
+        y: 521
+        width: 55
+        height: 89
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c327ff3af70f59f90800000000000000
+      internalID: -6947382419146182084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_11
+      rect:
+        serializedVersion: 2
+        x: 1535
+        y: 521
+        width: 51
+        height: 90
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b1f6d991980e8bd0800000000000000
+      internalID: -2626152111266139724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_12
+      rect:
+        serializedVersion: 2
+        x: 1612
+        y: 517
+        width: 52
+        height: 89
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 682b018f741dfe070800000000000000
+      internalID: 8137953158716502662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_13
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 367
+        width: 366
+        height: 190
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e71468f23424b87d0800000000000000
+      internalID: -2915163477464694402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_14
+      rect:
+        serializedVersion: 2
+        x: 1474
+        y: 428
+        width: 26
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1315cdbb66bfece10800000000000000
+      internalID: 2219988084997247281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_15
+      rect:
+        serializedVersion: 2
+        x: 1531
+        y: 407
+        width: 67
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97f07ffdfedfdc100800000000000000
+      internalID: 130039170960134009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_16
+      rect:
+        serializedVersion: 2
+        x: 1619
+        y: 428
+        width: 42
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1a497ecdcf0c6640800000000000000
+      internalID: 5074448256746474011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_17
+      rect:
+        serializedVersion: 2
+        x: 1309
+        y: 373
+        width: 50
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c6e164b2e0658e40800000000000000
+      internalID: 5658035033666086601
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_18
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 197
+        width: 288
+        height: 140
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6930c3a427ca14ba0800000000000000
+      internalID: -6106410012865985642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_19
+      rect:
+        serializedVersion: 2
+        x: 333
+        y: 190
+        width: 288
+        height: 162
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 373cb532d81d2c520800000000000000
+      internalID: 2720967528999011187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_20
+      rect:
+        serializedVersion: 2
+        x: 660
+        y: 194
+        width: 152
+        height: 126
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 551bc91f5b2436a90800000000000000
+      internalID: -7321935219964202667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_21
+      rect:
+        serializedVersion: 2
+        x: 834
+        y: 190
+        width: 147
+        height: 143
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05370c7d107225bc0800000000000000
+      internalID: -3795928647051742384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_22
+      rect:
+        serializedVersion: 2
+        x: 1003
+        y: 182
+        width: 158
+        height: 159
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2202318ddf88bf440800000000000000
+      internalID: 4970717237566709794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_23
+      rect:
+        serializedVersion: 2
+        x: 1183
+        y: 182
+        width: 97
+        height: 141
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82e4a8d4ab253ea50800000000000000
+      internalID: 6549169243245137448
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_24
+      rect:
+        serializedVersion: 2
+        x: 1295
+        y: 182
+        width: 82
+        height: 173
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 813265101443aa750800000000000000
+      internalID: 6316918881140482840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_25
+      rect:
+        serializedVersion: 2
+        x: 1395
+        y: 182
+        width: 54
+        height: 94
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2799b470c48c6eca0800000000000000
+      internalID: -5987878425677031054
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_26
+      rect:
+        serializedVersion: 2
+        x: 1416
+        y: 182
+        width: 113
+        height: 163
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ecea9d81e6b1c090800000000000000
+      internalID: -8015924781883134745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_27
+      rect:
+        serializedVersion: 2
+        x: 1500
+        y: 182
+        width: 79
+        height: 113
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f4c4a7263b167a80800000000000000
+      internalID: -8469552129816345354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_28
+      rect:
+        serializedVersion: 2
+        x: 1582
+        y: 182
+        width: 123
+        height: 178
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1f8cad849c16f1e0800000000000000
+      internalID: -2164511146547310820
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_29
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 10
+        width: 316
+        height: 170
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f68d3962835c6c4c0800000000000000
+      internalID: -4267506751930902417
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_30
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 21
+        width: 143
+        height: 136
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95e66c3063de7f590800000000000000
+      internalID: -7640377426563404199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_31
+      rect:
+        serializedVersion: 2
+        x: 577
+        y: 24
+        width: 192
+        height: 113
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59a2ec2ca09097790800000000000000
+      internalID: -7531978959977829739
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_32
+      rect:
+        serializedVersion: 2
+        x: 837
+        y: 39
+        width: 134
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8793528b9b9dcdf0800000000000000
+      internalID: -158299319679346806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_33
+      rect:
+        serializedVersion: 2
+        x: 952
+        y: 32
+        width: 36
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21021dadeadeb4bf0800000000000000
+      internalID: -338916011685109742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_34
+      rect:
+        serializedVersion: 2
+        x: 1010
+        y: 32
+        width: 330
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b497597ee557cf20800000000000000
+      internalID: 3442814922874393776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_35
+      rect:
+        serializedVersion: 2
+        x: 1374
+        y: 43
+        width: 119
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 611e0316ec6a0f870800000000000000
+      internalID: 8714648684285976854
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_36
+      rect:
+        serializedVersion: 2
+        x: 1474
+        y: 40
+        width: 30
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86b9c50a06378bab0800000000000000
+      internalID: -4992113328095716504
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: wetwet_37
+      rect:
+        serializedVersion: 2
+        x: 1560
+        y: 46
+        width: 66
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53967aac5685c6f40800000000000000
+      internalID: 5723046420695968053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      wetwet_0: -3061971618737005194
+      wetwet_1: 7122989957009482654
+      wetwet_10: -6947382419146182084
+      wetwet_11: -2626152111266139724
+      wetwet_12: 8137953158716502662
+      wetwet_13: -2915163477464694402
+      wetwet_14: 2219988084997247281
+      wetwet_15: 130039170960134009
+      wetwet_16: 5074448256746474011
+      wetwet_17: 5658035033666086601
+      wetwet_18: -6106410012865985642
+      wetwet_19: 2720967528999011187
+      wetwet_2: -735963394382691461
+      wetwet_20: -7321935219964202667
+      wetwet_21: -3795928647051742384
+      wetwet_22: 4970717237566709794
+      wetwet_23: 6549169243245137448
+      wetwet_24: 6316918881140482840
+      wetwet_25: -5987878425677031054
+      wetwet_26: -8015924781883134745
+      wetwet_27: -8469552129816345354
+      wetwet_28: -2164511146547310820
+      wetwet_29: -4267506751930902417
+      wetwet_3: -4660481391335112728
+      wetwet_30: -7640377426563404199
+      wetwet_31: -7531978959977829739
+      wetwet_32: -158299319679346806
+      wetwet_33: -338916011685109742
+      wetwet_34: 3442814922874393776
+      wetwet_35: 8714648684285976854
+      wetwet_36: -4992113328095716504
+      wetwet_37: 5723046420695968053
+      wetwet_4: 2277520484070273355
+      wetwet_5: 1102735766342537250
+      wetwet_6: 5864990688358490349
+      wetwet_7: -3916908807117473268
+      wetwet_8: -5920395034754694740
+      wetwet_9: 4710538673374630586
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
