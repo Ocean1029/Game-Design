@@ -1,0 +1,572 @@
+fileFormatVersion: 2
+guid: 57512594145694b49b05cd4da96f1914
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3021827414906632389
+    second: spiderwebset_0
+  - first:
+      213: -881705119333550171
+    second: spiderwebset_1
+  - first:
+      213: -1079328631964214281
+    second: spiderwebset_2
+  - first:
+      213: -8303957718170401444
+    second: spiderwebset_3
+  - first:
+      213: 5990862606705637574
+    second: spiderwebset_4
+  - first:
+      213: 7678740844039371355
+    second: spiderwebset_5
+  - first:
+      213: -3121470316406508446
+    second: spiderwebset_6
+  - first:
+      213: 318485270824579416
+    second: spiderwebset_7
+  - first:
+      213: -3784198188847234032
+    second: spiderwebset_8
+  - first:
+      213: 3079916443930880083
+    second: spiderwebset_9
+  - first:
+      213: -2978444661770921303
+    second: spiderwebset_10
+  - first:
+      213: 3740727235359561437
+    second: spiderwebset_11
+  - first:
+      213: 1139382155218943889
+    second: spiderwebset_12
+  - first:
+      213: -5631821398055424843
+    second: spiderwebset_13
+  - first:
+      213: -4734611874667086755
+    second: spiderwebset_14
+  - first:
+      213: 7516810168764827291
+    second: spiderwebset_15
+  - first:
+      213: 6078660142114194118
+    second: spiderwebset_16
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: spiderwebset_0
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 508
+        width: 380
+        height: 358
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3704f9f9ff4016d0800000000000000
+      internalID: -3021827414906632389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spiderwebset_1
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 648
+        width: 802
+        height: 218
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a7fa7d8ddd83c3f0800000000000000
+      internalID: -881705119333550171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spiderwebset_2
+      rect:
+        serializedVersion: 2
+        x: 1273
+        y: 613
+        width: 248
+        height: 252
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fb5dd7e3547501f0800000000000000
+      internalID: -1079328631964214281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spiderwebset_3
+      rect:
+        serializedVersion: 2
+        x: 1533
+        y: 796
+        width: 141
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c55079a937a62cc80800000000000000
+      internalID: -8303957718170401444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spiderwebset_4
+      rect:
+        serializedVersion: 2
+        x: 217
+        y: 190
+        width: 97
+        height: 220
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c83cd2ccc1d32350800000000000000
+      internalID: 5990862606705637574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spiderwebset_5
+      rect:
+        serializedVersion: 2
+        x: 255
+        y: 394
+        width: 418
+        height: 221
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5aff3b2d1e509a60800000000000000
+      internalID: 7678740844039371355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spiderwebset_6
+      rect:
+        serializedVersion: 2
+        x: 615
+        y: 146
+        width: 92
+        height: 252
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 264f9a5194f4ea4d0800000000000000
+      internalID: -3121470316406508446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spiderwebset_7
+      rect:
+        serializedVersion: 2
+        x: 745
+        y: 345
+        width: 516
+        height: 262
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85171b99aac7b6400800000000000000
+      internalID: 318485270824579416
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spiderwebset_8
+      rect:
+        serializedVersion: 2
+        x: 779
+        y: 177
+        width: 93
+        height: 241
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 014851afbc3db7bc0800000000000000
+      internalID: -3784198188847234032
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spiderwebset_9
+      rect:
+        serializedVersion: 2
+        x: 1532
+        y: 385
+        width: 142
+        height: 332
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 358626a00bf0eba20800000000000000
+      internalID: 3079916443930880083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spiderwebset_10
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 30
+        width: 322
+        height: 339
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9aa5cff4c507aa6d0800000000000000
+      internalID: -2978444661770921303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spiderwebset_11
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 37
+        width: 91
+        height: 249
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd65c31f99bb9e330800000000000000
+      internalID: 3740727235359561437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spiderwebset_12
+      rect:
+        serializedVersion: 2
+        x: 918
+        y: 71
+        width: 92
+        height: 246
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19f7e319806efcf00800000000000000
+      internalID: 1139382155218943889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spiderwebset_13
+      rect:
+        serializedVersion: 2
+        x: 1087
+        y: 49
+        width: 91
+        height: 245
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5bc6672f640c7d1b0800000000000000
+      internalID: -5631821398055424843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spiderwebset_14
+      rect:
+        serializedVersion: 2
+        x: 1239
+        y: 116
+        width: 86
+        height: 226
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5c3f15c5974b4eb0800000000000000
+      internalID: -4734611874667086755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spiderwebset_15
+      rect:
+        serializedVersion: 2
+        x: 1386
+        y: 49
+        width: 89
+        height: 233
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b968541d503115860800000000000000
+      internalID: 7516810168764827291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spiderwebset_16
+      rect:
+        serializedVersion: 2
+        x: 1557
+        y: 66
+        width: 89
+        height: 251
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c2ca01713dbb5450800000000000000
+      internalID: 6078660142114194118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      spiderwebset_0: -3021827414906632389
+      spiderwebset_1: -881705119333550171
+      spiderwebset_10: -2978444661770921303
+      spiderwebset_11: 3740727235359561437
+      spiderwebset_12: 1139382155218943889
+      spiderwebset_13: -5631821398055424843
+      spiderwebset_14: -4734611874667086755
+      spiderwebset_15: 7516810168764827291
+      spiderwebset_16: 6078660142114194118
+      spiderwebset_2: -1079328631964214281
+      spiderwebset_3: -8303957718170401444
+      spiderwebset_4: 5990862606705637574
+      spiderwebset_5: 7678740844039371355
+      spiderwebset_6: -3121470316406508446
+      spiderwebset_7: 318485270824579416
+      spiderwebset_8: -3784198188847234032
+      spiderwebset_9: 3079916443930880083
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
