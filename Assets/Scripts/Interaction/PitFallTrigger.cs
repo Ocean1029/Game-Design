@@ -190,25 +190,29 @@ public class PitFallTrigger : MonoBehaviour
             }
         }
 
-        Debug.Log("PitFallTrigger: Player landed! Skip trip state...");
+        Debug.Log("PitFallTrigger: Player landed! Show trip animation...");
 
-        // 5. 跳過Trip狀態，直接進入恢復階段
-        // stateMachine.ChangeState(PlayerState.Tripping);
-        // if (animationController != null)
-        // {
-        //     animationController.TriggerTrip();
-        // }
+        // 5. 進入Trip狀態並顯示跌倒動畫
+        stateMachine.ChangeState(PlayerState.Tripping);
+        if (animationController != null)
+        {
+            animationController.TriggerTrip();
+        }
 
         // 6. 落地後延遲 0.2 秒，然後顯示100%黑畫面持續3秒
-        Debug.Log("PitFallTrigger: Landing - delay 0.2s then 100% black screen for 3 seconds...");
+        Debug.Log("PitFallTrigger: Landing - delay 0.1s then 100% black screen for 3 seconds...");
 
         // 延遲 0.2 秒
-        yield return new WaitForSeconds(0.15f);
+        yield return new WaitForSeconds(1f);
 
-        // 顯示100%黑畫面
-        if (screenFadeImage != null)
+        // 快速淡入100%黑畫面
+        Debug.Log("PitFallTrigger: Quick fade to black screen...");
+        yield return StartCoroutine(ScreenFadeToBlack(0.2f));
+
+        // 在黑畫面期間顯示爬起來動畫
+        if (animationController != null)
         {
-            screenFadeImage.color = new Color(0f, 0f, 0f, 1f); // 100%黑色，完全不透明
+            animationController.TriggerRecover();
         }
 
         // 等待3秒（黑畫面持續時間）
@@ -216,7 +220,7 @@ public class PitFallTrigger : MonoBehaviour
 
         // 7. 畫面漸亮，恢復控制
         Debug.Log("PitFallTrigger: Waking up player...");
-        yield return StartCoroutine(ScreenFadeIn(2f));
+        yield return StartCoroutine(ScreenFadeIn(0.5f));
 
         // 恢復玩家控制
         stateMachine.ChangeState(PlayerState.Idle);
@@ -260,6 +264,28 @@ public class PitFallTrigger : MonoBehaviour
         }
 
         screenFadeImage.color = originalColor;
+    }
+
+    /// <summary>
+    /// 快速淡入完全黑畫面
+    /// </summary>
+    private IEnumerator ScreenFadeToBlack(float duration)
+    {
+        if (screenFadeImage == null) yield break;
+
+        Color originalColor = screenFadeImage.color;
+        Color blackColor = new Color(0f, 0f, 0f, 1f); // 100%黑色，完全不透明
+
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / duration;
+            screenFadeImage.color = Color.Lerp(originalColor, blackColor, t);
+            yield return null;
+        }
+
+        screenFadeImage.color = blackColor;
     }
 
     /// <summary>
