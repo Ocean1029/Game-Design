@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour, IInteractor
 
     // Movement state tracking for animation triggers
     private bool wasMoving = false;
+    private bool lastFacingRight = true; // Track last facing direction to prevent flickering
 
     // Sprite renderer references for z index management
     private SpriteRenderer[] spriteRenderers;
@@ -177,13 +178,23 @@ public class PlayerController : MonoBehaviour, IInteractor
         if (Input.GetKey(moveRightKey))
         {
             horizontal = 1f;
-            animationController.SetFacingDirection(true);
+            // Only change facing direction if it's different from current
+            if (!lastFacingRight)
+            {
+                lastFacingRight = true;
+                animationController.SetFacingDirection(true);
+            }
             isMoving = true;
         }
         else if (Input.GetKey(moveLeftKey))
         {
             horizontal = -1f;
-            animationController.SetFacingDirection(false);
+            // Only change facing direction if it's different from current
+            if (lastFacingRight)
+            {
+                lastFacingRight = false;
+                animationController.SetFacingDirection(false);
+            }
             isMoving = true;
         }
 
@@ -322,7 +333,14 @@ public class PlayerController : MonoBehaviour, IInteractor
         Vector2 velocity = movement.GetVelocity();
         bool isGrounded = movement.IsGrounded();
 
-        animationController.SetSpeed(Mathf.Abs(velocity.x));
+        // Apply a small threshold to prevent tiny velocity fluctuations from affecting animations
+        float speed = Mathf.Abs(velocity.x);
+        if (speed < 0.01f)
+        {
+            speed = 0f;
+        }
+
+        animationController.SetSpeed(speed);
         animationController.SetGrounded(isGrounded);
         animationController.SetSitting(stateMachine.CurrentState == PlayerState.Sitting);
         animationController.SetRunning(movement.IsRunning());
