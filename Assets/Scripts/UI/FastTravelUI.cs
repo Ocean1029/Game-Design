@@ -385,6 +385,11 @@ public class FastTravelUI : MonoBehaviour
             availableSpawnPoints = availableSpawnPoints.Where(sp => !sp.isOneTimeUse).ToList();
         }
 
+        // --- 修改開始 ---
+        // 排除名為 "Starting Point" 的重生點 (不區分大小寫)
+        availableSpawnPoints = availableSpawnPoints.Where(sp => !sp.displayName.Equals("Starting Point", System.StringComparison.OrdinalIgnoreCase)).ToList();
+        // --- 修改結束 ---
+
         // Sort by scene name, then by display name
         availableSpawnPoints = availableSpawnPoints.OrderBy(sp => sp.sceneName).ThenBy(sp => sp.displayName).ToList();
 
