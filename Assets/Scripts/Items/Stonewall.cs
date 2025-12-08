@@ -25,35 +25,6 @@ public class StoneWall : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    // public IEnumerator PlayRaiseAnimation()
-    // {
-    //     if (isRaised) yield break;
-
-    //     isRaised = true;
-
-    //     Debug.Log("StoneWall: 播放上升動畫");
-
-    //     if (wallCollider != null)
-    //         wallCollider.enabled = false;
-
-    //     Vector3 startPos = transform.position;
-    //     Vector3 endPos = startPos + new Vector3(0, raiseHeight, 0);
-
-    //     float elapsed = 0f;
-
-    //     while (elapsed < raiseDuration)
-    //     {
-    //         elapsed += Time.deltaTime;
-    //         float t = Mathf.Clamp01(elapsed / raiseDuration);
-
-    //         transform.position = Vector3.Lerp(startPos, endPos, t);
-
-    //         yield return null;
-    //     }
-
-    //     transform.position = endPos;
-    // }
-
     public IEnumerator PlayRaiseAnimation()
     {
         if (isRaised) yield break;

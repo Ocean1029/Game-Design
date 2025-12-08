@@ -61,6 +61,8 @@ public class PlayerController : MonoBehaviour, IInteractor
     private float tripPromptFloatTimer = 0f;
 
     private PlayerState lastState = PlayerState.Idle; // For debug logging
+    public bool IsInCutscene = false;
+
 
     void OnEnable()
     {
@@ -144,6 +146,12 @@ public class PlayerController : MonoBehaviour, IInteractor
         {
             return;
         }
+
+        if (IsInCutscene)
+        {
+            return;
+        }
+
 
         HandleMovementInput();
         HandleJumpInput();

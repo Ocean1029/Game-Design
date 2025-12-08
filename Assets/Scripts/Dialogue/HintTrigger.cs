@@ -48,20 +48,20 @@ public class HintTrigger : MonoBehaviour
     private void Start()
     {
         // 監聽能量補滿事件
-        var playerEnergy = FindObjectOfType<PlayerEnergy>();
-        if (playerEnergy != null)
-        {
-            playerEnergy.OnEnergyRestored += () =>
-            {
-                if (!hasShownEnergyFull)
-                {
-                    hasShownEnergyFull = true;
-                    DialogueManager.Instance?.ShowDialogue(energyFullMessage);
-                    isDialogueTyping = true;
-                    DialogueManager.Instance.OnDialogueFinished += HandleDialogueFinished;
-                }
-            };
-        }
+        // var playerEnergy = FindObjectOfType<PlayerEnergy>();
+        // if (playerEnergy != null)
+        // {
+        //     playerEnergy.OnEnergyRestored += () =>
+        //     {
+        //         if (!hasShownEnergyFull)
+        //         {
+        //             hasShownEnergyFull = true;
+        //             DialogueManager.Instance?.ShowDialogue(energyFullMessage);
+        //             isDialogueTyping = true;
+        //             DialogueManager.Instance.OnDialogueFinished += HandleDialogueFinished;
+        //         }
+        //     };
+        // }
 
         // 嘗試自動尋找最近的 PhysicalDoor
         if (linkedDoor == null && detectDoorRadius > 0f)
@@ -175,7 +175,7 @@ public class HintTrigger : MonoBehaviour
         var dm = DialogueManager.Instance;
         if (dm != null)
             dm.OnDialogueFinished -= HandleDialogueFinished; // 取消訂閱避免重複觸發
-            StartCoroutine(HideAfterDelay(dm, 2f));
+            StartCoroutine(HideAfterDelay(dm, 2.0f));
     }
 
     private void OnTriggerExit2D(Collider2D other)
