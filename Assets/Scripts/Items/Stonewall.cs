@@ -10,7 +10,7 @@ public class StoneWall : MonoBehaviour
    /**
     * 上升高度（你可以調）
     */
-    public float raiseHeight = 2f;
+    public float raiseHeight = 3f;
     public float raiseDuration = 1f;
 
     private bool isRaised = false;
@@ -55,7 +55,10 @@ public class StoneWall : MonoBehaviour
 
         // 🔥 升起後關掉動畫（發光效果立即停止）
         if (animator != null)
-            animator.enabled = false;
+            // animator.enabled = false;
+            animator.Play(0, 0, 0f);  // 播放當前動畫 (state 0)，從 0 秒開始
+            animator.Update(0f);      // 立即更新畫面，避免下一幀才刷新
+            animator.enabled = false; // 停在第一偵
     }
 
 
