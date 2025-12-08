@@ -27,7 +27,7 @@ MonoBehaviour:
     restoresEnergy: 1
     energyRestoreAmount: 0
   - spawnPointId: rest_chair
-    displayName: Deep Chasm
+    displayName: Rest Square
     locationDescription: 
     position: {x: 19.819002, y: -35.724236, z: 0}
     sceneName: MainScene
@@ -40,9 +40,9 @@ MonoBehaviour:
     restoresEnergy: 1
     energyRestoreAmount: 0
   - spawnPointId: hello_chair
-    displayName: Gloom Hollow
+    displayName: Hello Square
     locationDescription: 
-    position: {x: 41.373405, y: -28.796238, z: 0}
+    position: {x: 41.359406, y: -29.208239, z: 0}
     sceneName: MainScene
     isOneTimeUse: 0
     isTransportable: 1
@@ -66,11 +66,10 @@ MonoBehaviour:
     restoresEnergy: 1
     energyRestoreAmount: 0
   currentActiveSpawnPoint:
-    spawnPointId: rest_chair
-    displayName: Deep Chasm
-    locationDescription: 
-    position: {x: 19.819002, y: -35.724236, z: 0}
-
+    spawnPointId: default_spawn
+    displayName: Starting Point
+    locationDescription: Default starting location
+    position: {x: 0, y: 0, z: 0}
     sceneName: MainScene
     isOneTimeUse: 0
     isTransportable: 1
