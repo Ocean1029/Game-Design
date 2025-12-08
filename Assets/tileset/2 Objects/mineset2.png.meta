@@ -1,0 +1,676 @@
+fileFormatVersion: 2
+guid: 07b3776d2f6cb4823a552642f0fe108e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4203000638183398962
+    second: mineset2_0
+  - first:
+      213: 3252088629400219351
+    second: mineset2_1
+  - first:
+      213: -4103121695754575111
+    second: mineset2_2
+  - first:
+      213: 3509276933077162914
+    second: mineset2_3
+  - first:
+      213: -1844728050674718362
+    second: mineset2_4
+  - first:
+      213: 2540539235647054860
+    second: mineset2_5
+  - first:
+      213: 8289972771771490956
+    second: mineset2_6
+  - first:
+      213: -7149563733277452869
+    second: mineset2_7
+  - first:
+      213: 4122849417460454061
+    second: mineset2_8
+  - first:
+      213: -7845530241814998474
+    second: mineset2_9
+  - first:
+      213: 3416635867344840736
+    second: mineset2_10
+  - first:
+      213: 7904548978036134127
+    second: mineset2_11
+  - first:
+      213: -3189114595129719319
+    second: mineset2_12
+  - first:
+      213: -1066441144439631734
+    second: mineset2_13
+  - first:
+      213: -6102537205894280387
+    second: mineset2_14
+  - first:
+      213: -5146598716516680466
+    second: mineset2_15
+  - first:
+      213: -1601657873067921209
+    second: mineset2_16
+  - first:
+      213: 7537641310428765884
+    second: mineset2_17
+  - first:
+      213: 7060318288547059415
+    second: mineset2_18
+  - first:
+      213: -6143123278017077386
+    second: mineset2_19
+  - first:
+      213: -8044250270794544608
+    second: mineset2_20
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: mineset2_0
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 762
+        width: 490
+        height: 136
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec1a6522031fba5c0800000000000000
+      internalID: -4203000638183398962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_1
+      rect:
+        serializedVersion: 2
+        x: 727
+        y: 571
+        width: 98
+        height: 327
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7deac7dc06db12d20800000000000000
+      internalID: 3252088629400219351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_2
+      rect:
+        serializedVersion: 2
+        x: 836
+        y: 491
+        width: 66
+        height: 407
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f2a9569e88ce07c0800000000000000
+      internalID: -4103121695754575111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_3
+      rect:
+        serializedVersion: 2
+        x: 929
+        y: 490
+        width: 29
+        height: 407
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ab598617c473b030800000000000000
+      internalID: 3509276933077162914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_4
+      rect:
+        serializedVersion: 2
+        x: 1000
+        y: 489
+        width: 40
+        height: 408
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 669a5589c953666e0800000000000000
+      internalID: -1844728050674718362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_5
+      rect:
+        serializedVersion: 2
+        x: 1107
+        y: 481
+        width: 117
+        height: 417
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c046fa679fec14320800000000000000
+      internalID: 2540539235647054860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_6
+      rect:
+        serializedVersion: 2
+        x: 1309
+        y: 432
+        width: 92
+        height: 466
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c82a9135056eb0370800000000000000
+      internalID: 8289972771771490956
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_7
+      rect:
+        serializedVersion: 2
+        x: 1427
+        y: 357
+        width: 120
+        height: 541
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb55bf22aa5a7cc90800000000000000
+      internalID: -7149563733277452869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_8
+      rect:
+        serializedVersion: 2
+        x: 1559
+        y: 406
+        width: 71
+        height: 492
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da2182e83bd473930800000000000000
+      internalID: 4122849417460454061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_9
+      rect:
+        serializedVersion: 2
+        x: 491
+        y: 646
+        width: 13
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 632580effc31f1390800000000000000
+      internalID: -7845530241814998474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_10
+      rect:
+        serializedVersion: 2
+        x: 503
+        y: 656
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 028a2ff18345a6f20800000000000000
+      internalID: 3416635867344840736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_11
+      rect:
+        serializedVersion: 2
+        x: 353
+        y: 280
+        width: 452
+        height: 307
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe055895a6992bd60800000000000000
+      internalID: 7904548978036134127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_12
+      rect:
+        serializedVersion: 2
+        x: 1087
+        y: 322
+        width: 190
+        height: 120
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e587412c2dfdb3d0800000000000000
+      internalID: -3189114595129719319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_13
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 9
+        width: 529
+        height: 309
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8090dbed6d3331f0800000000000000
+      internalID: -1066441144439631734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_14
+      rect:
+        serializedVersion: 2
+        x: 664
+        y: 259
+        width: 65
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3b011e6ebe6f4ba0800000000000000
+      internalID: -6102537205894280387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_15
+      rect:
+        serializedVersion: 2
+        x: 1281
+        y: 23
+        width: 148
+        height: 239
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eecba843cbb9398b0800000000000000
+      internalID: -5146598716516680466
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_16
+      rect:
+        serializedVersion: 2
+        x: 1462
+        y: 23
+        width: 155
+        height: 274
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c0341086a4c5c9e0800000000000000
+      internalID: -1601657873067921209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_17
+      rect:
+        serializedVersion: 2
+        x: 553
+        y: 37
+        width: 31
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbe9a60f5d41b9860800000000000000
+      internalID: 7537641310428765884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_18
+      rect:
+        serializedVersion: 2
+        x: 616
+        y: 30
+        width: 214
+        height: 135
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d69a06831a4bf160800000000000000
+      internalID: 7060318288547059415
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_19
+      rect:
+        serializedVersion: 2
+        x: 829
+        y: 23
+        width: 219
+        height: 136
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67fdb522ded3fbaa0800000000000000
+      internalID: -6143123278017077386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mineset2_20
+      rect:
+        serializedVersion: 2
+        x: 1073
+        y: 23
+        width: 176
+        height: 141
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02a83fcbff41d5090800000000000000
+      internalID: -8044250270794544608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      mineset2_0: -4203000638183398962
+      mineset2_1: 3252088629400219351
+      mineset2_10: 3416635867344840736
+      mineset2_11: 7904548978036134127
+      mineset2_12: -3189114595129719319
+      mineset2_13: -1066441144439631734
+      mineset2_14: -6102537205894280387
+      mineset2_15: -5146598716516680466
+      mineset2_16: -1601657873067921209
+      mineset2_17: 7537641310428765884
+      mineset2_18: 7060318288547059415
+      mineset2_19: -6143123278017077386
+      mineset2_2: -4103121695754575111
+      mineset2_20: -8044250270794544608
+      mineset2_3: 3509276933077162914
+      mineset2_4: -1844728050674718362
+      mineset2_5: 2540539235647054860
+      mineset2_6: 8289972771771490956
+      mineset2_7: -7149563733277452869
+      mineset2_8: 4122849417460454061
+      mineset2_9: -7845530241814998474
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

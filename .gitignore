@@ -178,3 +178,6 @@ desktop.ini
 # Ignore temporaries from GameCI
 /[Aa]rtifacts/
 /[Cc]odeCoverage/
+
+# SpawnPointDatabase.asset
+Assets/ScriptableObjects/SpawnPointDatabase.asset
