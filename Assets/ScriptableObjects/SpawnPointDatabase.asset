@@ -20,7 +20,7 @@ MonoBehaviour:
     sceneName: MainScene
     isOneTimeUse: 0
     isTransportable: 1
-    isActive: 1
+    isActive: 0
     isChairSpawn: 0
     activeVisual: {fileID: 0}
     activationSound: {fileID: 0}
@@ -46,14 +46,14 @@ MonoBehaviour:
     sceneName: MainScene
     isOneTimeUse: 0
     isTransportable: 1
-    isActive: 1
+    isActive: 0
     isChairSpawn: 1
     activeVisual: {fileID: 0}
     activationSound: {fileID: 0}
     restoresEnergy: 1
     energyRestoreAmount: 0
   - spawnPointId: village_square_chair
-    displayName: Prime Cloister
+    displayName: Village Square
     locationDescription: 
     position: {x: 30.313404, y: -21.726238, z: 0}
     sceneName: MainScene
@@ -66,15 +66,15 @@ MonoBehaviour:
     restoresEnergy: 1
     energyRestoreAmount: 0
   currentActiveSpawnPoint:
-    spawnPointId: default_spawn
-    displayName: Starting Point
-    locationDescription: Default starting location
-    position: {x: 0, y: 0, z: 0}
+    spawnPointId: rest_chair
+    displayName: Rest Square
+    locationDescription: 
+    position: {x: 19.819002, y: -35.724236, z: 0}
     sceneName: MainScene
     isOneTimeUse: 0
     isTransportable: 1
     isActive: 1
-    isChairSpawn: 0
+    isChairSpawn: 1
     activeVisual: {fileID: 0}
     activationSound: {fileID: 0}
     restoresEnergy: 1

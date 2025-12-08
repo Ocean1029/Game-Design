@@ -40,8 +40,12 @@ public class chair : MonoBehaviour, IInteractable
     [Tooltip("Maximum distance from chair center for energy restoration (very small for precise control)")]
     [SerializeField] private float energyRestoreDistance = 0.5f;
 
+    [Tooltip("Automatically save progress when passing by (no key press needed)")]
+    [SerializeField] private bool autoSaveProgressOnPass = true;
+
     private IInteractor currentInteractor = null;
     private bool hasRestoredEnergyForCurrentInteractor = false;
+    private bool hasSavedProgressForCurrentInteractor = false;
     private PlayerController currentPlayerInZone = null;
 
     void Start()
@@ -67,15 +71,25 @@ public class chair : MonoBehaviour, IInteractable
 
     void Update()
     {
-        // Continuously check for energy restoration while player is in zone
-        if (currentPlayerInZone != null && autoRestoreEnergyOnPass && !hasRestoredEnergyForCurrentInteractor)
+        // Continuously check for energy restoration and progress saving while player is in zone
+        if (currentPlayerInZone != null)
         {
             float distanceToChair = Vector3.Distance(currentPlayerInZone.transform.position, transform.position);
-            if (distanceToChair <= energyRestoreDistance)
+
+            // Auto-restore energy
+            if (autoRestoreEnergyOnPass && !hasRestoredEnergyForCurrentInteractor && distanceToChair <= energyRestoreDistance)
             {
                 RestorePlayerEnergy(currentPlayerInZone);
                 hasRestoredEnergyForCurrentInteractor = true;
                 Debug.Log($"Player moved within energy restoration range ({distanceToChair:F2} <= {energyRestoreDistance}) at '{chairName}'");
+            }
+
+            // Auto-save progress
+            if (autoSaveProgressOnPass && !hasSavedProgressForCurrentInteractor && distanceToChair <= energyRestoreDistance)
+            {
+                SaveProgress();
+                hasSavedProgressForCurrentInteractor = true;
+                Debug.Log($"Player moved within progress saving range ({distanceToChair:F2} <= {energyRestoreDistance}) at '{chairName}' - Progress auto-saved!");
             }
         }
     }
@@ -120,6 +134,7 @@ public class chair : MonoBehaviour, IInteractable
             ShowPromptZ(false);
             currentInteractor = null;
             hasRestoredEnergyForCurrentInteractor = false; // Reset for next visit
+            hasSavedProgressForCurrentInteractor = false; // Reset for next visit
             currentPlayerInZone = null; // Clear player reference
         }
     }
