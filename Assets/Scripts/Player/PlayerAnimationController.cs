@@ -505,7 +505,7 @@ public class PlayerAnimationController : MonoBehaviour
         if (spriteRenderer != null)
         {
             spriteRenderer.flipX = !facingRight;
-            // Removed excessive debug logging to improve performance
+            Debug.Log($"PlayerAnimationController: Set facing direction - facingRight: {facingRight}, flipX: {!facingRight} on '{spriteRenderer.gameObject.name}'");
         }
         else
         {

@@ -124,7 +124,7 @@ public class JumpPromptZone : MonoBehaviour
             {
                 float distance = Vector2.Distance(transform.position, player.transform.position);
                 bool shouldShow = distance <= 2f;
-                Debug.Log($"JumpPromptZone: 玩家距離: {distance:F2}, 應該顯示: {shouldShow}");
+                // Debug.Log($"JumpPromptZone: 玩家距離: {distance:F2}, 應該顯示: {shouldShow}");
             }
         }
     }
