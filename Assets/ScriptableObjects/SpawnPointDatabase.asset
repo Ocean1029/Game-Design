@@ -42,7 +42,7 @@ MonoBehaviour:
   - spawnPointId: hello_chair
     displayName: Hello Square
     locationDescription: 
-    position: {x: 41.373405, y: -28.796238, z: 0}
+    position: {x: 41.359406, y: -29.208239, z: 0}
     sceneName: MainScene
     isOneTimeUse: 0
     isTransportable: 1
@@ -66,10 +66,10 @@ MonoBehaviour:
     restoresEnergy: 1
     energyRestoreAmount: 0
   currentActiveSpawnPoint:
-    spawnPointId: rest_chair
-    displayName: Rest Square
+    spawnPointId: hello_chair
+    displayName: Hello Square
     locationDescription: 
-    position: {x: 19.819002, y: -35.724236, z: 0}
+    position: {x: 41.359406, y: -29.208239, z: 0}
     sceneName: MainScene
     isOneTimeUse: 0
     isTransportable: 1
