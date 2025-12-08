@@ -218,10 +218,10 @@ public class chair : MonoBehaviour, IInteractable
             {
                 energySystem.RestoreAllEnergy();
                 
-                // Play energy restore sound
+                // Play energy restore sound using SoundManager for consistent volume control
                 if (energyRestoreSound != null)
                 {
-                    AudioSource.PlayClipAtPoint(energyRestoreSound, transform.position);
+                    SoundManager.GetInstance()?.PlaySound(energyRestoreSound, transform.position, 0.1f);
                 }
                 
                 Debug.Log($"Chair: Auto-restored player's energy to full at '{chairName}'");

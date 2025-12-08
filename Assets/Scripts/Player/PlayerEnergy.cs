@@ -10,15 +10,19 @@ public class PlayerEnergy : MonoBehaviour
     [Header("Energy Settings")]
     [Tooltip("Maximum energy capacity")]
     [SerializeField] private int maxEnergy = 4;
-    
+
     [Tooltip("Starting energy amount")]
     [SerializeField] private int startingEnergy = 4;
-    
+
     [Tooltip("Energy cost per jump")]
     [SerializeField] private int jumpCost = 1;
-    
+
     [Tooltip("Energy restored per second while sitting")]
     [SerializeField] private float energyRestoreRate = 1f;
+
+    [Header("Sound Settings")]
+    [Tooltip("Sound played when energy is restored (2D sound)")]
+    [SerializeField] private AudioClip energyRestoreSound;
 
     [Header("Debug")]
     [SerializeField] private bool showDebugInfo = true;
@@ -146,18 +150,19 @@ public class PlayerEnergy : MonoBehaviour
         if (currentEnergy < maxEnergy)
         {
             currentEnergy++;
-            
+
             if (showDebugInfo)
             {
                 Debug.Log($"<color=green>PlayerEnergy: Restored 1 energy. Current: {currentEnergy}/{maxEnergy}</color>");
             }
-            
+
             OnEnergyChanged?.Invoke(currentEnergy, maxEnergy);
-            
+            PlayEnergyRestoreSound();
+
             if (currentEnergy == maxEnergy)
             {
                 OnEnergyRestored?.Invoke();
-                
+
                 if (showDebugInfo)
                 {
                     Debug.Log("<color=green>PlayerEnergy: Fully restored!</color>");
@@ -171,15 +176,20 @@ public class PlayerEnergy : MonoBehaviour
     /// </summary>
     public void RestoreAllEnergy()
     {
+        int oldEnergy = currentEnergy;
         currentEnergy = maxEnergy;
-        
-        if (showDebugInfo)
+
+        if (currentEnergy > oldEnergy)
         {
-            Debug.Log($"<color=green>PlayerEnergy: Instantly restored to full! {currentEnergy}/{maxEnergy}</color>");
+            if (showDebugInfo)
+            {
+                Debug.Log($"<color=green>PlayerEnergy: Instantly restored to full! {currentEnergy}/{maxEnergy}</color>");
+            }
+
+            OnEnergyChanged?.Invoke(currentEnergy, maxEnergy);
+            OnEnergyRestored?.Invoke();
+            PlayEnergyRestoreSound();
         }
-        
-        OnEnergyChanged?.Invoke(currentEnergy, maxEnergy);
-        OnEnergyRestored?.Invoke();
     }
 
     /// <summary>
@@ -190,15 +200,16 @@ public class PlayerEnergy : MonoBehaviour
     {
         int oldEnergy = currentEnergy;
         currentEnergy = Mathf.Min(currentEnergy + amount, maxEnergy);
-        
+
         if (currentEnergy > oldEnergy)
         {
             if (showDebugInfo)
             {
                 Debug.Log($"<color=green>PlayerEnergy: Added {currentEnergy - oldEnergy} energy. Current: {currentEnergy}/{maxEnergy}</color>");
             }
-            
+
             OnEnergyChanged?.Invoke(currentEnergy, maxEnergy);
+            PlayEnergyRestoreSound();
         }
     }
 
@@ -249,13 +260,25 @@ public class PlayerEnergy : MonoBehaviour
     {
         maxEnergy = newMax;
         currentEnergy = Mathf.Min(currentEnergy, maxEnergy);
-        
+
         if (showDebugInfo)
         {
             Debug.Log($"<color=cyan>PlayerEnergy: Max energy changed to {maxEnergy}</color>");
         }
-        
+
         OnEnergyChanged?.Invoke(currentEnergy, maxEnergy);
+    }
+
+    /// <summary>
+    /// Play energy restore sound effect
+    /// </summary>
+    private void PlayEnergyRestoreSound()
+    {
+        if (energyRestoreSound != null)
+        {
+            // Play at very quiet volume (0.1f = 10% of full volume)
+            SoundManager.GetInstance()?.PlaySound2D(energyRestoreSound, 0.1f);
+        }
     }
 }
 

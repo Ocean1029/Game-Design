@@ -10,7 +10,7 @@ public class SoundManager : MonoBehaviour
 {
     [Header("Settings")]
     [Tooltip("Whether to show debug information")]
-    [SerializeField] private bool showDebugInfo = false;
+    [SerializeField] private bool showDebugInfo = true;
 
     // Singleton instance
     private static SoundManager instance;
